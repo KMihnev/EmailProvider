@@ -7,6 +7,7 @@ using EmailProviderServer.DBContext;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services;
+using EmailProviderServer.TCP_Server;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -18,6 +19,7 @@ var host = Host.CreateDefaultBuilder(args)
         //Базово Repository
         services.AddScoped(typeof(IRepositoryS<>), typeof(RepositoryS<>));
 
+        //Регистриране на сервизи
         services.AddTransient<IBulkIncomingMessageService, BulkIncomingMessageService>();
         services.AddTransient<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
         services.AddTransient<ICategoryService, CategoryService>();
@@ -26,6 +28,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IIncomingMessageService, IncomingMessageService>();
         services.AddTransient<IOutgoingMessageService, OutgoingMessageService>();
         services.AddTransient<IUserService, UserService>();
+
+        services.AddHostedService<TcpServerService>();
 
     })
     .ConfigureAppConfiguration((hostingContext, configuration) =>
