@@ -1,10 +1,7 @@
-﻿using AutoMapper.QueryableExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//Includes
+
+using AutoMapper.QueryableExtensions;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailServiceIntermediate.Mapping
 {

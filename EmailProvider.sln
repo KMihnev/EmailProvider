@@ -5,8 +5,6 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailProviderServer", "EmailProviderServer\EmailProviderServer.csproj", "{17265FD7-C682-4FB5-A458-BE571E556DFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailServiceIntermediate", "EmailServiceIntermediate\EmailServiceIntermediate.csproj", "{117E8B32-7274-4E6E-A4D6-AAE13AB4424D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMailProviderClient", "EMailProviderClient\EMailProviderClient.csproj", "{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{672AFA66-B921-4A80-8041-F36F73EA86A4}"
@@ -20,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailProvider", "EmailProvider\EmailProvider.csproj", "{25821324-5521-49AC-AFED-ED5436CF456F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,14 +30,14 @@ Global
 		{17265FD7-C682-4FB5-A458-BE571E556DFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17265FD7-C682-4FB5-A458-BE571E556DFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17265FD7-C682-4FB5-A458-BE571E556DFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{117E8B32-7274-4E6E-A4D6-AAE13AB4424D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{117E8B32-7274-4E6E-A4D6-AAE13AB4424D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{117E8B32-7274-4E6E-A4D6-AAE13AB4424D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{117E8B32-7274-4E6E-A4D6-AAE13AB4424D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25821324-5521-49AC-AFED-ED5436CF456F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25821324-5521-49AC-AFED-ED5436CF456F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25821324-5521-49AC-AFED-ED5436CF456F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25821324-5521-49AC-AFED-ED5436CF456F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

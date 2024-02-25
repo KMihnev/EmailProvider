@@ -1,4 +1,5 @@
 ﻿//Includes
+
 using AutoMapper;
 
 namespace EmailServiceIntermediate.Mapping
