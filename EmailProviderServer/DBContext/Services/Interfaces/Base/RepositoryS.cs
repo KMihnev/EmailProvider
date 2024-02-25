@@ -1,16 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EmailProviderServer.DBContext.Services.Base
+
+namespace EmailProviderServer.DBContext.Services.Interfaces.Base
 {
     public class RepositoryS<TEntity> : IRepositoryS<TEntity>
         where TEntity : class
     {
-        public EfRepository(ApplicationDbContext context)
+        public RepositoryS(ApplicationDbContext context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
             DbSet = Context.Set<TEntity>();

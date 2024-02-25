@@ -45,7 +45,7 @@ public partial class OutgoingMessage
     /// <summary>
     /// Date in which the message will be send
     /// </summary>
-    public DateTime? DateOfSend { get; set; }
+    public DateTime DateOfSend { get; set; }
 
     public virtual ICollection<BulkOutgoingMessage> BulkOutgoingMessages { get; set; } = new List<BulkOutgoingMessage>();
 

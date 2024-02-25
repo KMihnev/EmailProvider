@@ -1,13 +1,7 @@
-﻿using EmailProviderServer.Models;
+﻿//Includes
+using EmailProviderServer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace EmailProviderServer.DBContext
 {

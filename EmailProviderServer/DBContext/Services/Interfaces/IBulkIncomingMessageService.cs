@@ -1,6 +1,6 @@
 ﻿//Includes
 
-namespace EmailProviderServer.DBContext.Services
+namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface IBulkIncomingMessageService
     {

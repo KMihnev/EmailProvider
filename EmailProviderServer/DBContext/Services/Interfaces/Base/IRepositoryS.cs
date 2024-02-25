@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
-namespace EmailProviderServer.DBContext.Services.Base
+namespace EmailProviderServer.DBContext.Services.Interfaces.Base
 {
     public interface IRepositoryS<TEntity> : IDisposable
         where TEntity : class

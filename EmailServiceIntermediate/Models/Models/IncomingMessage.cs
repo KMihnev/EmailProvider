@@ -41,7 +41,7 @@ public partial class IncomingMessage
     /// <summary>
     /// Date in which the message was be received
     /// </summary>
-    public DateTime? DateOfReceive { get; set; }
+    public DateTime DateOfReceive { get; set; }
 
     /// <summary>
     /// Category of the message

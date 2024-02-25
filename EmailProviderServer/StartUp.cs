@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//Includes
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using EmailProviderServer.DBContext;
+using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailProviderServer.DBContext.Services;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -15,9 +18,14 @@ var host = Host.CreateDefaultBuilder(args)
         //Базово Repository
         services.AddScoped(typeof(IRepositoryS<>), typeof(RepositoryS<>));
 
-        services.AddTransient<, SettingsService>();
-        services.AddTransient<IEventsService, EventsService>();
-        services.AddTransient<IUsersService, UsersService>();
+        services.AddTransient<IBulkIncomingMessageService, BulkIncomingMessageService>();
+        services.AddTransient<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
+        services.AddTransient<ICategoryService, CategoryService>();
+        services.AddTransient<ICountryService, CountryService>();
+        services.AddTransient<IFileService, FileService>();
+        services.AddTransient<IIncomingMessageService, IncomingMessageService>();
+        services.AddTransient<IOutgoingMessageService, OutgoingMessageService>();
+        services.AddTransient<IUserService, UserService>();
 
     })
     .ConfigureAppConfiguration((hostingContext, configuration) =>

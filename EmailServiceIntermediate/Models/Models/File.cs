@@ -16,7 +16,7 @@ public partial class File
     /// <summary>
     /// Content of file
     /// </summary>
-    public int Content { get; set; }
+    public byte[] Content { get; set; }
 
     public virtual ICollection<IncomingMessage> IncomingMessages { get; set; } = new List<IncomingMessage>();
 
