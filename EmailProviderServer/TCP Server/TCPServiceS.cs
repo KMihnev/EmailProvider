@@ -1,13 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//Includes
+
+using Microsoft.Extensions.Hosting;
 using System.Net.Sockets;
 using System.Net;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using EmailProvider.Enums;
 using EmailProviderServer.TCP_Server.Dispatches;
 
 namespace EmailProviderServer.TCP_Server
