@@ -8,5 +8,10 @@ namespace EMailProviderClient
             this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
         }
+
+        private void EmailProvider_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -224,6 +224,7 @@
             Name = "EmailProvider";
             Text = "Form1";
             WindowState = FormWindowState.Maximized;
+            Load += EmailProvider_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();

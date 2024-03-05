@@ -1,3 +1,5 @@
+using EMailProviderClient.Views.User;
+
 namespace EMailProviderClient
 {
     internal static class Program
@@ -11,7 +13,7 @@ namespace EMailProviderClient
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new EmailProvider());
+            Application.Run(new StartUp());
         }
     }
 }
