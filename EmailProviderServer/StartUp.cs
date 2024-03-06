@@ -8,6 +8,7 @@ using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server;
+using EmailProvider.Settings;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -30,7 +31,6 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IUserService, UserService>();
 
         services.AddHostedService<TcpServerService>();
-
     })
     .ConfigureAppConfiguration((hostingContext, configuration) =>
     {
@@ -39,7 +39,7 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
+IniReader.InitIni();
+
 // Application starting point
 await host.RunAsync();
-
-
