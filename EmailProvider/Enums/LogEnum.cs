@@ -8,7 +8,7 @@ namespace EmailProvider.Enums
 {
     public enum LogType
     {
-        LogTypeNine = 0,
+        LogTypeNone = 0,
         LogTypeScreen,
         LogTypeLog,
         LogTypeScreenLog,

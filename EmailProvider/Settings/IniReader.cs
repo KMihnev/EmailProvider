@@ -61,6 +61,46 @@ namespace EmailProvider.Settings
         {
             _glIniFile = new IniFile();
         }
+
+        public static string GetFileLogPath ()
+        {
+            if ((_glIniFile == default))
+                return default;
+
+            return _glIniFile.Read(SettingsNames._glLogFile);
+        }
+
+        public static string GetServerName()
+        {
+            if (!IsIniInitialized())
+                return default;
+
+            return _glIniFile.Read(SettingsNames._glServerName);
+        }
+
+        public static string GetDatabaseName()
+        {
+            if (!IsIniInitialized())
+                return default;
+
+            return _glIniFile.Read(SettingsNames._glDatabaseName);
+        }
+
+        private static bool IsIniInitialized()
+        {
+            if (_glIniFile == default)
+                return false;
+
+            return true;
+        }
+
+        private static bool IsValueValid(string value)
+        {
+            if(string.IsNullOrWhiteSpace(value)) 
+                return false;
+
+            return true;
+        }
     }
 }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

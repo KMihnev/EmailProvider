@@ -1,17 +1,102 @@
 ﻿using EmailProvider.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EmailProvider.Settings;
+using System.Windows.Forms;
 
 namespace EmailProvider.Logging
 {
     public static class Logger
     {
-        public static void LogWarning(LogType eLogType, LogSeverity eLogSeverity, string error)
+        public static void LogWarning(string message)
         {
+            Log(message, LogType.LogTypeScreen, LogSeverity.Warning);
+        }
 
+        public static void LogError(string message)
+        {
+            Log(message, LogType.LogTypeScreenLog, LogSeverity.Error);
+        }
+
+        public static void LogInfo(string message)
+        {
+            Log(message, LogType.LogTypeScreen, LogSeverity.Info);
+        }
+
+        public static void Log(string log,LogType eLogType = LogType.LogTypeScreenLog ,LogSeverity eLogSeverity = LogSeverity.Error)
+        {
+            switch (eLogType)
+            {
+                case LogType.LogTypeScreen:
+                {
+                    LogScreen(log, eLogSeverity);
+                    break;
+                }
+                case LogType.LogTypeLog:
+                {
+                    LogFile(log, eLogSeverity);
+                    break;
+                }
+                case LogType.LogTypeScreenLog:
+                {
+                    LogScreenLog(log, eLogSeverity);
+                    break;
+                }
+            }
+
+        }
+
+        private  static void LogFile(string log, LogSeverity eLogSeverity)
+        {
+            string logFilePath = IniReader.GetFileLogPath();
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(logFilePath))
+                {
+                    string logLine = string.Format(LogMessages.FileLogMessage, eLogSeverity.ToString(), log);
+                    writer.WriteLine(logLine);
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(LogMessages.CantReachLogFileLocation);
+            }
+        }
+
+        private static void LogScreen(string log, LogSeverity eLogSeverity)
+        {
+            string logFilePath = IniReader.GetFileLogPath();
+            try
+            {
+                switch (eLogSeverity)
+                {
+                    case LogSeverity.Info:
+                        {
+                            MessageBox.Show(log, LogMessages.Info, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+                        }
+                    case LogSeverity.Warning:
+                        {
+                            MessageBox.Show(log, LogMessages.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            break;
+                        }
+                    case LogSeverity.Error:
+                        {
+                            MessageBox.Show(log, LogMessages.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(LogMessages.CantReachLogFileLocation);
+            }
+        }
+
+        private static void LogScreenLog(string log, LogSeverity eLogSeverity)
+        {
+            LogScreen(log, eLogSeverity);
+            LogFile(log, eLogSeverity);
         }
 
     }

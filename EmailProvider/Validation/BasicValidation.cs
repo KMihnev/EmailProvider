@@ -28,4 +28,10 @@ namespace EmailProvider.Validation
             return strValue.All(c =>char.IsLetterOrDigit(c) || char.IsPunctuation(c));
         }
     }
+
+    public static class ValidationPatterns
+    {
+        public const string EmailPattern = @"^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$";
+        public const string PhoneNumberPattern = @"^\+?\d{1,3}? ?\d{6,14}$";
+    }
 }
