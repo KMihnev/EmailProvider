@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailProvider.Models.Models;
+using System;
 using System.Collections.Generic;
 
 namespace EmailProviderServer.Models;
@@ -6,7 +7,7 @@ namespace EmailProviderServer.Models;
 /// <summary>
 /// Table for countries
 /// </summary>
-public partial class Country
+public partial class Country : IEntity
 {
     /// <summary>
     /// Id of country

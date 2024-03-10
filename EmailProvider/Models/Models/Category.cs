@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailProvider.Models.Models;
+using System;
 using System.Collections.Generic;
 
 namespace EmailProviderServer.Models;
@@ -6,7 +7,7 @@ namespace EmailProviderServer.Models;
 /// <summary>
 /// Table for user-defined categories
 /// </summary>
-public partial class Category
+public partial class Category : IEntity
 {
     /// <summary>
     /// Id of category

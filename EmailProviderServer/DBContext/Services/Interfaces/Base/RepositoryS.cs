@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EmailProvider.Models.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace EmailProviderServer.DBContext.Services.Interfaces.Base
 {
     public class RepositoryS<TEntity> : IRepositoryS<TEntity>
-        where TEntity : class
+        where TEntity : class, IEntity
     {
         public RepositoryS(ApplicationDbContext context)
         {
@@ -50,5 +51,7 @@ namespace EmailProviderServer.DBContext.Services.Interfaces.Base
                 Context?.Dispose();
             }
         }
+
+        public IQueryable<TEntity> GetByID(int nId) => DbSet.Where(x => x.Id == nId);
     }
 }

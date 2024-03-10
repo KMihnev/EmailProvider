@@ -5,35 +5,39 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text.Json;
 using EmailProviderServer.TCP_Server.Dispatches;
+using EmailProviderServer.DBContext;
+using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 
 namespace EmailProviderServer.TCP_Server
 {
     public class TcpServerService : BackgroundService
     {
-        private readonly TcpListener listener;
+        private readonly TcpListener _listener;
+        private readonly ApplicationDbContext _context;
 
-        public TcpServerService()
+        public TcpServerService(TcpListener listener, ApplicationDbContext context)
         {
-            listener = new TcpListener(IPAddress.Any, 5000);
+            _listener = listener;
+            _context = context;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            listener.Start();
+            _listener.Start();
             Console.WriteLine("TCP Server started.");
 
             try
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    var client = await listener.AcceptTcpClientAsync(stoppingToken);
+                    var client = await _listener.AcceptTcpClientAsync(stoppingToken);
                     Console.WriteLine("Client connected.");
                     _ = HandleClientAsync(client, stoppingToken);
                 }
             }
             finally
             {
-                listener.Stop();
+                _listener.Stop();
             }
         }
 
@@ -50,7 +54,10 @@ namespace EmailProviderServer.TCP_Server
                     var requestJson = await reader.ReadLineAsync();
                     var request = JsonSerializer.Deserialize<MethodRequest>(requestJson);
 
-                    DispatchMapper.MapDispatch(request);
+                    DispatchMapper dispatchMapper = new DispatchMapper(_context);
+                    IDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(request);
+
+                    bool result = await dispatchHandler.Execute(request.Parameters);
                 }
                 catch (Exception ex)
                 {

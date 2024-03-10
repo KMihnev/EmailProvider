@@ -47,25 +47,25 @@ namespace EmailProvider.Validation
                             if (!ValidateName(pair.Value))
                                 return false;
                             break;
-                        } //if
+                        } //case
                     case ValidationTypes.ValidationTypePassword:
                         {
                             if (!ValidatePassword(pair.Value))
                                 return false;
                             break;
-                        } //if
+                        } //case
                     case ValidationTypes.ValidationTypeEmail:
                         {
                             if (!ValidateEmail(pair.Value))
                                 return false;
                             break;
-                        } //if
+                        } //case
                     case ValidationTypes.ValidationTypePhoneNumber:
                         {
                             if (!ValidatePhoneNumber(pair.Value))
                                 return false;
                             break;
-                        } //if
+                        } //case
                 } //switch
             } // foreach
             return true;
@@ -76,7 +76,7 @@ namespace EmailProvider.Validation
             ValidationFields.Add(eValidationType, value);
         }
 
-        private bool ValidateName(string Name)
+        protected virtual bool ValidateName(string Name)
         {
             if (!BasicValidation.IsAlpha(Name))
             {
@@ -87,7 +87,7 @@ namespace EmailProvider.Validation
             return true;
         }
 
-        private bool ValidatePassword(string Password)
+        protected virtual bool ValidatePassword(string Password)
         {
             if(string.IsNullOrWhiteSpace(Password))
             {
@@ -110,7 +110,7 @@ namespace EmailProvider.Validation
             return true;
         }
 
-        private bool ValidateEmail(string email)
+        protected virtual bool ValidateEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -127,7 +127,7 @@ namespace EmailProvider.Validation
             return true;
         }
 
-        private bool ValidatePhoneNumber(string phoneNumber)
+        protected virtual bool ValidatePhoneNumber(string phoneNumber)
         {
             string pattern = @"^\+?\d{1,3}? ?\d{6,14}$";
             if (!Regex.IsMatch(phoneNumber, pattern))

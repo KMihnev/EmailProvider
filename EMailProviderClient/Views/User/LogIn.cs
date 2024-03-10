@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EmailProvider.Enums;
+using EMailProviderClient.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -9,94 +11,24 @@ using System.Windows.Forms;
 
 namespace EMailProviderClient.Views.User
 {
-    partial class LogIn : Form
+    public partial class LogIn : Form
     {
+        //Members
+        //-------
+
+        private LoginFormValidationC FieldValidator;
+
+        //Constructor
+        //----------
+
         public LogIn()
         {
             InitializeComponent();
+            AddValidation();
         }
 
-        #region Assembly Attribute Accessors
-
-        public string AssemblyTitle
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-                if (attributes.Length > 0)
-                {
-                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
-                    if (titleAttribute.Title != "")
-                    {
-                        return titleAttribute.Title;
-                    }
-                }
-                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
-            }
-        }
-
-        public string AssemblyVersion
-        {
-            get
-            {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            }
-        }
-
-        public string AssemblyDescription
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description;
-            }
-        }
-
-        public string AssemblyProduct
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyProductAttribute)attributes[0]).Product;
-            }
-        }
-
-        public string AssemblyCopyright
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
-            }
-        }
-
-        public string AssemblyCompany
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company;
-            }
-        }
-        #endregion
+        //Event Handlers
+        //--------------
 
         private void LogIn_Load(object sender, EventArgs e)
         {
@@ -110,6 +42,30 @@ namespace EMailProviderClient.Views.User
             var RegisterForm = new Register();
             RegisterForm.ShowDialog();
             this.Close();
+        }
+
+        private void BTN_CANCEL_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var StartUpForm = new StartUp();
+            StartUpForm.ShowDialog();
+            this.Close();
+        }
+
+        private void BTN_LOGIN_Click(object sender, EventArgs e)
+        {
+            if (!FieldValidator.Validate())
+                return;
+        }
+
+        //Methods
+        //-------
+
+        private void AddValidation()
+        {
+            FieldValidator = new LoginFormValidationC();
+            FieldValidator.AddValidationField(ValidationTypes.ValidationTypeEmail, EDC_NAME);
+            FieldValidator.AddValidationField(ValidationTypes.ValidationTypePassword, EDC_PASSWORD);
         }
     }
 }

@@ -22,5 +22,8 @@ namespace EmailProvider.Logging
         public const string RequiredFieldPassword = "Password: Is Required";
         public const string RequiredFieldEmail = "Email: Is Required";
         public const string PasswordMismatch = "Repeat Password: The password doesn't match";
+        public const string UserAlreadyExists = "User with this email already exists";
+        public const string UserNotFound = "User with this Id not Found";
+        public const string ErrorAddingUser = "Error adding new user";
     }
 }

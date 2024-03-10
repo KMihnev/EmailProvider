@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Enums
+namespace EmailProvider.Models.Models
 {
-    public enum DispatchEnums
+    public interface IEntity
     {
-        Empty = 0,
-        Login,
-        Register
+        int Id { get; set; }
     }
 }

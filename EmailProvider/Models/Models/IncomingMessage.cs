@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailProvider.Models.Models;
+using System;
 using System.Collections.Generic;
 
 namespace EmailProviderServer.Models;
@@ -6,7 +7,7 @@ namespace EmailProviderServer.Models;
 /// <summary>
 /// Table for incoming messages
 /// </summary>
-public partial class IncomingMessage
+public partial class IncomingMessage : IEntity
 {
     /// <summary>
     /// ID received message

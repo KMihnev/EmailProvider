@@ -34,7 +34,7 @@
             StaticRegister = new Label();
             BTN_REGISTER = new Button();
             BTN_CANCEL = new Button();
-            label1 = new Label();
+            STT_GO_TO_LOGIN = new Label();
             SuspendLayout();
             // 
             // EDC_EMAIL
@@ -89,24 +89,25 @@
             BTN_CANCEL.TabIndex = 5;
             BTN_CANCEL.Text = "Cancel";
             BTN_CANCEL.UseVisualStyleBackColor = true;
+            BTN_CANCEL.Click += BTN_CANCEL_Click;
             // 
-            // label1
+            // STT_GO_TO_LOGIN
             // 
-            label1.AutoSize = true;
-            label1.ForeColor = SystemColors.HotTrack;
-            label1.Location = new Point(48, 173);
-            label1.Name = "label1";
-            label1.Size = new Size(162, 15);
-            label1.TabIndex = 6;
-            label1.Text = "Already have a profile? LogIn!";
-            label1.Click += label1_Click;
+            STT_GO_TO_LOGIN.AutoSize = true;
+            STT_GO_TO_LOGIN.ForeColor = SystemColors.HotTrack;
+            STT_GO_TO_LOGIN.Location = new Point(48, 173);
+            STT_GO_TO_LOGIN.Name = "STT_GO_TO_LOGIN";
+            STT_GO_TO_LOGIN.Size = new Size(162, 15);
+            STT_GO_TO_LOGIN.TabIndex = 6;
+            STT_GO_TO_LOGIN.Text = "Already have a profile? LogIn!";
+            STT_GO_TO_LOGIN.Click += STT_GO_TO_LOGIN_Click;
             // 
             // Register
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(259, 260);
-            Controls.Add(label1);
+            Controls.Add(STT_GO_TO_LOGIN);
             Controls.Add(BTN_CANCEL);
             Controls.Add(BTN_REGISTER);
             Controls.Add(StaticRegister);
@@ -128,6 +129,6 @@
         private Label StaticRegister;
         private Button BTN_REGISTER;
         private Button BTN_CANCEL;
-        private Label label1;
+        private Label STT_GO_TO_LOGIN;
     }
 }

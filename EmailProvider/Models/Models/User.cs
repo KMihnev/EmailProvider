@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailProvider.Models.Models;
+using System;
 using System.Collections.Generic;
 
 namespace EmailProviderServer.Models;
@@ -6,7 +7,7 @@ namespace EmailProviderServer.Models;
 /// <summary>
 /// Table for users
 /// </summary>
-public partial class User
+public partial class User : IEntity
 {
     /// <summary>
     /// ID for users

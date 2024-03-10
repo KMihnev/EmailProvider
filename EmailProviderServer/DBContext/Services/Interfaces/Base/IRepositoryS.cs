@@ -9,6 +9,8 @@ namespace EmailProviderServer.DBContext.Services.Interfaces.Base
 
         IQueryable<TEntity> AllAsNoTracking();
 
+        IQueryable<TEntity> GetByID(int nId);
+
         Task AddAsync(TEntity entity);
 
         void Update(TEntity entity);

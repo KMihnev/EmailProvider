@@ -1,9 +1,13 @@
 ﻿//Includes
 
+using AutoMapper;
+using EmailProvider.Logging;
+using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.Models;
 using EmailServiceIntermediate.Mapping;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace EmailProviderServer.DBContext.Services
@@ -65,6 +69,29 @@ namespace EmailProviderServer.DBContext.Services
                  .Where(u => u.Name == strName)
                  .To<T>().FirstOrDefault();
             return oUser;
+        }
+
+        public async Task CreateAsync<T>(T userDto)
+        {
+            User user = AutoMapperConfig.MapperInstance.Map<User>(userDto);
+            
+            await oUserRepositoryS.AddAsync(user);
+
+            await oUserRepositoryS.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync<T>(int nId,T userDto)
+        {
+            var user = oUserRepositoryS.GetByID(nId).To<User>().FirstOrDefault();
+
+            if (user == null)
+                Logger.Log(LogMessages.UserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
+            AutoMapperConfig.MapperInstance.Map(userDto, user);
+
+            oUserRepositoryS.Update(user);
+
+            await oUserRepositoryS.SaveChangesAsync();
         }
     }
 }

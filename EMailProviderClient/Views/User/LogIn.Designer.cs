@@ -80,6 +80,7 @@
             BTN_LOGIN.TabIndex = 6;
             BTN_LOGIN.Text = "Log In";
             BTN_LOGIN.UseVisualStyleBackColor = true;
+            BTN_LOGIN.Click += BTN_LOGIN_Click;
             // 
             // BTN_CANCEL
             // 
@@ -89,6 +90,7 @@
             BTN_CANCEL.TabIndex = 7;
             BTN_CANCEL.Text = "Cancel";
             BTN_CANCEL.UseVisualStyleBackColor = true;
+            BTN_CANCEL.Click += BTN_CANCEL_Click;
             // 
             // LogIn
             // 

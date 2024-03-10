@@ -18,15 +18,21 @@ namespace EMailProviderClient.Views.User
 {
     public partial class Register : Form
     {
+        //Members
+        //-------
         private ValidatorC FieldValidator;
+
+
+        //Constructor
+        //----------
         public Register()
         {
             InitializeComponent();
-
-            FieldValidator = new ValidatorC();
-            FieldValidator.AddValidationField(ValidationTypes.ValidationTypeEmail, EDC_EMAIL);
-            FieldValidator.AddValidationField(ValidationTypes.ValidationTypePassword, EDC_PASSWORD);
+            AddValidation();
         }
+
+        //Event Handlers
+        //--------------
 
         private void Register_Load(object sender, EventArgs e)
         {
@@ -34,7 +40,7 @@ namespace EMailProviderClient.Views.User
             BTN_REGISTER.Select();
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void STT_GO_TO_LOGIN_Click(object sender, EventArgs e)
         {
             this.Hide();
             var LogInForm = new LogIn();
@@ -58,5 +64,25 @@ namespace EMailProviderClient.Views.User
             SetUpProfile.ShowDialog();
             this.Close();
         }
+
+        private void BTN_CANCEL_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var StartUpForm = new StartUp();
+            StartUpForm.ShowDialog();
+            this.Close();
+        }
+
+        //Methods
+        //-------
+
+        private void AddValidation()
+        {
+            FieldValidator = new ValidatorC();
+            FieldValidator.AddValidationField(ValidationTypes.ValidationTypeEmail, EDC_EMAIL);
+            FieldValidator.AddValidationField(ValidationTypes.ValidationTypePassword, EDC_PASSWORD);
+        }
+
+
     }
 }

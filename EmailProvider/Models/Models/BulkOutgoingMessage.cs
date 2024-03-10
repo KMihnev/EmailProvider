@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailProvider.Models.Models;
+using System;
 using System.Collections.Generic;
 
 namespace EmailProviderServer.Models;
@@ -6,7 +7,7 @@ namespace EmailProviderServer.Models;
 /// <summary>
 /// Table for incoming message to be processed
 /// </summary>
-public partial class BulkOutgoingMessage
+public partial class BulkOutgoingMessage : IEntity
 {
     /// <summary>
     /// ID for incoming message to be processed
