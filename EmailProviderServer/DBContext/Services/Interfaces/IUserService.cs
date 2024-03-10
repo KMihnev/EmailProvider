@@ -1,17 +1,20 @@
 ﻿//Includes
 
+using EmailServiceIntermediate.Models;
+using System.Collections.Generic;
+
 namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface IUserService
     {
-        IEnumerable<T> GetAll<T>(int? nCount = null);
+        IEnumerable<User> GetAll(int? nCount = null);
 
-        IEnumerable<T> GetAllByCountryId<T>(int nId, int? count = null);
+        IEnumerable<User> GetAllByCountryId(int nId, int? count = null);
 
-        T GetById<T>(int nId);
+        User GetById(int nId);
 
-        T GetByName<T>(string strName);
+        User GetByName(string strName);
 
-        T GetByEmail<T>(string strEmail);
+        User GetByEmail(string strEmail);
     }
 }

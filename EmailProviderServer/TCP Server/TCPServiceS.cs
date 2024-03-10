@@ -7,6 +7,7 @@ using System.Text.Json;
 using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
+using EmailProvider.Dispatches;
 
 namespace EmailProviderServer.TCP_Server
 {

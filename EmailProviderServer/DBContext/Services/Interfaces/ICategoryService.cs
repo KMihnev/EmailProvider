@@ -1,15 +1,17 @@
 ﻿//Includes
 
+using EmailServiceIntermediate.Models;
+
 namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface ICategoryService
     {
-        IEnumerable<T> GetAll<T>(int? nCount = null);
+        IEnumerable<Category> GetAll(int? nCount = null);
 
-        IEnumerable<T> GetAllByUserId<T>(int nId, int? nCount = null);
+        IEnumerable<Category> GetAllByUserId(int nId, int? nCount = null);
 
-        T GetById<T>(int nId);
+        Category GetById(int nId);
 
-        T GetByName<T>(string strName);
+        Category GetByName(string strName);
     }
 }

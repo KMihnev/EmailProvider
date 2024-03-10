@@ -2,9 +2,8 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
+using EmailServiceIntermediate.Models;
 using EmailServiceIntermediate.Enums;
-using EmailServiceIntermediate.Mapping;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -17,7 +16,7 @@ namespace EmailProviderServer.DBContext.Services
             this.oOutgoingMessageRepositoryS = oOutgoingMessageRepository; 
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<OutgoingMessage> GetAll(int? nCount = null)
         {
             IQueryable<OutgoingMessage> oQuery = this.oOutgoingMessageRepositoryS
                .All();
@@ -25,10 +24,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetAllByStatus<T>(string strStatus, int? nCount = null)
+        public IEnumerable<OutgoingMessage> GetAllByStatus(string strStatus, int? nCount = null)
         {
             IQueryable<OutgoingMessage> oQuery = this.oOutgoingMessageRepositoryS
                .All().Where(om => om.Status == strStatus);
@@ -36,10 +35,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetAllDrafts<T>(int? nCount = null)
+        public IEnumerable<OutgoingMessage> GetAllDrafts(int? nCount = null)
         {
             IQueryable<OutgoingMessage> oQuery = this.oOutgoingMessageRepositoryS
                .All().Where(om => om.IsDraft == true);
@@ -47,10 +46,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetByDateOfSend<T>(DateTime dDateOfSend, DateSearchType eDateSearchType, int? nCount = null)
+        public IEnumerable<OutgoingMessage> GetByDateOfSend(DateTime dDateOfSend, DateSearchType eDateSearchType, int? nCount = null)
         {
             IQueryable<OutgoingMessage> oQuery = oOutgoingMessageRepositoryS.All().Take(0);
 
@@ -79,10 +78,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetByReceiverId<T>(int nReceiverID, int? nCount = null)
+        public IEnumerable<OutgoingMessage> GetByReceiverId(int nReceiverID, int? nCount = null)
         {
             IQueryable<OutgoingMessage> oQuery = this.oOutgoingMessageRepositoryS
                .All().Where(om => om.ReceiverId == nReceiverID);
@@ -90,10 +89,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetBySenderID<T>(int nSenderID, int? nCount = null)
+        public IEnumerable<OutgoingMessage> GetBySenderID(int nSenderID, int? nCount = null)
         {
             IQueryable<OutgoingMessage> oQuery = this.oOutgoingMessageRepositoryS
                 .All().Where(om => om.SenderId == nSenderID);
@@ -101,14 +100,14 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
-        public T GetById<T>(int nId)
+        public OutgoingMessage GetById(int nId)
         {
             var oOutgoingMessage = this.oOutgoingMessageRepositoryS
                 .All()
                 .Where(x => x.Id == nId)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return oOutgoingMessage;
         }
     }

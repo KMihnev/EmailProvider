@@ -2,9 +2,8 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
+using EmailServiceIntermediate.Models;
 using EmailServiceIntermediate.Enums;
-using EmailServiceIntermediate.Mapping;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -18,7 +17,7 @@ namespace EmailProviderServer.DBContext.Services
             this.oIncomingMessageRepositoryS = oIncomingMessageRepository;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<IncomingMessage> GetAll(int? nCount = null)
         {
             IQueryable<IncomingMessage> oQuery = this.oIncomingMessageRepositoryS
                 .All();
@@ -26,10 +25,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetAllByCategoryId<T>(int nCategoryID, int? nCount = null)
+        public IEnumerable<IncomingMessage> GetAllByCategoryId(int nCategoryID, int? nCount = null)
         {
             IQueryable<IncomingMessage> oQuery = this.oIncomingMessageRepositoryS
                 .All().Where(c => c.CategoryId == nCategoryID);
@@ -37,10 +36,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetAllByDateOfReceive<T>(DateTime dDateOfReceive, DateSearchType eDateSearchType, int? nCount = null)
+        public IEnumerable<IncomingMessage> GetAllByDateOfReceive(DateTime dDateOfReceive, DateSearchType eDateSearchType, int? nCount = null)
         {
             IQueryable<IncomingMessage> oQuery = oIncomingMessageRepositoryS.All().Take(0);
 
@@ -69,19 +68,19 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public T GetById<T>(int nId)
+        public IncomingMessage GetById(int nId)
         {
             var oIncomingMessage = this.oIncomingMessageRepositoryS
                 .All()
                 .Where(x => x.Id == nId)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return oIncomingMessage;
         }
 
-        public IEnumerable<T> GetAllByReceiverId<T>(int nReceiverID, int? nCount = null)
+        public IEnumerable<IncomingMessage> GetAllByReceiverId(int nReceiverID, int? nCount = null)
         {
             IQueryable<IncomingMessage> oQuery = this.oIncomingMessageRepositoryS
                 .All()
@@ -90,10 +89,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetAllBySenderID<T>(int nSenderID, int? nCount = null)
+        public IEnumerable<IncomingMessage> GetAllBySenderID(int nSenderID, int? nCount = null)
         {
             IQueryable<IncomingMessage> oQuery = this.oIncomingMessageRepositoryS
                .All()
@@ -102,7 +101,7 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using EmailProvider.Models.Models;
-using System;
-using System.Collections.Generic;
-
-namespace EmailProviderServer.Models;
+﻿namespace EmailServiceIntermediate.Models;
 
 /// <summary>
 /// Table for incoming messages

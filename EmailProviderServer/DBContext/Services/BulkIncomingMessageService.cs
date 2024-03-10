@@ -2,8 +2,7 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
-using EmailServiceIntermediate.Mapping;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -16,7 +15,7 @@ namespace EmailProviderServer.DBContext.Services
             this.oBulkIncomingMessagesRepositoryS = oBulkIncomingMessagesRepository;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<BulkIncomingMessage> GetAll(int? nCount = null)
         {
             IQueryable<BulkIncomingMessage> oQuery = this.oBulkIncomingMessagesRepositoryS
                 .All();
@@ -24,7 +23,7 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
         public int GetCount()

@@ -1,5 +1,5 @@
 ﻿//Includes
-using EmailProviderServer.Models;
+using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -20,7 +20,7 @@ namespace EmailProviderServer.DBContext
 
         public DbSet<Country> Countries { get; set; }
 
-        public DbSet<Models.File> Files { get; set; }
+        public DbSet<EmailServiceIntermediate.Models.File> Files { get; set; }
 
         public DbSet<IncomingMessage> IncomingMessages { get; set; }
 
@@ -43,7 +43,7 @@ namespace EmailProviderServer.DBContext
             builder.Entity<BulkOutgoingMessage>().HasKey(bom => bom.Id);
             builder.Entity<Category>().HasKey(c => c.Id);
             builder.Entity<Country>().HasKey(c => c.Id);
-            builder.Entity<Models.File>().HasKey(f => f.Id);
+            builder.Entity<EmailServiceIntermediate.Models.File>().HasKey(f => f.Id);
             builder.Entity<IncomingMessage>().HasKey(im => im.Id);
             builder.Entity<OutgoingMessage>().HasKey(om => om.Id);
             builder.Entity<User>().HasKey(u => u.Id);
@@ -82,14 +82,14 @@ namespace EmailProviderServer.DBContext
                 .WithMany(u => u.OutgoingMessageReceivers)
                 .HasForeignKey(om => om.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
-            builder.Entity<Models.File>()
+
+            builder.Entity<EmailServiceIntermediate.Models.File>()
                 .HasMany<IncomingMessage>(f => f.IncomingMessages)
                 .WithOne(im => im.File)
                 .HasForeignKey(im => im.FileId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.Entity<Models.File>()
+            builder.Entity<EmailServiceIntermediate.Models.File>()
                 .HasMany<OutgoingMessage>(f => f.OutgoingMessages)
                 .WithOne(om => om.File)
                 .HasForeignKey(om => om.FileId)
@@ -98,7 +98,7 @@ namespace EmailProviderServer.DBContext
             builder.Entity<BulkOutgoingMessage>()
                 .HasOne<OutgoingMessage>(f => f.OutgoingMessage)
                 .WithOne()
-                .HasForeignKey<BulkOutgoingMessage>(bom => bom.OutgoingMessage);
+                .HasForeignKey<BulkOutgoingMessage>(bom => bom.OutgoingMessageId);
 
             builder.Entity<Category>()
                 .HasMany<IncomingMessage>(c => c.IncomingMessages)

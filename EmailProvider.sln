@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMailProviderClient", "EMai
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{672AFA66-B921-4A80-8041-F36F73EA86A4}"
 	ProjectSection(SolutionItems) = preProject
+		Add Countries.sql = Add Countries.sql
 		C:\Users\krisi\Desktop\EMAIL Scripts\Create DB.sql = C:\Users\krisi\Desktop\EMAIL Scripts\Create DB.sql
 		C:\Users\krisi\Desktop\EMAIL Scripts\Create Tables.sql = C:\Users\krisi\Desktop\EMAIL Scripts\Create Tables.sql
 	EndProjectSection

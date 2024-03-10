@@ -2,37 +2,36 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
-using EmailServiceIntermediate.Mapping;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
     public class FileService : IFileService
     {
-        private readonly IRepositoryS<Models.File> oFileRepositoryS;
+        private readonly IRepositoryS<EmailServiceIntermediate.Models.File> oFileRepositoryS;
 
-        public FileService(IRepositoryS<Models.File> oFileRepository)
+        public FileService(IRepositoryS<EmailServiceIntermediate.Models.File> oFileRepository)
         {
             this.oFileRepositoryS = oFileRepository;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<EmailServiceIntermediate.Models.File> GetAll(int? nCount = null)
         {
-            IQueryable<Models.File> oQuery = this.oFileRepositoryS
+            IQueryable<EmailServiceIntermediate.Models.File> oQuery = this.oFileRepositoryS
                 .All();
 
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public T GetById<T>(int nId)
+        public EmailServiceIntermediate.Models.File GetById(int nId)
         {
             var oFile = this.oFileRepositoryS
                 .All()
                 .Where(x => x.Id == nId)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return oFile;
         }
     }

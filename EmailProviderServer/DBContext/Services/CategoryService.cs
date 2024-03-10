@@ -2,8 +2,7 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
-using EmailServiceIntermediate.Mapping;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -16,7 +15,7 @@ namespace EmailProviderServer.DBContext.Services
             this.oCategoryRepositoryS = oCategoryRepository;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<Category> GetAll(int? nCount = null)
         {
             IQueryable<Category> oQuery = this.oCategoryRepositoryS
                 .All();
@@ -24,10 +23,10 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public IEnumerable<T> GetAllByUserId<T>(int nId, int? nCount = null)
+        public IEnumerable<Category> GetAllByUserId(int nId, int? nCount = null)
         {
             IQueryable<Category> oQuery = this.oCategoryRepositoryS
                 .All().Where(c => c.UserId == nId);
@@ -35,24 +34,24 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public T GetById<T>(int nId)
+        public Category GetById(int nId)
         {
             var oCategory = this.oCategoryRepositoryS
                 .All()
                 .Where(x => x.Id == nId)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return oCategory;
         }
 
-        public T GetByName<T>(string strName)
+        public Category GetByName(string strName)
         {
             var oCategory = this.oCategoryRepositoryS
                 .All()
                .Where(x => x.Name == strName)
-               .To<T>().FirstOrDefault();
+               .FirstOrDefault();
             return oCategory;
         }
     }

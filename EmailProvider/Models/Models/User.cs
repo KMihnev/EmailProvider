@@ -1,14 +1,19 @@
-﻿using EmailProvider.Models.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EmailProviderServer.Models;
+namespace EmailServiceIntermediate.Models;
 
 /// <summary>
 /// Table for users
 /// </summary>
 public partial class User : IEntity
 {
+    public User()
+    {
+        Name = "";
+        CountryId = 1;
+        PhoneNumber = "";
+    }
+
     /// <summary>
     /// ID for users
     /// </summary>
@@ -17,7 +22,7 @@ public partial class User : IEntity
     /// <summary>
     /// Name of user
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     /// <summary>
     /// Email of user
@@ -32,16 +37,18 @@ public partial class User : IEntity
     /// <summary>
     /// Phone number of user
     /// </summary>
-    public string PhoneNumber { get; set; } = null!;
+    [Column("PHONE_NUMBER")]
+    public string PhoneNumber { get; set; }
 
     /// <summary>
     /// Country id of user
     /// </summary>
+    [Column("COUNTRY_ID")]
     public int CountryId { get; set; }
 
     public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 
-    public virtual Country Country { get; set; } = null!;
+    public virtual Country Country { get; set; }
 
     public virtual ICollection<IncomingMessage> IncomingMessageReceivers { get; set; } = new List<IncomingMessage>();
 

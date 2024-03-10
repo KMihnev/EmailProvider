@@ -1,5 +1,6 @@
 ﻿//Includes
 
+using EmailProvider.Dispatches;
 using EmailProvider.Enums;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.DBContext.Repositories;
@@ -9,12 +10,6 @@ using System.Text.Json;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
-    public class MethodRequest
-    {
-        public DispatchEnums eDispatch { get; set; }
-        public JsonElement Parameters { get; set; }
-    }
-
     public class DispatchMapper
     {
         private readonly ApplicationDbContext _context;

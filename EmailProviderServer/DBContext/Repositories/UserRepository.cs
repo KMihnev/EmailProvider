@@ -1,5 +1,5 @@
 ﻿using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
+using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -2,8 +2,7 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
-using EmailServiceIntermediate.Mapping;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -18,7 +17,7 @@ namespace EmailProviderServer.DBContext.Services
             this.oCountryRepositoryS = oCountryRepositoryS;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<Country> GetAll(int? nCount = null)
         {
             IQueryable<Country> oQuery = this.oCountryRepositoryS
                 .All();
@@ -26,33 +25,33 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
-        public T GetById<T>(int nId)
+        public Country GetById(int nId)
         {
             var Country = this.oCountryRepositoryS
                 .All()
                 .Where(x => x.Id == nId)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return Country;
         }
 
-        public T GetByName<T>(string strName)
+        public Country GetByName(string strName)
         {
             var oCountry = this.oCountryRepositoryS
                 .All()
                 .Where(x => x.Name == strName)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return oCountry;
         }
 
-        public T GetByPhoneCode<T>(string strPhoneCode)
+        public Country GetByPhoneCode(string strPhoneCode)
         {
             var oCountry = this.oCountryRepositoryS
                 .All()
                 .Where(x => x.PhoneNumberCode == strPhoneCode)
-                .To<T>().FirstOrDefault();
+                .FirstOrDefault();
             return oCountry;
         }
     }

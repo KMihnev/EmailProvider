@@ -57,9 +57,9 @@ namespace EmailProvider.Settings
     public static class IniReader
     {
         public static IniFile _glIniFile {  get; private set; }
-        public static void InitIni()
+        public static void InitIni(string path = null)
         {
-            _glIniFile = new IniFile();
+            _glIniFile = new IniFile(path);
         }
 
         public static string GetFileLogPath ()
@@ -67,7 +67,7 @@ namespace EmailProvider.Settings
             if ((_glIniFile == default))
                 return default;
 
-            return _glIniFile.Read(SettingsNames._glLogFile);
+            return _glIniFile.Read(SettingsNames._glLogFile, SectionNames._glPaths);
         }
 
         public static string GetServerName()
@@ -75,7 +75,7 @@ namespace EmailProvider.Settings
             if (!IsIniInitialized())
                 return default;
 
-            return _glIniFile.Read(SettingsNames._glServerName);
+            return _glIniFile.Read(SettingsNames._glServerName, SectionNames._glDatabase);
         }
 
         public static string GetDatabaseName()
@@ -83,7 +83,7 @@ namespace EmailProvider.Settings
             if (!IsIniInitialized())
                 return default;
 
-            return _glIniFile.Read(SettingsNames._glDatabaseName);
+            return _glIniFile.Read(SettingsNames._glDatabaseName, SectionNames._glDatabase);
         }
 
         private static bool IsIniInitialized()

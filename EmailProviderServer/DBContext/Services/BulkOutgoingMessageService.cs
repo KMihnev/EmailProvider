@@ -2,9 +2,7 @@
 
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailProviderServer.Models;
-using EmailServiceIntermediate.Mapping;
-
+using EmailServiceIntermediate.Models;
 namespace EmailProviderServer.DBContext.Services
 {
     public class BulkOutgoingMessageService : IBulkOutgoingMessageService
@@ -16,7 +14,7 @@ namespace EmailProviderServer.DBContext.Services
             this.oBulkOutgoingMessagesRepositoryS = oBulkOutgoingMessagesRepository;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public IEnumerable<BulkOutgoingMessage> GetAll(int? nCount = null)
         {
             IQueryable<BulkOutgoingMessage> oQuery = this.oBulkOutgoingMessagesRepositoryS
                 .All();
@@ -24,7 +22,7 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.To<T>().ToList();
+            return oQuery.ToList();
         }
 
         public int GetCount()
@@ -32,12 +30,11 @@ namespace EmailProviderServer.DBContext.Services
             return this.oBulkOutgoingMessagesRepositoryS.All().Count();
         }
 
-        public T GetOutgoingMessage<T>(int nOutgoingMessageID)
+        public BulkOutgoingMessage GetOutgoingMessage(int nOutgoingMessageID)
         {
             var oBulkOutgoingMessage = this.oBulkOutgoingMessagesRepositoryS
                 .All()
                 .Where(bOm => bOm.OutgoingMessageId == nOutgoingMessageID)
-                .To<T>()
                 .FirstOrDefault();
 
             return oBulkOutgoingMessage;

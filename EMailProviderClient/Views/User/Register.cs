@@ -1,5 +1,6 @@
 ﻿using EmailProvider.Enums;
 using EmailProvider.Logging;
+using EMailProviderClient.Dispatches;
 using EMailProviderClient.Validation;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using EmailServiceIntermediate.Models;
 
 namespace EMailProviderClient.Views.User
 {
@@ -48,7 +50,7 @@ namespace EMailProviderClient.Views.User
             this.Close();
         }
 
-        private void BTN_REGISTER_Click(object sender, EventArgs e)
+        private async void BTN_REGISTER_Click(object sender, EventArgs e)
         {
             if (!FieldValidator.Validate())
                 return;
@@ -58,6 +60,13 @@ namespace EMailProviderClient.Views.User
                 Logger.LogWarning(LogMessages.PasswordMismatch);
                 return;
             }
+
+            EmailServiceIntermediate.Models.User user = new EmailServiceIntermediate.Models.User();
+            user.Email = EDC_EMAIL.Text;
+            user.Password = EDC_PASSWORD.Text;
+
+            if (!await UserDispatchesC.Register(user))
+                return;
 
             this.Hide();
             var SetUpProfile = new SetupProfile();

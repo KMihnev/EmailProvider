@@ -25,5 +25,7 @@ namespace EmailProvider.Logging
         public const string UserAlreadyExists = "User with this email already exists";
         public const string UserNotFound = "User with this Id not Found";
         public const string ErrorAddingUser = "Error adding new user";
+        public const string DispatchErrorRegister = "Error calling register dispatch";
+        public const string InvalidUserDetails = "Invalid user details";
     }
 }
