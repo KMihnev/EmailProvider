@@ -27,5 +27,7 @@ namespace EmailProvider.Logging
         public const string ErrorAddingUser = "Error adding new user";
         public const string DispatchErrorRegister = "Error calling register dispatch";
         public const string InvalidUserDetails = "Invalid user details";
+        public const string DispatchErrorSetUpProfile = "Setting up Profile failed!";
+        public const string DispatchErrorUserNotFound = "User not found!";
     }
 }

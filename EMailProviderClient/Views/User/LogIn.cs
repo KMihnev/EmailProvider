@@ -64,8 +64,8 @@ namespace EMailProviderClient.Views.User
         private void AddValidation()
         {
             FieldValidator = new LoginFormValidationC();
-            FieldValidator.AddValidationField(ValidationTypes.ValidationTypeEmail, EDC_NAME);
-            FieldValidator.AddValidationField(ValidationTypes.ValidationTypePassword, EDC_PASSWORD);
+            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
+            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypePassword, EDC_PASSWORD);
         }
     }
 }

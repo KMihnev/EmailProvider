@@ -1,12 +1,8 @@
 ﻿using EmailProvider.Logging;
-using EmailProviderServer.DBContext;
-using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services;
-using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailServiceIntermediate.Models;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;
+using EmailServiceIntermediate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +12,17 @@ using System.Threading.Tasks;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
-    public class RegisterHandler : BaseDispatchHandler
+    public class SetUpProfileDispatch : BaseDispatchHandler
     {
         private readonly UserService _userService;
 
-        public RegisterHandler(UserService userService)
+        public SetUpProfileDispatch(UserService userService)
         {
             _userService = userService;
             response = new EmailProvider.Reponse.Response();
         }
 
-        public async override Task<bool> Execute(JsonElement parameters) 
+        public async override Task<bool> Execute(JsonElement parameters)
         {
             User user;
             try
@@ -50,31 +46,32 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            RegisterValidationS registerValidationS = new RegisterValidationS();
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
-            if (!registerValidationS.Validate())
+            SetUpProfileValidationS setUpProfileValidator = new SetUpProfileValidationS();
+            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeName, user.Name);
+            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePhoneNumber, user.PhoneNumber);
+            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeCountry, user.CountryId.ToString());
+
+            if (!setUpProfileValidator.Validate())
                 return false;
 
-            var userExists = _userService.GetByEmail(user.Email) != null;
-            if (userExists)
+            var userExists = _userService.GetById(user.Id) != null;
+            if (!userExists)
             {
                 response.bSuccess = false;
-                response.msgError = LogMessages.UserAlreadyExists;
-                Logger.Log(LogMessages.UserAlreadyExists, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                response.msgError = LogMessages.DispatchErrorUserNotFound;
+                Logger.Log(LogMessages.DispatchErrorUserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
                 return false;
             }
 
             try
             {
-                await _userService.CreateAsync(user);
-                response.Data = user;
+                await _userService.UpdateAsync(user.Id, user);
             }
             catch (Exception)
             {
                 response.bSuccess = false;
-                response.msgError = LogMessages.ErrorAddingUser;
-                Logger.Log(LogMessages.ErrorAddingUser, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                response.msgError = LogMessages.DispatchErrorSetUpProfile;
+                Logger.Log(LogMessages.DispatchErrorSetUpProfile, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
                 return false;
             }
 
@@ -82,3 +79,4 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         }
     }
 }
+

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EMailProviderClient.Validation
 {
-    public class LoginFormValidationC : ValidatorC
+    public class LoginFormValidationC : UserValidatorC
     {
         public LoginFormValidationC()
         {

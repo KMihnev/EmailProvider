@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EMailProviderClient.Validation
 {
-    public class RegisterFormValidationC : ValidatorC
+    public class RegisterFormValidationC : UserValidatorC
     {
         public RegisterFormValidationC()
         {

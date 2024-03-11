@@ -8,16 +8,16 @@ using EmailProvider.Validation;
 
 namespace EMailProviderClient.Validation
 {
-    public class ValidatorC : Validator
+    public class UserValidatorC : UserValidator
     {
-        public Dictionary<ValidationTypes, TextBox> ValidationFieldsC { get; set; }
+        public Dictionary<UserValidationTypes, TextBox> ValidationFieldsC { get; set; }
 
-        public ValidatorC()
+        public UserValidatorC()
         {
-            ValidationFieldsC = new Dictionary<ValidationTypes, TextBox>();
+            ValidationFieldsC = new Dictionary<UserValidationTypes, TextBox>();
         }
 
-        public void AddValidationField(ValidationTypes eValidationType, TextBox textBox)
+        public void AddValidationField(UserValidationTypes eValidationType, TextBox textBox)
         {
             ValidationFieldsC.Add(eValidationType, textBox);
         }

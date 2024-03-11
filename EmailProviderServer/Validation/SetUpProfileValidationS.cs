@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace EmailProviderServer.Validation
 {
-    public class RegisterValidationS : UserValidator
+    public class SetUpProfileValidationS : UserValidator
     {
-        public RegisterValidationS()
+        public SetUpProfileValidationS() 
         {
-            
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Enums;
 using EmailProvider.Logging;
+using EmailProvider.Reponse;
+using EMailProviderClient.UserControl;
 using EmailServiceIntermediate.Models;
 using System;
 using System.Collections.Generic;
@@ -28,21 +30,60 @@ namespace EMailProviderClient.Dispatches
                     Parameters = JsonDocument.Parse(JsonSerializer.Serialize(new { user })).RootElement
                 };
 
-                string requestJson = JsonSerializer.Serialize(request);
-                byte[] requestBytes = Encoding.UTF8.GetBytes(requestJson + "\n");
+                DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
 
-                await DispatchHandlerC.Stream.WriteAsync(requestBytes, 0, requestBytes.Length);
+                await dispatchHandlerC.SendRequest(request);
 
-                byte[] responseBytes = new byte[1024];
-                int bytesRead = await DispatchHandlerC.Stream.ReadAsync(responseBytes, 0, responseBytes.Length);
-                string response = Encoding.UTF8.GetString(responseBytes, 0, bytesRead);
+                if(!await dispatchHandlerC.HandleResponse())
+                    return false;
+
+                User newUser = new User();
+                if (dispatchHandlerC.Response.Data != null)
+                    newUser = JsonSerializer.Deserialize<User>(dispatchHandlerC.Response.Data.ToString());
+
+                if (newUser != null)
+                    UserController.SetCurrentUser(user);
+                else
+                    return false;
+
+                return true;
+
             }
             catch (Exception)
             {
                 Logger.Log(LogMessages.DispatchErrorRegister, LogType.LogTypeScreen, LogSeverity.Error);
+                return false;
             }
+        }
 
-            return true;
+        public static async Task<bool> SetUpProfile(User user)
+        {
+            await DispatchHandlerC.InitClient();
+
+            try
+            {
+                // Construct the request
+                var request = new MethodRequest
+                {
+                    eDispatch = DispatchEnums.SetUpProfile,
+                    Parameters = JsonDocument.Parse(JsonSerializer.Serialize(new { user })).RootElement
+                };
+
+                DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
+
+                await dispatchHandlerC.SendRequest(request);
+
+                if (!await dispatchHandlerC.HandleResponse())
+                    return false;
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                Logger.Log(LogMessages.DispatchErrorSetUpProfile, LogType.LogTypeScreen, LogSeverity.Error);
+                return false;
+            }
         }
     }
 }

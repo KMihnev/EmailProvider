@@ -2,7 +2,6 @@
 
 using Microsoft.Extensions.Hosting;
 using System.Net.Sockets;
-using System.Net;
 using System.Text.Json;
 using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext;
@@ -59,10 +58,15 @@ namespace EmailProviderServer.TCP_Server
                     IDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(request);
 
                     bool result = await dispatchHandler.Execute(request.Parameters);
+
+                    var response = JsonSerializer.Serialize(dispatchHandler.response);
+                    await writer.WriteLineAsync(response);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"An error occurred: {ex.Message}");
+                    var errorResponse = JsonSerializer.Serialize(new { Success = false, Error = ex.Message });
+                    await writer.WriteLineAsync(errorResponse);
                 }
             }
         }

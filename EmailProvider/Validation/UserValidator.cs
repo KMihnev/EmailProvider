@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 
 namespace EmailProvider.Validation
 {
-    public class Validator
+    public class UserValidator : BaseValidator
     {
-        public Dictionary<ValidationTypes, string> ValidationFields { get; set; }
-
-        public Validator()
+        public UserValidator()
         {
-            ValidationFields = new Dictionary<ValidationTypes, string>();
+            ValidationFields = new Dictionary<UserValidationTypes, string>();
         }
 
-        public Validator(Dictionary<ValidationTypes, string> ValidationFields)
+        public UserValidator(Dictionary<UserValidationTypes, string> ValidationFields)
         {
             this.ValidationFields = ValidationFields;
         }
@@ -28,7 +26,7 @@ namespace EmailProvider.Validation
             this.ValidationFields.Clear();
         }
 
-        public virtual bool Validate()
+        public override bool Validate()
         {
             if (ValidationFields == null || ValidationFields.Count == 0)
             {
@@ -40,29 +38,35 @@ namespace EmailProvider.Validation
             {
                 switch (pair.Key)
                 {
-                    case ValidationTypes.ValidationTypeNone:
+                    case UserValidationTypes.ValidationTypeNone:
                         break;
-                    case ValidationTypes.ValidationTypeName:
+                    case UserValidationTypes.ValidationTypeName:
                         {
                             if (!ValidateName(pair.Value))
                                 return false;
                             break;
                         } //case
-                    case ValidationTypes.ValidationTypePassword:
+                    case UserValidationTypes.ValidationTypePassword:
                         {
                             if (!ValidatePassword(pair.Value))
                                 return false;
                             break;
                         } //case
-                    case ValidationTypes.ValidationTypeEmail:
+                    case UserValidationTypes.ValidationTypeEmail:
                         {
                             if (!ValidateEmail(pair.Value))
                                 return false;
                             break;
                         } //case
-                    case ValidationTypes.ValidationTypePhoneNumber:
+                    case UserValidationTypes.ValidationTypePhoneNumber:
                         {
                             if (!ValidatePhoneNumber(pair.Value))
+                                return false;
+                            break;
+                        } //case
+                    case UserValidationTypes.ValidationTypeCountry:
+                        {
+                            if (!ValidateCountry(int.Parse(pair.Value)))
                                 return false;
                             break;
                         } //case
@@ -71,7 +75,7 @@ namespace EmailProvider.Validation
             return true;
         }
 
-        public void AddValidation(ValidationTypes eValidationType, string value)
+        public void AddValidation(UserValidationTypes eValidationType, string value)
         {
             ValidationFields.Add(eValidationType, value);
         }
@@ -135,6 +139,14 @@ namespace EmailProvider.Validation
                 Logger.LogWarning(LogMessages.InvalidPhoneNumber);
                 return false;
             } //if
+
+            return true;
+        }
+
+        protected virtual bool ValidateCountry(int value)
+        {
+            if(value < 0)
+                return false;
 
             return true;
         }

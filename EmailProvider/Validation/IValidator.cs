@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Enums
+namespace EmailProvider.Validation
 {
-    public enum DispatchEnums
+    public interface IValidator
     {
-        Empty = 0,
-        Login,
-        Register,
-        SetUpProfile
+        abstract bool Validate();
     }
 }

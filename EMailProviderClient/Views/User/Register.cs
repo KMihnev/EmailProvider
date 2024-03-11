@@ -22,7 +22,7 @@ namespace EMailProviderClient.Views.User
     {
         //Members
         //-------
-        private ValidatorC FieldValidator;
+        private UserValidatorC FieldValidator;
 
 
         //Constructor
@@ -87,9 +87,9 @@ namespace EMailProviderClient.Views.User
 
         private void AddValidation()
         {
-            FieldValidator = new ValidatorC();
-            FieldValidator.AddValidationField(ValidationTypes.ValidationTypeEmail, EDC_EMAIL);
-            FieldValidator.AddValidationField(ValidationTypes.ValidationTypePassword, EDC_PASSWORD);
+            FieldValidator = new UserValidatorC();
+            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_EMAIL);
+            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypePassword, EDC_PASSWORD);
         }
 
 
