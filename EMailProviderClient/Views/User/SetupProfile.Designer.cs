@@ -35,7 +35,7 @@
             PB_PROFILE = new PictureBox();
             BTN_UPLOAD_PICTURE = new Button();
             BTN_CONTINUE = new Button();
-            button2 = new Button();
+            BTN_SKIP = new Button();
             ((System.ComponentModel.ISupportInitialize)PB_PROFILE).BeginInit();
             SuspendLayout();
             // 
@@ -63,6 +63,7 @@
             CMB_COUNTRY.Size = new Size(168, 23);
             CMB_COUNTRY.TabIndex = 2;
             CMB_COUNTRY.Text = "Country";
+            CMB_COUNTRY.SelectedIndexChanged += ON_COUNTRIES_CHANGE;
             // 
             // STT_SETUP_PROFILE
             // 
@@ -100,22 +101,24 @@
             BTN_CONTINUE.TabIndex = 6;
             BTN_CONTINUE.Text = "Continue";
             BTN_CONTINUE.UseVisualStyleBackColor = true;
+            BTN_CONTINUE.Click += BTN_CONTINUE_Click;
             // 
-            // button2
+            // BTN_SKIP
             // 
-            button2.Location = new Point(51, 320);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 7;
-            button2.Text = "Skip";
-            button2.UseVisualStyleBackColor = true;
+            BTN_SKIP.Location = new Point(51, 320);
+            BTN_SKIP.Name = "BTN_SKIP";
+            BTN_SKIP.Size = new Size(75, 23);
+            BTN_SKIP.TabIndex = 7;
+            BTN_SKIP.Text = "Skip";
+            BTN_SKIP.UseVisualStyleBackColor = true;
+            BTN_SKIP.Click += BTN_SKIP_Click;
             // 
             // SetupProfile
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(277, 355);
-            Controls.Add(button2);
+            Controls.Add(BTN_SKIP);
             Controls.Add(BTN_CONTINUE);
             Controls.Add(BTN_UPLOAD_PICTURE);
             Controls.Add(PB_PROFILE);
@@ -140,6 +143,6 @@
         private PictureBox PB_PROFILE;
         private Button BTN_UPLOAD_PICTURE;
         private Button BTN_CONTINUE;
-        private Button button2;
+        private Button BTN_SKIP;
     }
 }

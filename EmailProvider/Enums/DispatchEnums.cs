@@ -11,6 +11,13 @@ namespace EmailProvider.Enums
         Empty = 0,
         Login,
         Register,
-        SetUpProfile
+        SetUpProfile,
+        GetCountries,
+    }
+
+    public enum Tables
+    {
+        Countries = 0,
+        Users,
     }
 }

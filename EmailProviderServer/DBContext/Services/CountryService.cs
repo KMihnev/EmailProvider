@@ -1,5 +1,6 @@
 ﻿//Includes
 
+using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
@@ -10,9 +11,9 @@ namespace EmailProviderServer.DBContext.Services
     public class CountryService : ICountryService
     {
 
-        private readonly IRepositoryS<Country> oCountryRepositoryS;
+        private readonly CountryRepository oCountryRepositoryS;
 
-        public CountryService(IRepositoryS<Country> oCountryRepositoryS)
+        public CountryService(CountryRepository oCountryRepositoryS)
         {
             this.oCountryRepositoryS = oCountryRepositoryS;
         }

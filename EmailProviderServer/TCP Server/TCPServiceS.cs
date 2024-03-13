@@ -7,6 +7,7 @@ using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProvider.Dispatches;
+using System.Text.Json.Serialization;
 
 namespace EmailProviderServer.TCP_Server
 {
@@ -59,11 +60,18 @@ namespace EmailProviderServer.TCP_Server
 
                     bool result = await dispatchHandler.Execute(request.Parameters);
 
-                    var response = JsonSerializer.Serialize(dispatchHandler.response);
+                    var options = new JsonSerializerOptions
+                    {
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles
+                    };
+
+                    var response = JsonSerializer.Serialize(dispatchHandler.response, options ) + "\n";
                     await writer.WriteLineAsync(response);
                 }
                 catch (Exception ex)
                 {
+                    client.Close();
+                    client.GetStream().Close();
                     Console.WriteLine($"An error occurred: {ex.Message}");
                     var errorResponse = JsonSerializer.Serialize(new { Success = false, Error = ex.Message });
                     await writer.WriteLineAsync(errorResponse);

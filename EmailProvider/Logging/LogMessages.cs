@@ -29,5 +29,10 @@ namespace EmailProvider.Logging
         public const string InvalidUserDetails = "Invalid user details";
         public const string DispatchErrorSetUpProfile = "Setting up Profile failed!";
         public const string DispatchErrorUserNotFound = "User not found!";
+        public const string BtnTextSkip = "Skip";
+        public const string BtnTextCancel = "Cancel";
+        public const string DispatchErrorGetCountries = "Error calling GetCountries dispatch";
+        public const string NoCountriesLoaded = "No countries have been loaded";
+        public const string NoCountrySelected = "No countries has been selected";
     }
 }

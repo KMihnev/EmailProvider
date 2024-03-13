@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches
@@ -19,11 +20,8 @@ namespace EMailProviderClient.Dispatches
     {
         public static async Task<bool> Register(User user)
         {
-            await DispatchHandlerC.InitClient();
-
             try
             {
-                // Construct the request
                 var request = new MethodRequest
                 {
                     eDispatch = DispatchEnums.Register,
@@ -37,12 +35,21 @@ namespace EMailProviderClient.Dispatches
                 if(!await dispatchHandlerC.HandleResponse())
                     return false;
 
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
+
                 User newUser = new User();
+
                 if (dispatchHandlerC.Response.Data != null)
-                    newUser = JsonSerializer.Deserialize<User>(dispatchHandlerC.Response.Data.ToString());
+                {
+                    string json = dispatchHandlerC.Response.Data.ToString();
+                    newUser = JsonSerializer.Deserialize<User>(json, options);
+                }
 
                 if (newUser != null)
-                    UserController.SetCurrentUser(user);
+                    UserController.SetCurrentUser(newUser);
                 else
                     return false;
 
@@ -58,11 +65,8 @@ namespace EMailProviderClient.Dispatches
 
         public static async Task<bool> SetUpProfile(User user)
         {
-            await DispatchHandlerC.InitClient();
-
             try
             {
-                // Construct the request
                 var request = new MethodRequest
                 {
                     eDispatch = DispatchEnums.SetUpProfile,
@@ -75,6 +79,13 @@ namespace EMailProviderClient.Dispatches
 
                 if (!await dispatchHandlerC.HandleResponse())
                     return false;
+
+                User newUser = new User();
+                if (dispatchHandlerC.Response.Data != null)
+                    newUser = JsonSerializer.Deserialize<User>(dispatchHandlerC.Response.Data.ToString());
+
+                if (newUser != null)
+                    UserController.SetCurrentUser(user);
 
                 return true;
 

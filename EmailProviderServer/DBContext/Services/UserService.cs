@@ -14,9 +14,9 @@ namespace EmailProviderServer.DBContext.Services
     public class UserService : IUserService
     {
 
-        private readonly IRepositoryS<User> oUserRepositoryS;
+        private readonly UserRepository oUserRepositoryS;
 
-        public UserService(IRepositoryS<User> oUserRepository)
+        public UserService(UserRepository oUserRepository)
         {
             this.oUserRepositoryS = oUserRepository;
         }
@@ -72,7 +72,7 @@ namespace EmailProviderServer.DBContext.Services
 
         public async Task CreateAsync(User user)
         {
-
+            user.Country = null;
             await oUserRepositoryS.AddAsync(user);
 
             await oUserRepositoryS.SaveChangesAsync();

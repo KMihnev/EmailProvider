@@ -36,12 +36,16 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
                 if (user == null)
                 {
+                    response.bSuccess = false;
+                    response.msgError = LogMessages.InvalidUserDetails;
                     Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
                     return false;
                 }
             }
             catch (JsonException)
             {
+                response.bSuccess = false;
+                response.msgError = LogMessages.InvalidUserDetails;
                 Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
                 return false;
             }
@@ -66,6 +70,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             try
             {
                 await _userService.UpdateAsync(user.Id, user);
+                response.Data = user;
             }
             catch (Exception)
             {
