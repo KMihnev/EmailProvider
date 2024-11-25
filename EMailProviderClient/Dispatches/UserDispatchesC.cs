@@ -1,17 +1,10 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Enums;
 using EmailProvider.Logging;
-using EmailProvider.Reponse;
 using EMailProviderClient.UserControl;
 using EmailServiceIntermediate.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches
@@ -22,43 +15,35 @@ namespace EMailProviderClient.Dispatches
         {
             try
             {
-                var request = new MethodRequest
-                {
-                    eDispatch = DispatchEnums.Register,
-                    Parameters = JsonDocument.Parse(JsonSerializer.Serialize(new { user })).RootElement
-                };
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
 
+                //Сериализираме Данните
+                InPackage.Serialize((int)DispatchEnums.Register);
+                InPackage.Serialize(user);
+
+                //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
 
-                await dispatchHandlerC.SendRequest(request);
-
-                if(!await dispatchHandlerC.HandleResponse())
+                if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
+                {
                     return false;
-
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles
-                };
-
-                User newUser = new User();
-
-                if (dispatchHandlerC.Response.Data != null)
-                {
-                    string json = dispatchHandlerC.Response.Data.ToString();
-                    newUser = JsonSerializer.Deserialize<User>(json, options);
                 }
 
-                if (newUser != null)
-                    UserController.SetCurrentUser(newUser);
-                else
+                User newUser = null;
+                OutPackage.Deserialize(out newUser);
+
+                if (newUser == null)
+                {
                     return false;
+                }
 
+                UserController.SetCurrentUser(newUser);
                 return true;
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogMessages.DispatchErrorRegister, LogType.LogTypeScreen, LogSeverity.Error);
+                Logger.Log($"{LogMessages.DispatchErrorRegister}: {ex.Message}", LogType.LogTypeScreen, LogSeverity.Error);
                 return false;
             }
         }
@@ -67,34 +52,43 @@ namespace EMailProviderClient.Dispatches
         {
             try
             {
-                var request = new MethodRequest
-                {
-                    eDispatch = DispatchEnums.SetUpProfile,
-                    Parameters = JsonDocument.Parse(JsonSerializer.Serialize(new { user })).RootElement
-                };
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
+
+                InPackage.Serialize((int)DispatchEnums.SetUpProfile);
+                InPackage.Serialize(user);
 
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
-
-                await dispatchHandlerC.SendRequest(request);
-
-                if (!await dispatchHandlerC.HandleResponse())
+                if(!await dispatchHandlerC.Execute(InPackage, OutPackage))
+                {
                     return false;
+                }
 
-                User newUser = new User();
-                if (dispatchHandlerC.Response.Data != null)
-                    newUser = JsonSerializer.Deserialize<User>(dispatchHandlerC.Response.Data.ToString());
+                bool bResponse = false;
+                OutPackage.Deserialize(out bResponse);
+                if (bResponse)
+                {
+                    return false;
+                }
 
-                if (newUser != null)
-                    UserController.SetCurrentUser(user);
+                User updatedUser = null;
+                OutPackage.Deserialize(out updatedUser);
 
-                return true;
+                if (updatedUser != null)
+                {
+                    UserController.SetCurrentUser(updatedUser);
+                    return true;
+                }
 
-            }
-            catch (Exception)
-            {
-                Logger.Log(LogMessages.DispatchErrorSetUpProfile, LogType.LogTypeScreen, LogSeverity.Error);
                 return false;
             }
+            catch (Exception ex)
+            {
+                Logger.Log($"{LogMessages.DispatchErrorSetUpProfile}: {ex.Message}", LogType.LogTypeScreen, LogSeverity.Error);
+                return false;
+            }
+
+            return true;
         }
     }
 }

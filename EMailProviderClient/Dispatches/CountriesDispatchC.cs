@@ -3,12 +3,8 @@ using EmailProvider.Enums;
 using EmailProvider.Logging;
 using EMailProviderClient.UserControl;
 using EmailServiceIntermediate.Models;
-using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches
@@ -19,38 +15,37 @@ namespace EMailProviderClient.Dispatches
         {
             try
             {
-                var request = new MethodRequest
-                {
-                    eDispatch = DispatchEnums.GetCountries,
-                    Parameters = JsonDocument.Parse(JsonSerializer.Serialize(new { countries })).RootElement
-                };
-                DispatchHandlerC.InitClient();
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
+
+                InPackage.Serialize((int)DispatchEnums.GetCountries);
+                InPackage.Serialize(countries);
 
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
-
-                await dispatchHandlerC.SendRequest(request);
-
-                if (!await dispatchHandlerC.HandleResponse())
-                    return false;
-
-                if (dispatchHandlerC.Response.Data != null)
+                if(!await dispatchHandlerC.Execute(InPackage, OutPackage))
                 {
-                    var newCountries = JsonSerializer.Deserialize<List<Country>>(dispatchHandlerC.Response.Data.ToString());
-                    if (newCountries != null)
-                    {
-                        countries.Clear();
-                        foreach (var country in newCountries)
-                        {
-                            countries.Add(country);
-                        }
-                    }
+                    return false;
                 }
 
-                if(countries.Count() <=0)
+                bool bResponse = false;
+                OutPackage.Deserialize(out bResponse);
+                if (!bResponse)
+                {
+                    return false;
+                }
+
+                OutPackage.Deserialize(out List<Country> newCountries);
+
+                if (newCountries != null)
+                {
+                    countries.Clear();
+                    countries.AddRange(newCountries);
+                }
+
+                if (countries.Count <= 0)
                     Logger.Log(LogMessages.NoCountriesLoaded, LogType.LogTypeScreen, LogSeverity.Error);
 
                 return true;
-
             }
             catch (Exception)
             {

@@ -46,7 +46,7 @@ namespace EmailProvider.Logging
 
         private  static void LogFile(string log, LogSeverity eLogSeverity)
         {
-            string logFilePath = IniReader.GetFileLogPath();
+            string logFilePath = SettingsProvider.GetLogPath();
             try
             {
                 using (StreamWriter writer = new StreamWriter(logFilePath))
@@ -63,7 +63,7 @@ namespace EmailProvider.Logging
 
         private static void LogScreen(string log, LogSeverity eLogSeverity)
         {
-            string logFilePath = IniReader.GetFileLogPath();
+            string logFilePath = SettingsProvider.GetLogPath();
             try
             {
                 switch (eLogSeverity)

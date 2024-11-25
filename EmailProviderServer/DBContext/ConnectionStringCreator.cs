@@ -1,4 +1,5 @@
 ﻿using EmailProvider.Settings;
+using EmailProviderServer.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,8 @@ namespace EmailProviderServer.DBContext
 
         public static string CreateConnectionString()
         {
-            string serverName = IniReader.GetServerName();
-            string databaseName = IniReader.GetDatabaseName();
+            string serverName = SettingsProviderS.GetServerName();
+            string databaseName = SettingsProviderS.GetDatabaseName();
 
             if (string.IsNullOrEmpty(serverName) || string.IsNullOrEmpty(databaseName))
             {

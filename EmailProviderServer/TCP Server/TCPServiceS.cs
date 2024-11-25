@@ -1,13 +1,12 @@
-﻿//Includes
-
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using System.Net.Sockets;
-using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
 using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProvider.Dispatches;
-using System.Text.Json.Serialization;
 
 namespace EmailProviderServer.TCP_Server
 {
@@ -47,36 +46,60 @@ namespace EmailProviderServer.TCP_Server
             using (client)
             {
                 var stream = client.GetStream();
-                var reader = new StreamReader(stream);
-                var writer = new StreamWriter(stream) { AutoFlush = true };
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
 
                 try
                 {
-                    var requestJson = await reader.ReadLineAsync();
-                    var request = JsonSerializer.Deserialize<MethodRequest>(requestJson);
+                    byte[] lengthPrefix = new byte[4];
+                    await stream.ReadAsync(lengthPrefix, 0, lengthPrefix.Length, cancellationToken);
+                    int messageLength = BitConverter.ToInt32(lengthPrefix, 0);
+
+                    byte[] requestData = new byte[messageLength];
+                    int totalBytesRead = 0;
+                    while (totalBytesRead < messageLength)
+                    {
+                        int bytesRead = await stream.ReadAsync(requestData, totalBytesRead, messageLength - totalBytesRead, cancellationToken);
+                        if (bytesRead == 0) throw new IOException("Client disconnected prematurely.");
+                        totalBytesRead += bytesRead;
+                    }
+
+                    InPackage.ToArray(requestData);
+
+                    InPackage.Deserialize(out int dispatchCode);
 
                     DispatchMapper dispatchMapper = new DispatchMapper(_context);
-                    IDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(request);
+                    BaseDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(dispatchCode);
 
-                    bool result = await dispatchHandler.Execute(request.Parameters);
-
-                    var options = new JsonSerializerOptions
+                    if (dispatchHandler == null)
                     {
-                        ReferenceHandler = ReferenceHandler.IgnoreCycles
-                    };
+                        SetResponseFailed(OutPackage);
+                    }
+                    else
+                    {
+                        bool success = await dispatchHandler.Execute(InPackage, OutPackage);
+                        if (!success)
+                        {
+                            SetResponseFailed(OutPackage);
+                        }
+                    }
 
-                    var response = JsonSerializer.Serialize(dispatchHandler.response, options ) + "\n";
-                    await writer.WriteLineAsync(response);
+                    byte[] responseData = OutPackage.ToByte();
+                    byte[] responseLengthPrefix = BitConverter.GetBytes(responseData.Length);
+                    await stream.WriteAsync(responseLengthPrefix, 0, responseLengthPrefix.Length, cancellationToken);
+                    await stream.WriteAsync(responseData, 0, responseData.Length, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    client.Close();
-                    client.GetStream().Close();
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                    var errorResponse = JsonSerializer.Serialize(new { Success = false, Error = ex.Message });
-                    await writer.WriteLineAsync(errorResponse);
+                    Console.WriteLine($"Error handling client: {ex.Message}");
+                    SetResponseFailed(OutPackage);
                 }
             }
+        }
+
+        private void SetResponseFailed(SmartStreamArray ResponsePackage)
+        {
+            ResponsePackage.Serialize(false);
         }
     }
 }

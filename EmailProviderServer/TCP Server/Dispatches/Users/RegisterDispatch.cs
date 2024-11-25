@@ -1,18 +1,8 @@
-﻿using EmailProvider.Logging;
-using EmailProviderServer.DBContext;
-using EmailProviderServer.DBContext.Repositories;
+﻿using EmailProvider.Dispatches;
 using EmailProviderServer.DBContext.Services;
-using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailServiceIntermediate.Models;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -23,58 +13,50 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         public RegisterHandler(UserService userService)
         {
             _userService = userService;
-            response = new EmailProvider.Reponse.Response();
         }
 
-        public async override Task<bool> Execute(JsonElement parameters) 
+        public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
             User user;
             try
             {
-                if (!parameters.TryGetProperty("user", out JsonElement userElement))
-                {
-                    return false;
-                }
-
-                user = JsonSerializer.Deserialize<User>(userElement.GetRawText());
+                InPackage.Deserialize(out user);
 
                 if (user == null)
                 {
-                    Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
                     return false;
                 }
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
                 return false;
             }
 
             RegisterValidationS registerValidationS = new RegisterValidationS();
             registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
             registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
+
             if (!registerValidationS.Validate())
+            {
                 return false;
+            }
 
             var userExists = _userService.GetByEmail(user.Email) != null;
             if (userExists)
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.UserAlreadyExists;
-                Logger.Log(LogMessages.UserAlreadyExists, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
                 return false;
             }
 
             try
             {
                 await _userService.CreateAsync(user);
-                response.Data = user;
+                OutPackage.Serialize(user);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.ErrorAddingUser;
-                Logger.Log(LogMessages.ErrorAddingUser, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
                 return false;
             }
 

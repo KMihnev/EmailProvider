@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EmailProvider.Enums
 {
-    public enum DispatchEnums
+    public enum DispatchEnums : short
     {
         Empty = 0,
         Login,

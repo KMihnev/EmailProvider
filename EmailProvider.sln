@@ -10,8 +10,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{672AFA66-B921-4A80-8041-F36F73EA86A4}"
 	ProjectSection(SolutionItems) = preProject
 		Add Countries.sql = Add Countries.sql
-		Create DBsql.sql = Create DBsql.sql
 		Create Tables.sql = Create Tables.sql
+		Create DB.sql = Create DB.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61548381-6217-49E2-9A7F-42D10FCEAFCC}"
