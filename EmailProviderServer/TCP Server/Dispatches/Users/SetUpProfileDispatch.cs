@@ -44,25 +44,26 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             if (!setUpProfileValidator.Validate())
             {
-
+                errorMessage = LogMessages.InvalidData;
                 return false;
             }
 
             var userExists = _userService.GetById(user.Id) != null;
             if (!userExists)
             {
-
+                errorMessage = LogMessages.UserNotFound;
                 return false;
             }
 
             try
             {
                 await _userService.UpdateAsync(user.Id, user);
-               OutPackage.Serialize(user);
+                OutPackage.Serialize(true);
+                OutPackage.Serialize(user);
             }
             catch (Exception ex)
             {
-
+                Logger.LogError(LogMessages.InteralError);
                 return false;
             }
 

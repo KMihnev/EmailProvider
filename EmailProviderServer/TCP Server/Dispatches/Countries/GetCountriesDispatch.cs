@@ -24,6 +24,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Countries
             {
                 List<Country> countries = _countryService.GetAll().ToList();
 
+                OutPackage.Serialize(true);
                 OutPackage.Serialize(countries);
             }
             catch (Exception)

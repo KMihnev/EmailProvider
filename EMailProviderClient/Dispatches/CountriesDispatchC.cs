@@ -19,7 +19,6 @@ namespace EMailProviderClient.Dispatches
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 InPackage.Serialize((int)DispatchEnums.GetCountries);
-                InPackage.Serialize(countries);
 
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
                 if(!await dispatchHandlerC.Execute(InPackage, OutPackage))
@@ -27,23 +26,13 @@ namespace EMailProviderClient.Dispatches
                     return false;
                 }
 
-                bool bResponse = false;
-                OutPackage.Deserialize(out bResponse);
-                if (!bResponse)
-                {
+                OutPackage.Deserialize(out countries);
+
+                if(countries == null)
                     return false;
-                }
-
-                OutPackage.Deserialize(out List<Country> newCountries);
-
-                if (newCountries != null)
-                {
-                    countries.Clear();
-                    countries.AddRange(newCountries);
-                }
 
                 if (countries.Count <= 0)
-                    Logger.Log(LogMessages.NoCountriesLoaded, LogType.LogTypeScreen, LogSeverity.Error);
+                    Logger.Log(LogMessages.NoCountriesLoaded, LogType.LogTypeScreen, LogSeverity.Warning);
 
                 return true;
             }
