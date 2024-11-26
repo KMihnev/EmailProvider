@@ -1,4 +1,5 @@
 ﻿using EmailProvider.Dispatches;
+using EmailProvider.Logging;
 using System;
 using System.Net.Sockets;
 using System.Text;
@@ -14,32 +15,30 @@ namespace EMailProviderClient.Dispatches
             {
                 using TcpClient client = new TcpClient();
                 await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort());
-                var stream = client.GetStream();
+                using var stream = client.GetStream();
 
                 byte[] requestData = InPackage.ToByte();
-
-                byte[] lengthPrefix = BitConverter.GetBytes(requestData.Length);
-                await stream.WriteAsync(lengthPrefix, 0, lengthPrefix.Length);
                 await stream.WriteAsync(requestData, 0, requestData.Length);
 
-                byte[] responseLengthPrefix = new byte[4];
-                await stream.ReadAsync(responseLengthPrefix, 0, responseLengthPrefix.Length);
-                int responseLength = BitConverter.ToInt32(responseLengthPrefix, 0);
+                OutPackage.LoadFromStream(stream);
 
-                byte[] responseData = new byte[responseLength];
-                int totalBytesRead = 0;
-                while (totalBytesRead < responseLength)
+                bool bResult = false;
+                OutPackage.Deserialize(out bResult);
+
+                if (!bResult)
                 {
-                    int bytesRead = await stream.ReadAsync(responseData, totalBytesRead, responseLength - totalBytesRead);
-                    if (bytesRead == 0) throw new IOException("Server disconnected prematurely.");
-                    totalBytesRead += bytesRead;
+                    string Error = "";
+                    OutPackage.Deserialize(out Error);
+                        if (Error?.Length > 0)
+                        Logger.LogError(Error);
+                    else
+                        Logger.LogError(LogMessages.InteralError);
+                    return false;
                 }
-
-                OutPackage.ToArray(responseData);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in client execution: {ex.Message}");
+                Logger.LogError(LogMessages.InteralError);
                 return false;
             }
 

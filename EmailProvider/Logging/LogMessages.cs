@@ -34,5 +34,7 @@ namespace EmailProvider.Logging
         public const string DispatchErrorGetCountries = "Error calling GetCountries dispatch";
         public const string NoCountriesLoaded = "No countries have been loaded";
         public const string NoCountrySelected = "No countries has been selected";
+        public const string InvalidData = "InvalidData";
+        public const string InteralError = "Internal Error";
     }
 }

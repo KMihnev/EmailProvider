@@ -7,6 +7,7 @@ using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProvider.Dispatches;
+using EmailProvider.Logging;
 
 namespace EmailProviderServer.TCP_Server
 {
@@ -51,55 +52,38 @@ namespace EmailProviderServer.TCP_Server
 
                 try
                 {
-                    byte[] lengthPrefix = new byte[4];
-                    await stream.ReadAsync(lengthPrefix, 0, lengthPrefix.Length, cancellationToken);
-                    int messageLength = BitConverter.ToInt32(lengthPrefix, 0);
+                    // Зареждаме потока в "умниия масив" ;)
+                    InPackage.LoadFromStream(stream);
 
-                    byte[] requestData = new byte[messageLength];
-                    int totalBytesRead = 0;
-                    while (totalBytesRead < messageLength)
-                    {
-                        int bytesRead = await stream.ReadAsync(requestData, totalBytesRead, messageLength - totalBytesRead, cancellationToken);
-                        if (bytesRead == 0) throw new IOException("Client disconnected prematurely.");
-                        totalBytesRead += bytesRead;
-                    }
-
-                    InPackage.ToArray(requestData);
-
+                    // Десериализираме си кода на диспача
                     InPackage.Deserialize(out int dispatchCode);
 
                     DispatchMapper dispatchMapper = new DispatchMapper(_context);
                     BaseDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(dispatchCode);
 
-                    if (dispatchHandler == null)
+                    if (!await dispatchHandler?.Execute(InPackage, OutPackage))
                     {
-                        SetResponseFailed(OutPackage);
-                    }
-                    else
-                    {
-                        bool success = await dispatchHandler.Execute(InPackage, OutPackage);
-                        if (!success)
-                        {
-                            SetResponseFailed(OutPackage);
-                        }
+                        SetResponseFailed(OutPackage, dispatchHandler.errorMessage);
                     }
 
+                    // изпращаме отговор
                     byte[] responseData = OutPackage.ToByte();
-                    byte[] responseLengthPrefix = BitConverter.GetBytes(responseData.Length);
-                    await stream.WriteAsync(responseLengthPrefix, 0, responseLengthPrefix.Length, cancellationToken);
                     await stream.WriteAsync(responseData, 0, responseData.Length, cancellationToken);
+
+                    await stream.FlushAsync();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error handling client: {ex.Message}");
+                    Logger.LogError(LogMessages.InteralError);
                     SetResponseFailed(OutPackage);
                 }
             }
         }
 
-        private void SetResponseFailed(SmartStreamArray ResponsePackage)
+        private void SetResponseFailed(SmartStreamArray ResponsePackage, string error = "")
         {
             ResponsePackage.Serialize(false);
+            ResponsePackage.Serialize(error);
         }
     }
 }

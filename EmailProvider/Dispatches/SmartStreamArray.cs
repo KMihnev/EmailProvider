@@ -15,9 +15,7 @@ namespace EmailProvider.Dispatches
 
         public SmartStreamArray()
         {
-            _stream = new MemoryStream();
-            _writer = new BinaryWriter(_stream);
-            _reader = new BinaryReader(_stream);
+            Reset();
         }
 
         ~SmartStreamArray()
@@ -56,7 +54,22 @@ namespace EmailProvider.Dispatches
         /// <summary> Подготвяме за изпращане </summary>
         public byte[] ToByte()
         {
-            return _stream.ToArray();
+            byte[] payload = _stream.ToArray();
+            int totalLength = payload.Length;
+
+            using (MemoryStream resultStream = new MemoryStream())
+            {
+                using (BinaryWriter resultWriter = new BinaryWriter(resultStream))
+                {
+                    // пишем размера на всички данни
+                    resultWriter.Write(totalLength);
+
+                    // пешем същинските данни
+                    resultWriter.Write(payload);
+                }
+
+                return resultStream.ToArray();
+            }
         }
 
         // зареждаме потока от масив
@@ -73,6 +86,45 @@ namespace EmailProvider.Dispatches
             _writer?.Dispose();
             _reader?.Dispose();
             GC.SuppressFinalize(this);
+        }
+
+        public void Reset()
+        {
+            _stream = new MemoryStream();
+            _reader = new BinaryReader(_stream);
+            _writer = new BinaryWriter(_stream);
+        }
+
+        public void LoadFromStream(Stream networkStream)
+        {
+            byte[] lengthPrefix = new byte[4];
+            int totalBytesRead = 0;
+
+            // Изчитаме колко ще е голяма заявката
+            while (totalBytesRead < 4)
+            {
+                int bytesRead = networkStream.Read(lengthPrefix, totalBytesRead, 4 - totalBytesRead);
+                if (bytesRead == 0) throw new IOException("Disconnected before reading the length prefix.");
+                totalBytesRead += bytesRead;
+            }
+
+            int messageLength = BitConverter.ToInt32(lengthPrefix, 0);
+
+            if (messageLength <= 0 || messageLength > 10_000_000) // Validate message length
+                throw new IOException($"Invalid message length: {messageLength}");
+
+            // чедтем същинските данни
+            byte[] payload = new byte[messageLength];
+            totalBytesRead = 0;
+            while (totalBytesRead < messageLength)
+            {
+                int bytesRead = networkStream.Read(payload, totalBytesRead, messageLength - totalBytesRead);
+                if (bytesRead == 0) throw new IOException("Disconnected before reading the full payload.");
+                totalBytesRead += bytesRead;
+            }
+
+            // Зареждаме си само същинските данни
+            ToArray(payload);
         }
     }
 }

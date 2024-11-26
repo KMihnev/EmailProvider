@@ -24,7 +24,7 @@ namespace EMailProviderClient.Views.User
         {
             InitializeComponent();
             AddValidation();
-            LoadCountries();
+            //LoadCountries();
 
             if (firstTime)
                 BTN_SKIP.Text = LogMessages.BtnTextSkip;
