@@ -1,5 +1,6 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Logging;
+using EmailProvider.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;
@@ -20,7 +21,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            User user;
+            UserSerializable user;
             try
             {
                 InPackage.Deserialize(out user);
@@ -48,16 +49,21 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            var userExists = _userService.GetById(user.Id) != null;
-            if (!userExists)
+            User CurrentUser = _userService.GetById<User>(user.Id);
+
+            if (CurrentUser == null)
             {
                 errorMessage = LogMessages.UserNotFound;
                 return false;
             }
 
+            CurrentUser.PhoneNumber = user.PhoneNumber;
+            CurrentUser.CountryId = user.CountryId;
+            CurrentUser.Name = user.Name;
+
             try
             {
-                await _userService.UpdateAsync(user.Id, user);
+                UserSerializable userSerializable = await _userService.UpdateAsync<UserSerializable>(user.Id, CurrentUser);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(user);
             }

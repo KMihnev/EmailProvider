@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EMailProviderClient.Dispatches
+namespace EMailProviderClient.Dispatches.Base
 {
     public class DispatchHandlerC
     {
@@ -14,8 +14,11 @@ namespace EMailProviderClient.Dispatches
             try
             {
                 using TcpClient client = new TcpClient();
+                client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+
                 await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort());
                 using var stream = client.GetStream();
+                stream.Flush();
 
                 byte[] requestData = InPackage.ToByte();
                 await stream.WriteAsync(requestData, 0, requestData.Length);
@@ -29,7 +32,7 @@ namespace EMailProviderClient.Dispatches
                 {
                     string Error = "";
                     OutPackage.Deserialize(out Error);
-                        if (Error?.Length > 0)
+                    if (Error?.Length > 0)
                         Logger.LogError(Error);
                     else
                         Logger.LogError(LogMessages.InteralError);

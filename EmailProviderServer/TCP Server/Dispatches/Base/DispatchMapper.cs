@@ -1,4 +1,5 @@
-﻿using EmailProvider.Dispatches;
+﻿using AutoMapper;
+using EmailProvider.Dispatches;
 using EmailProvider.Enums;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.DBContext.Repositories;
@@ -12,9 +13,12 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     {
         private readonly ApplicationDbContext _context;
 
-        public DispatchMapper(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+
+        public DispatchMapper(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public BaseDispatchHandler MapDispatch(int dispatchCode)
@@ -22,11 +26,11 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             switch ((DispatchEnums)dispatchCode)
             {
                 case DispatchEnums.Register:
-                    return new RegisterHandler(new UserService(new UserRepository(_context)));
+                    return new RegisterHandler(new UserService(new UserRepository(_context), _mapper));
                 case DispatchEnums.SetUpProfile:
-                    return new SetUpProfileDispatch(new UserService(new UserRepository(_context)));
+                    return new SetUpProfileDispatch(new UserService(new UserRepository(_context), _mapper));
                 case DispatchEnums.GetCountries:
-                    return new GetCountriesDispatch(new CountryService(new CountryRepository(_context)));
+                    return new GetCountriesDispatch(new CountryService(new CountryRepository(_context), _mapper));
                 default:
                     return null;
             }

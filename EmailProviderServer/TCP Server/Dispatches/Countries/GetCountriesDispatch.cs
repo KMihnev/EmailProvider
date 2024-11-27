@@ -1,5 +1,6 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Logging;
+using EmailProvider.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Models;
@@ -22,14 +23,14 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Countries
         {
             try
             {
-                List<Country> countries = _countryService.GetAll().ToList();
+                List<CountrySerializable> countries = _countryService.GetAll<CountrySerializable>().ToList();
 
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(countries);
             }
             catch (Exception)
             {
-
+                errorMessage = LogMessages.InteralError;
                 return false;
             }
 

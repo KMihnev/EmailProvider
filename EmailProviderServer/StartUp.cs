@@ -10,6 +10,7 @@ using EmailProviderServer.TCP_Server;
 using System.Net.Sockets;
 using System.Net;
 using EmailProvider.Settings;
+using EmailProviderServer.TCP_Server.Dispatches;
 
 void AddServices(IServiceCollection services)
 {
@@ -31,6 +32,14 @@ void AddServices(IServiceCollection services)
     services.AddTransient<IUserService, UserService>();
 }
 
+void LoadAutoMapperProfiles(IServiceCollection services)
+{
+    services.AddAutoMapper(cfg =>
+    {
+        cfg.AddProfile<EmailProvider.AutoMapper.Profiles.ModelsProfile>();
+    });
+}
+
 void RegisterTcpServer(IServiceCollection services)
 {
     IPAddress ipAddress = IPAddress.Parse(SettingsProvider.GetServerIP());
@@ -45,8 +54,9 @@ IHost GetDefaultHost()
     IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        AddServices(services);
         RegisterTcpServer(services);
+        AddServices(services);
+        LoadAutoMapperProfiles(services);
 
     })
     .Build();

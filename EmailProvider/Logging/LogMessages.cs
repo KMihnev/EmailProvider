@@ -36,5 +36,7 @@ namespace EmailProvider.Logging
         public const string NoCountrySelected = "No countries has been selected";
         public const string InvalidData = "InvalidData";
         public const string InteralError = "Internal Error";
+        public const string NullObject = "{0} is null";
+        public const string ErrorCalling = "Error calling: ";
     }
 }

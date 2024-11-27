@@ -1,5 +1,7 @@
 ﻿//Includes
 
+using EmailProvider.Logging;
+using EmailProviderServer.DBContext.Repositories;
 using EmailServiceIntermediate.Models;
 using System.Collections.Generic;
 
@@ -7,14 +9,20 @@ namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface IUserService
     {
-        IEnumerable<User> GetAll(int? nCount = null);
+        IEnumerable<T> GetAll<T>(int? nCount = null);
 
-        IEnumerable<User> GetAllByCountryId(int nId, int? count = null);
+        IEnumerable<T> GetAllByCountryId<T>(int nId, int? count = null);
 
-        User GetById(int nId);
+        T GetById<T>(int nId);
 
-        User GetByName(string strName);
+        T GetByName<T>(string strName);
 
-        User GetByEmail(string strEmail);
+        T GetByEmail<T>(string strEmail);
+
+        bool CheckIfExists(int nId);
+
+        Task<T> CreateAsync<T>(User user);
+
+        Task<T> UpdateAsync<T>(int nId, User user);
     }
 }

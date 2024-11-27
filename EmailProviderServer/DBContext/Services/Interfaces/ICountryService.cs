@@ -6,12 +6,9 @@ namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface ICountryService
     {
-        IEnumerable<Country> GetAll(int? nCount = null);
-
-        Country GetById(int nId);
-
-        Country GetByName(string strName);
-
-        Country GetByPhoneCode(string strPhoneCode);
+        IEnumerable<T> GetAll<T>(int? nCount = null);
+        T GetById<T>(int nId);
+        T GetByName<T>(string strName);
+        T GetByPhoneCode<T>(string strPhoneCode);
     }
 }

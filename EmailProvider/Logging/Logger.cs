@@ -11,14 +11,33 @@ namespace EmailProvider.Logging
             Log(message, LogType.LogTypeScreen, LogSeverity.Warning);
         }
 
+        public static void LogWarning(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeScreen, LogSeverity.Warning);
+        }
+
         public static void LogError(string message)
         {
             Log(message, LogType.LogTypeScreenLog, LogSeverity.Error);
         }
 
+        public static void LogError(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeScreenLog, LogSeverity.Error);
+        }
+
+
         public static void LogInfo(string message)
         {
             Log(message, LogType.LogTypeScreen, LogSeverity.Info);
+        }
+
+        public static void LogInfo(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeScreen, LogSeverity.Info);
         }
 
         public static void Log(string log,LogType eLogType = LogType.LogTypeScreenLog ,LogSeverity eLogSeverity = LogSeverity.Error)

@@ -1,59 +1,61 @@
-﻿//Includes
-
+﻿using AutoMapper;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EmailProviderServer.DBContext.Services
 {
-
     public class CountryService : ICountryService
     {
+        private readonly CountryRepository _countryRepository;
+        private readonly IMapper _mapper;
 
-        private readonly CountryRepository oCountryRepositoryS;
-
-        public CountryService(CountryRepository oCountryRepositoryS)
+        public CountryService(CountryRepository countryRepository, IMapper mapper)
         {
-            this.oCountryRepositoryS = oCountryRepositoryS;
+            _countryRepository = countryRepository;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Country> GetAll(int? nCount = null)
+        public IEnumerable<T> GetAll<T>(int? nCount = null)
         {
-            IQueryable<Country> oQuery = this.oCountryRepositoryS
-                .All();
+            IQueryable<Country> query = _countryRepository.All();
 
             if (nCount.HasValue)
-                oQuery = oQuery.Take(nCount.Value);
+                query = query.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var countries = query.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(countries);
         }
 
-        public Country GetById(int nId)
+        public T GetById<T>(int nId)
         {
-            var Country = this.oCountryRepositoryS
+            var country = _countryRepository
                 .All()
-                .Where(x => x.Id == nId)
-                .FirstOrDefault();
-            return Country;
+                .FirstOrDefault(x => x.Id == nId);
+
+            return _mapper.Map<T>(country);
         }
 
-        public Country GetByName(string strName)
+        public T GetByName<T>(string strName)
         {
-            var oCountry = this.oCountryRepositoryS
+            var country = _countryRepository
                 .All()
-                .Where(x => x.Name == strName)
-                .FirstOrDefault();
-            return oCountry;
+                .FirstOrDefault(x => x.Name == strName);
+
+            return _mapper.Map<T>(country);
         }
 
-        public Country GetByPhoneCode(string strPhoneCode)
+        public T GetByPhoneCode<T>(string strPhoneCode)
         {
-            var oCountry = this.oCountryRepositoryS
+            var country = _countryRepository
                 .All()
-                .Where(x => x.PhoneNumberCode == strPhoneCode)
-                .FirstOrDefault();
-            return oCountry;
+                .FirstOrDefault(x => x.PhoneNumberCode == strPhoneCode);
+
+            return _mapper.Map<T>(country);
         }
     }
 }

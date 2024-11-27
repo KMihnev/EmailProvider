@@ -1,6 +1,5 @@
 ﻿using EmailProvider.Enums;
 using EmailProvider.Logging;
-using EMailProviderClient.Dispatches;
 using EMailProviderClient.Validation;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using EmailServiceIntermediate.Models;
+using EMailProviderClient.Dispatches.Users;
+using EmailProvider.Models.Serializables;
 
 namespace EMailProviderClient.Views.User
 {

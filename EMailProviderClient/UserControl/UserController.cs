@@ -1,4 +1,5 @@
-﻿using EmailServiceIntermediate.Models;
+﻿using EmailProvider.Models.Serializables;
+using EmailServiceIntermediate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,14 @@ namespace EMailProviderClient.UserControl
 {
     public class UserController
     {
-        public static User _currentUser { get; set; }
+        public static UserSerializable _currentUser { get; set; }
 
-        public static void SetCurrentUser(User user)
+        public static void SetCurrentUser(UserSerializable user)
         {
             _currentUser = user;
         }
 
-        public static User GetCurrentUser()
+        public static UserSerializable GetCurrentUser()
         {
             return _currentUser;
         }

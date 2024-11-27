@@ -1,5 +1,6 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Logging;
+using EmailProvider.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;
@@ -44,7 +45,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            var userExists = _userService.GetByEmail(user.Email) != null;
+            var userExists = _userService.GetByEmail<User>(user.Email) != null;
             if (userExists)
             {
                 errorMessage = LogMessages.UserAlreadyExists;
@@ -53,9 +54,9 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                await _userService.CreateAsync(user);
+                UserSerializable userSerializable = await _userService.CreateAsync<UserSerializable>(user);
                 OutPackage.Serialize(true);
-                OutPackage.Serialize(user);
+                OutPackage.Serialize(userSerializable);
             }
             catch (Exception ex)
             {
