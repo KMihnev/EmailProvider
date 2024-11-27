@@ -1,3 +1,5 @@
+using EMailProviderClient.Views.Emails;
+
 namespace EMailProviderClient
 {
     public partial class EmailProvider : Form
@@ -12,6 +14,12 @@ namespace EMailProviderClient
         private void EmailProvider_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void ON_ADD_EMAIL_Click(object sender, EventArgs e)
+        {
+            var AddEmailForm = new AddEmail();
+            AddEmailForm.ShowDialog();
         }
     }
 }

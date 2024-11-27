@@ -22,6 +22,11 @@ namespace EMailProviderClient.UserControl
             return _currentUser;
         }
 
+        public static int GetCurrentUserID()
+        {
+            return _currentUser.Id;
+        }
+
         public static bool IsUserLoggedIn()
         {
             if (_currentUser == null || _currentUser.Id == 0)
