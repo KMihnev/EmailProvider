@@ -21,7 +21,7 @@ namespace EmailProviderServer.DBContext.Services
 
         public IEnumerable<T> GetAll<T>(int? nCount = null)
         {
-            IQueryable<Country> query = _countryRepository.All();
+            IQueryable<Country> query = _countryRepository.All().OrderBy(c => c.Name);
 
             if (nCount.HasValue)
                 query = query.Take(nCount.Value);

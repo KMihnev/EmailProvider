@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMailProviderClient.UserControl;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,6 +45,12 @@ namespace EMailProviderClient.Views.User
 
         private void OpenDashBoard()
         {
+            if (!UserController.IsUserLoggedIn())
+            {
+                this.Show();
+                return;
+            }
+
             var DashBoard = new EmailProvider();
             DashBoard.ShowDialog();
             this.Close();

@@ -102,8 +102,12 @@ namespace EMailProviderClient.Views.User
 
                 if (listCountries.Count > 0)
                 {
-                    CMB_COUNTRY.SelectedIndex = 0;
-                    EDC_PHONE_NUMBER.Text = listCountries[0].PhoneNumberCode;
+                    CountrySerializable currentCountry = listCountries.FirstOrDefault(c => c.Name == "Unknown");
+                    if (currentCountry == null)
+                        return;
+
+                    CMB_COUNTRY.SelectedItem = currentCountry;
+                    EDC_PHONE_NUMBER.Text = currentCountry.PhoneNumberCode;
                 }
             });
         }
