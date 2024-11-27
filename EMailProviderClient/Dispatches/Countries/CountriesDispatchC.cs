@@ -46,7 +46,7 @@ namespace EMailProviderClient.Dispatches.Countries
             }
             catch (Exception)
             {
-                Logger.LogError(LogMessages.ErrorCalling, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                Logger.LogErrorCalling();
                 return false;
             }
         }

@@ -26,11 +26,13 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             switch ((DispatchEnums)dispatchCode)
             {
                 case DispatchEnums.Register:
-                    return new RegisterHandler(new UserService(new UserRepository(_context), _mapper));
+                    return new RegisterDispatch(new UserService(new UserRepository(_context), _mapper));
                 case DispatchEnums.SetUpProfile:
                     return new SetUpProfileDispatch(new UserService(new UserRepository(_context), _mapper));
                 case DispatchEnums.GetCountries:
                     return new GetCountriesDispatch(new CountryService(new CountryRepository(_context), _mapper));
+                case DispatchEnums.Login:
+                    return new LoginDispatch(new UserService(new UserRepository(_context), _mapper));
                 default:
                     return null;
             }

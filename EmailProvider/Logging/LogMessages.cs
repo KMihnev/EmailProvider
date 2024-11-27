@@ -37,6 +37,9 @@ namespace EmailProvider.Logging
         public const string InvalidData = "InvalidData";
         public const string InteralError = "Internal Error";
         public const string NullObject = "{0} is null";
-        public const string ErrorCalling = "Error calling: ";
+        public const string ErrorCalling = "Error calling: {0}";
+        public const string NoUserForEmail = "No user with this email was found";
+        public const string NoUserForName = "No user with this name was found";
+        public const string IncorrectPassword = "Incorrect Password";
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,7 +24,8 @@ namespace EMailProviderClient.Views.User
             this.Hide();
             var LogInForm = new LogIn();
             LogInForm.ShowDialog();
-            this.Close();
+
+            OpenDashBoard();
         }
 
         private void StartUp_Register_Click(object sender, EventArgs e)
@@ -31,12 +33,20 @@ namespace EMailProviderClient.Views.User
             this.Hide();
             var RegisterForm = new Register();
             RegisterForm.ShowDialog();
-            this.Close();
+
+            OpenDashBoard();
         }
 
         private void StartUp_Load(object sender, EventArgs e)
         {
             this.CenterToScreen();
+        }
+
+        private void OpenDashBoard()
+        {
+            var DashBoard = new EmailProvider();
+            DashBoard.ShowDialog();
+            this.Close();
         }
     }
 }

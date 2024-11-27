@@ -1,4 +1,5 @@
 ﻿using EmailProvider.Enums;
+using EMailProviderClient.Dispatches.Users;
 using EMailProviderClient.Validation;
 using System;
 using System.Collections.Generic;
@@ -52,10 +53,24 @@ namespace EMailProviderClient.Views.User
             this.Close();
         }
 
-        private void BTN_LOGIN_Click(object sender, EventArgs e)
+        private async void BTN_LOGIN_Click(object sender, EventArgs e)
         {
+            EmailServiceIntermediate.Models.User user = new EmailServiceIntermediate.Models.User();
+
+            if (FieldValidator.IsEmail(EDC_NAME.Text))
+                user.Email = EDC_NAME.Text;
+            else
+                user.Name = EDC_NAME.Text;
+
             if (!FieldValidator.Validate())
                 return;
+
+            user.Password = EDC_PASSWORD.Text;
+
+            if (!await UserDispatchesC.LogIn(user))
+                return;
+
+            this.Close();
         }
 
         //Methods
@@ -64,8 +79,9 @@ namespace EMailProviderClient.Views.User
         private void AddValidation()
         {
             FieldValidator = new LoginFormValidationC();
-            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
+
             FieldValidator.AddValidationField(UserValidationTypes.ValidationTypePassword, EDC_PASSWORD);
+            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
         }
     }
 }

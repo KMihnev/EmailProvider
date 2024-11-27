@@ -63,7 +63,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                UserSerializable userSerializable = await _userService.UpdateAsync<UserSerializable>(user.Id, CurrentUser);
+                UserSerializable userSerializable = await _userService.UpdateAsync<UserSerializable>(CurrentUser);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(user);
             }

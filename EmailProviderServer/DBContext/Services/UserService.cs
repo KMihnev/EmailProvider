@@ -96,7 +96,7 @@ namespace EmailProviderServer.DBContext.Services
             return _mapper.Map<T>(user);
         }
 
-        public async Task<T> UpdateAsync<T>(int nId,User user)
+        public async Task<T> UpdateAsync<T>(User user)
         {
             if (user == null)
                 Logger.Log(LogMessages.UserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);

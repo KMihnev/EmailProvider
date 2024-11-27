@@ -7,6 +7,7 @@ using EMailProviderClient.UserControl;
 using EmailServiceIntermediate.Models;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace EMailProviderClient.Dispatches.Users
 
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                 {
-                    Logger.LogError(LogMessages.DispatchErrorRegister);
+                    Logger.LogErrorCalling();
                     return false;
                 }
 
@@ -39,7 +40,7 @@ namespace EMailProviderClient.Dispatches.Users
 
                 if (newUser == null)
                 {
-                    Logger.LogError(string.Format(LogMessages.NullObject, newUser.GetType().Name));
+                    Logger.LogErrorCalling();
                     return false;
                 }
 
@@ -48,7 +49,7 @@ namespace EMailProviderClient.Dispatches.Users
             }
             catch (Exception ex)
             {
-                Logger.LogError(LogMessages.ErrorCalling, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                Logger.LogErrorCalling();
                 return false;
             }
         }
@@ -78,7 +79,7 @@ namespace EMailProviderClient.Dispatches.Users
 
                 if (updatedUser == null)
                 {
-                    Logger.LogError(string.Format(LogMessages.NullObject, updatedUser.GetType().Name));
+                    Logger.LogErrorCalling();
                     return false;
                 }
 
@@ -86,11 +87,50 @@ namespace EMailProviderClient.Dispatches.Users
             }
             catch (Exception ex)
             {
-                Logger.LogError(LogMessages.ErrorCalling, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                Logger.LogErrorCalling();
                 return false;
             }
 
             return true;
+        }
+
+        public static async Task<bool> LogIn(EmailServiceIntermediate.Models.User user)
+        {
+            try
+            {
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
+
+                //Сериализираме Данните
+                InPackage.Serialize((int)DispatchEnums.Login);
+                InPackage.Serialize(user);
+
+                //Изпращаме заявката
+                DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
+
+                if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
+                {
+                    Logger.LogErrorCalling();
+                    return false;
+                }
+
+                UserSerializable newUser = null;
+                OutPackage.Deserialize(out newUser);
+
+                if (newUser == null)
+                {
+                    Logger.LogError(string.Format(LogMessages.NullObject, newUser.GetType().Name));
+                    return false;
+                }
+
+                UserController.SetCurrentUser(newUser);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogErrorCalling();
+                return false;
+            }
         }
     }
 }

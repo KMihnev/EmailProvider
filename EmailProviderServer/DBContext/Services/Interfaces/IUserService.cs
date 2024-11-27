@@ -23,6 +23,6 @@ namespace EmailProviderServer.DBContext.Services.Base
 
         Task<T> CreateAsync<T>(User user);
 
-        Task<T> UpdateAsync<T>(int nId, User user);
+        Task<T> UpdateAsync<T>(User user);
     }
 }

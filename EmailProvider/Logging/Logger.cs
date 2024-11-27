@@ -1,5 +1,6 @@
 ﻿using EmailProvider.Enums;
 using EmailProvider.Settings;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace EmailProvider.Logging
@@ -20,6 +21,11 @@ namespace EmailProvider.Logging
         public static void LogError(string message)
         {
             Log(message, LogType.LogTypeScreenLog, LogSeverity.Error);
+        }
+
+        public static void LogErrorCalling([CallerMemberName] string methodName = "")
+        {
+            LogError(LogMessages.ErrorCalling, methodName);
         }
 
         public static void LogError(string message, params object[] args)

@@ -54,7 +54,7 @@ namespace EmailProvider.Validation
                         } //case
                     case UserValidationTypes.ValidationTypeEmail:
                         {
-                            if (!ValidateEmail(pair.Value))
+                            if (!ValidateEmail(pair.Value, true))
                                 return false;
                             break;
                         } //case
@@ -72,6 +72,14 @@ namespace EmailProvider.Validation
                         } //case
                 } //switch
             } // foreach
+            return true;
+        }
+
+        public bool IsEmail(string value)
+        {
+            if (!ValidateEmail(value))
+                return false;
+
             return true;
         }
 
@@ -114,7 +122,7 @@ namespace EmailProvider.Validation
             return true;
         }
 
-        protected virtual bool ValidateEmail(string email)
+        protected virtual bool ValidateEmail(string email, bool bLog = false)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -124,7 +132,8 @@ namespace EmailProvider.Validation
 
             if (!Regex.IsMatch(email, ValidationPatterns.EmailPattern))
             {
-                Logger.LogWarning(LogMessages.InvalidEmail);
+                if(bLog)
+                    Logger.LogWarning(LogMessages.InvalidEmail);
                 return false;
             } //if
 

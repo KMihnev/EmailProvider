@@ -8,11 +8,11 @@ using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
-    public class RegisterHandler : BaseDispatchHandler
+    public class RegisterDispatch : BaseDispatchHandler
     {
         private readonly UserService _userService;
 
-        public RegisterHandler(UserService userService)
+        public RegisterDispatch(UserService userService)
         {
             _userService = userService;
         }

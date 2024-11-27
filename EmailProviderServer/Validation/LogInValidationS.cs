@@ -6,15 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EMailProviderClient.Validation
+namespace EmailProviderServer.Validation
 {
-    public class LoginFormValidationC : UserValidatorC
+    public class LogInValidationS : UserValidator
     {
-        public LoginFormValidationC()
-        {
-            
-        }
-
         protected override bool ValidatePassword(string Password)
         {
             if (string.IsNullOrWhiteSpace(Password))
@@ -27,7 +22,7 @@ namespace EMailProviderClient.Validation
 
         protected override bool ValidateEmail(string email, bool bLog = false)
         {
-            if (!base.ValidateEmail(email, false) && !base.ValidateName(email))
+            if (!base.ValidateEmail(email, bLog) && !!base.ValidateName(email))
                 return false;
 
             return true;
