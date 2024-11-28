@@ -1,6 +1,6 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Logging;
-using EmailProvider.Models.Serializables;
+using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;
@@ -58,22 +58,15 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             if (bIsUsingEmail)
                 recUser = _userService.GetByEmail<User>(user.Email);
             else
-                recUser = _userService.GetByEmail<User>(user.Name);
+                recUser = _userService.GetByName<User>(user.Name);
 
-            if (recUser == null)
-            {
-                errorMessage = LogMessages.InteralError;
-                return false;
-            }
-
-
-            if(bIsUsingEmail && recUser.Email != user.Email)
+            if(bIsUsingEmail && recUser == null)
             {
                 errorMessage = LogMessages.NoUserForEmail;
                 return false;
             }
 
-            if (!bIsUsingEmail && recUser.Name != user.Name)
+            if (!bIsUsingEmail && recUser == null)
             {
                 errorMessage = LogMessages.NoUserForName;
                 return false;

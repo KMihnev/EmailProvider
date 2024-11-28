@@ -13,11 +13,6 @@ namespace EmailProvider.Enums
         Register,
         SetUpProfile,
         GetCountries,
-    }
-
-    public enum Tables
-    {
-        Countries = 0,
-        Users,
+        SendEmail,
     }
 }

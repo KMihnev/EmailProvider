@@ -1,7 +1,7 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Enums;
 using EmailProvider.Logging;
-using EmailProvider.Models.Serializables;
+using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Base;
 using System;
@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches.Emails
 {
-    public class SendEmailDispatch
+    public class SendEmailDispatchC
     {
-        public static async Task<bool> Register()
+        public static async Task<bool> SendEmail(MessageSerializable messageSerializable)
         {
             try
             {
@@ -22,8 +22,8 @@ namespace EMailProviderClient.Dispatches.Emails
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.Register);
-                //InPackage.Serialize(user);
+                InPackage.Serialize((int)DispatchEnums.SendEmail);
+                InPackage.Serialize(messageSerializable);
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
@@ -34,16 +34,6 @@ namespace EMailProviderClient.Dispatches.Emails
                     return false;
                 }
 
-                UserSerializable newUser = null;
-                OutPackage.Deserialize(out newUser);
-
-                if (newUser == null)
-                {
-                    Logger.LogErrorCalling();
-                    return false;
-                }
-
-                UserController.SetCurrentUser(newUser);
                 return true;
             }
             catch (Exception ex)

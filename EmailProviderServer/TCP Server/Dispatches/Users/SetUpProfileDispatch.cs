@@ -1,6 +1,6 @@
 ﻿using EmailProvider.Dispatches;
 using EmailProvider.Logging;
-using EmailProvider.Models.Serializables;
+using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;

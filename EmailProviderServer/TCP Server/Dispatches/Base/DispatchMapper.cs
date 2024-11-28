@@ -4,8 +4,10 @@ using EmailProvider.Enums;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services;
+using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.TCP_Server.Dispatches.Countries;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -33,6 +35,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                     return new GetCountriesDispatch(new CountryService(new CountryRepository(_context), _mapper));
                 case DispatchEnums.Login:
                     return new LoginDispatch(new UserService(new UserRepository(_context), _mapper));
+                case DispatchEnums.SendEmail:
+                    return new SaveEmailDispatchS(new MessageService(new MessageRepository(_context), _mapper), new UserService(new UserRepository(_context), _mapper));
                 default:
                     return null;
             }

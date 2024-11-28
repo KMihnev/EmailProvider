@@ -8,23 +8,24 @@ using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
-    public class RegisterDispatch : BaseDispatchHandler
+    public class SaveEmailDispatchS : BaseDispatchHandler
     {
+        private readonly MessageService _messageService;
         private readonly UserService _userService;
-
-        public RegisterDispatch(UserService userService)
+        public SaveEmailDispatchS(MessageService messageService, UserService userService)
         {
+            _messageService = messageService;
             _userService = userService;
         }
 
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            User user;
+            MessageSerializable messageSerializable;
             try
             {
-                InPackage.Deserialize(out user);
+                InPackage.Deserialize(out messageSerializable);
 
-                if (user == null)
+                if (messageSerializable == null)
                 {
                     return false;
                 }
@@ -35,28 +36,19 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            RegisterValidationS registerValidationS = new RegisterValidationS();
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
-
-            if (!registerValidationS.Validate())
+            UserSerializable Receiver = _userService.GetByEmail<UserSerializable>(messageSerializable.ReceiverEmail);
+            if(Receiver == null)
             {
-                errorMessage = LogMessages.InvalidData;
+                errorMessage = LogMessages.InteralError;
                 return false;
             }
 
-            var userExists = _userService.GetByEmail<User>(user.Email) != null;
-            if (userExists)
-            {
-                errorMessage = LogMessages.UserAlreadyExists;
-                return false;
-            }
+            messageSerializable.ReceiverId = Receiver.Id;
 
             try
             {
-                UserSerializable userSerializable = await _userService.CreateAsync<UserSerializable>(user);
+                _messageService.CreateAsync<MessageSerializable>(messageSerializable);
                 OutPackage.Serialize(true);
-                OutPackage.Serialize(userSerializable);
             }
             catch (Exception ex)
             {

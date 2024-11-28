@@ -43,5 +43,8 @@ namespace EmailProvider.Logging
         public const string IncorrectPassword = "Incorrect Password";
         public const string ExitSureCheck = "Are you sure you want to close the applciation?";
         public const string ExitConfirmation = "Do you wish to leave?";
+        public const string ErrorSavingEmail = "There was an error saving the email";
+        public const string DoYouWishToSaveDraft = "Do you want to save this message as a draft?";
+        public const string SaveAsDraft = "Save as Draft";
     }
 }

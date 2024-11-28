@@ -15,7 +15,7 @@ using System.Windows.Forms;
 using System.Xml;
 using EmailServiceIntermediate.Models;
 using EMailProviderClient.Dispatches.Users;
-using EmailProvider.Models.Serializables;
+using EmailServiceIntermediate.Models.Serializables;
 
 namespace EMailProviderClient.Views.User
 {

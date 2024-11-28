@@ -4,19 +4,26 @@ using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
 using EmailServiceIntermediate.Enums;
+using AutoMapper;
+using System.Diagnostics.Metrics;
+using EmailProviderServer.DBContext.Repositories;
+using EmailProvider.Logging;
+using EmailServiceIntermediate.Models.Serializables;
 
 namespace EmailProviderServer.DBContext.Services
 {
     public class MessageService : IMessageService
     {
-        private readonly IRepositoryS<Message> oMessageRepositoryS;
+        private readonly MessageRepository oMessageRepositoryS;
+        private readonly IMapper _mapper;
 
-        public MessageService(IRepositoryS<Message> oOutgoingMessageRepository)
+        public MessageService(MessageRepository oMessageRepository, IMapper mapper)
         {
-            this.oMessageRepositoryS = oOutgoingMessageRepository; 
+            this.oMessageRepositoryS = oMessageRepository;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Message> GetAll(int? nCount = null)
+        public IEnumerable<T> GetAll<T>(int? nCount = null)
         {
             IQueryable<Message> oQuery = this.oMessageRepositoryS
                .All();
@@ -24,10 +31,12 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var eMails = oQuery.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(eMails);
         }
 
-        public IEnumerable<Message> GetAllByStatus(int nStatus, int? nCount = null)
+        public IEnumerable<T> GetAllByStatus<T>(int nStatus, int? nCount = null)
         {
             IQueryable<Message> oQuery = this.oMessageRepositoryS
                .All().Where(om => om.StatusId == nStatus);
@@ -35,10 +44,12 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var eMails = oQuery.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(eMails);
         }
 
-        public IEnumerable<Message> GetAllDrafts(int? nCount = null)
+        public IEnumerable<T> GetAllDrafts<T>(int? nCount = null)
         {
             IQueryable<Message> oQuery = this.oMessageRepositoryS
                .All().Where(om => om.Status.Value == "Draft");
@@ -46,10 +57,12 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var eMails = oQuery.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(eMails);
         }
 
-        public IEnumerable<Message> GetByDateOfSend(DateTime dDateOfSend, DateSearchType eDateSearchType, int? nCount = null)
+        public IEnumerable<T> GetByDateOfSend<T>(DateTime dDateOfSend, DateSearchType eDateSearchType, int? nCount = null)
         {
             IQueryable<Message> oQuery = oMessageRepositoryS.All().Take(0);
 
@@ -78,10 +91,12 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var eMails = oQuery.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(eMails);
         }
 
-        public IEnumerable<Message> GetByReceiverId(int nReceiverID, int? nCount = null)
+        public IEnumerable<T> GetByReceiverId<T>(int nReceiverID, int? nCount = null)
         {
             IQueryable<Message> oQuery = this.oMessageRepositoryS
                .All().Where(om => om.ReceiverId == nReceiverID);
@@ -89,10 +104,12 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var eMails = oQuery.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(eMails);
         }
 
-        public IEnumerable<Message> GetBySenderID(int nSenderID, int? nCount = null)
+        public IEnumerable<T> GetBySenderID<T>(int nSenderID, int? nCount = null)
         {
             IQueryable<Message> oQuery = this.oMessageRepositoryS
                 .All().Where(om => om.SenderId == nSenderID);
@@ -100,15 +117,38 @@ namespace EmailProviderServer.DBContext.Services
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
 
-            return oQuery.ToList();
+            var eMails = oQuery.ToList();
+
+            return _mapper.Map<IEnumerable<T>>(eMails);
         }
-        public Message GetById(int nId)
+        public T GetById<T>(int nId)
         {
             var oOutgoingMessage = this.oMessageRepositoryS
                 .All()
                 .Where(x => x.Id == nId)
                 .FirstOrDefault();
-            return oOutgoingMessage;
+            return _mapper.Map<T>(oOutgoingMessage);
+        }
+
+        public async void CreateAsync<T>(T message)
+        {
+            await oMessageRepositoryS.AddAsync(_mapper.Map<Message>(message));
+
+            await oMessageRepositoryS.SaveChangesAsync();
+        }
+
+        public async Task<T> UpdateAsync<T>(T message)
+        {
+            Message dbRec = _mapper.Map<Message>(message);
+
+            if (dbRec == null)
+                Logger.Log(LogMessages.UserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
+            oMessageRepositoryS.Update(dbRec);
+
+            await oMessageRepositoryS.SaveChangesAsync();
+
+            return _mapper.Map<T>(dbRec);
         }
     }
 }

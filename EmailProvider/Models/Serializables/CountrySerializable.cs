@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Models.Serializables
+namespace EmailServiceIntermediate.Models.Serializables
 {
     public class CountrySerializable
     {

@@ -1,4 +1,4 @@
-﻿using EmailProvider.Models.Serializables;
+﻿using EmailServiceIntermediate.Models.Serializables;
 using EmailServiceIntermediate.Models;
 using System;
 using System.Collections.Generic;

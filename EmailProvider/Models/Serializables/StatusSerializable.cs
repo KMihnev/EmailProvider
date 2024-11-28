@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Models.Serializables
+namespace EmailServiceIntermediate.Models.Serializables
 {
     public class StatusSerializable
     {
         public int Id { get; set; }
         public string Value { get; set; }
+
     }
 }
