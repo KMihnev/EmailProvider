@@ -25,12 +25,13 @@ namespace EMailProviderClient.Views.User
         //-------
         private UserValidatorC FieldValidator;
 
-
         //Constructor
         //----------
         public Register()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             AddValidation();
         }
 
@@ -67,8 +68,12 @@ namespace EMailProviderClient.Views.User
             user.Password = EDC_PASSWORD.Text;
 
             if (!await UserDispatchesC.Register(user))
+            {
+                this.Show();
                 return;
+            }
 
+            this.DialogResult = DialogResult.OK;
             this.Hide();
             var SetUpProfile = new SetupProfile();
             SetUpProfile.ShowDialog();

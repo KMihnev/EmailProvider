@@ -2,49 +2,51 @@
 using EmailProvider.Enums;
 using EmailProvider.Logging;
 using EmailProvider.Models.Serializables;
-using EMailProviderClient.Dispatches.Base;
 using EMailProviderClient.Controllers.UserControl;
-using EmailServiceIntermediate.Models;
+using EMailProviderClient.Dispatches.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace EMailProviderClient.Dispatches.Countries
+namespace EMailProviderClient.Dispatches.Emails
 {
-    public class CountriesDispatchC
+    public class SendEmailDispatch
     {
-        public static async Task<bool> LoadCountries(List<CountrySerializable> countries)
+        public static async Task<bool> Register()
         {
             try
             {
                 SmartStreamArray InPackage = new SmartStreamArray();
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
-                InPackage.Serialize((int)DispatchEnums.GetCountries);
+                //Сериализираме Данните
+                InPackage.Serialize((int)DispatchEnums.Register);
+                //InPackage.Serialize(user);
 
+                //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
+
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                 {
+                    Logger.LogErrorCalling();
                     return false;
                 }
 
-                List<CountrySerializable> deserializedCountries = null;
-                OutPackage.Deserialize(out deserializedCountries);
+                UserSerializable newUser = null;
+                OutPackage.Deserialize(out newUser);
 
-                if (deserializedCountries == null)
+                if (newUser == null)
                 {
-                    Logger.LogError(string.Format(LogMessages.NullObject, deserializedCountries.GetType().Name));
+                    Logger.LogErrorCalling();
                     return false;
                 }
 
-                if (deserializedCountries.Count <= 0)
-                    Logger.LogWarning(LogMessages.NoCountriesLoaded);
-
-                countries.AddRange(deserializedCountries);
-
+                UserController.SetCurrentUser(newUser);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Logger.LogErrorCalling();
                 return false;

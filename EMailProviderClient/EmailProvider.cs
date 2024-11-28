@@ -1,14 +1,17 @@
+using EmailProvider.Logging;
 using EMailProviderClient.Views.Emails;
 
 namespace EMailProviderClient
 {
     public partial class EmailProvider : Form
     {
+        private bool _bClosing = false;
+
         public EmailProvider()
         {
-            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-            this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
+            this.WindowState = FormWindowState.Maximized;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
         private void EmailProvider_Load(object sender, EventArgs e)
@@ -20,6 +23,30 @@ namespace EMailProviderClient
         {
             var AddEmailForm = new AddEmail();
             AddEmailForm.ShowDialog();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_bClosing)
+                return;
+
+            base.OnFormClosing(e);
+
+            DialogResult result = MessageBox.Show(
+                LogMessages.ExitSureCheck,
+                LogMessages.ExitConfirmation,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                _bClosing = true;
+                Application.Exit();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using EmailProvider.Logging;
 using EmailProvider.Models.Serializables;
 using EMailProviderClient.Dispatches.Countries;
 using EMailProviderClient.Dispatches.Users;
-using EMailProviderClient.UserControl;
+using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Validation;
 using EmailServiceIntermediate.Models;
 using System;
@@ -16,10 +16,12 @@ namespace EMailProviderClient.Views.User
     public partial class SetupProfile : Form
     {
         private UserValidatorC UserValidatorC;
-
+        private bool _isExiting = false;
         public SetupProfile(bool firstTime = true)
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             AddValidation();
             LoadCountries();
 
@@ -43,7 +45,7 @@ namespace EMailProviderClient.Views.User
 
         private void BTN_SKIP_Click(object sender, EventArgs e)
         {
-            GoToMainScreen();
+            this.Close();
         }
 
         private async void BTN_CONTINUE_Click(object sender, EventArgs e)
@@ -65,16 +67,11 @@ namespace EMailProviderClient.Views.User
             user.CountryId = selectedCountry.Id;
 
             if (!await UserDispatchesC.SetUpProfile(user))
+            {
+                this.Show();
                 return;
+            }
 
-            GoToMainScreen();
-        }
-
-        private void GoToMainScreen()
-        {
-            this.Hide();
-            var emailProvider = new EmailProvider();
-            emailProvider.ShowDialog();
             this.Close();
         }
 

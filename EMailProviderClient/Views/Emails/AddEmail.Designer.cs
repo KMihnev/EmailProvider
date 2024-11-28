@@ -50,6 +50,7 @@
             SEND_BTN.TabIndex = 0;
             SEND_BTN.Text = "Send";
             SEND_BTN.UseVisualStyleBackColor = true;
+            SEND_BTN.Click += SEND_BTN_Click;
             // 
             // CLOSE_BTN
             // 

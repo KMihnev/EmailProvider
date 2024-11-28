@@ -41,5 +41,7 @@ namespace EmailProvider.Logging
         public const string NoUserForEmail = "No user with this email was found";
         public const string NoUserForName = "No user with this name was found";
         public const string IncorrectPassword = "Incorrect Password";
+        public const string ExitSureCheck = "Are you sure you want to close the applciation?";
+        public const string ExitConfirmation = "Do you wish to leave?";
     }
 }

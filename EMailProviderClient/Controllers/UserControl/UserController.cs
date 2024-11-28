@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EMailProviderClient.UserControl
+namespace EMailProviderClient.Controllers.UserControl
 {
     public class UserController
     {

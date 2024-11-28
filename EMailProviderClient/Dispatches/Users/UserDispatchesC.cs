@@ -2,8 +2,8 @@
 using EmailProvider.Enums;
 using EmailProvider.Logging;
 using EmailProvider.Models.Serializables;
+using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Base;
-using EMailProviderClient.UserControl;
 using EmailServiceIntermediate.Models;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
