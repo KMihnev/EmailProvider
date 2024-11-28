@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 
@@ -15,13 +16,12 @@ public partial class Country : IEntity
     /// <summary>
     /// Name of country
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Beginning code of phone number for country
     /// </summary>
-    [Column("PHONE_NUMBER_CODE")]
-    public string PhoneNumberCode { get; set; }
+    public string PhoneNumberCode { get; set; } = null!;
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -1,4 +1,7 @@
-﻿namespace EmailServiceIntermediate.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmailServiceIntermediate.Models;
 
 /// <summary>
 /// Table for incoming message to be processed

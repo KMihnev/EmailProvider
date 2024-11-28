@@ -1,4 +1,5 @@
-﻿using EmailServiceIntermediate.Models;
+﻿
+using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 
 

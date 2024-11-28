@@ -26,17 +26,6 @@ namespace EmailProviderServer.DBContext.Services
             return oQuery.ToList();
         }
 
-        public IEnumerable<Category> GetAllByUserId(int nId, int? nCount = null)
-        {
-            IQueryable<Category> oQuery = this.oCategoryRepositoryS
-                .All().Where(c => c.UserId == nId);
-
-            if (nCount.HasValue)
-                oQuery = oQuery.Take(nCount.Value);
-
-            return oQuery.ToList();
-        }
-
         public Category GetById(int nId)
         {
             var oCategory = this.oCategoryRepositoryS

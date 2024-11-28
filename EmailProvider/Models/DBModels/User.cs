@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 
@@ -22,7 +23,7 @@ public partial class User : IEntity
     /// <summary>
     /// Name of user
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Email of user
@@ -37,24 +38,18 @@ public partial class User : IEntity
     /// <summary>
     /// Phone number of user
     /// </summary>
-    [Column("PHONE_NUMBER")]
-    public string PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = null!;
 
     /// <summary>
     /// Country id of user
     /// </summary>
-    [Column("COUNTRY_ID")]
-    public int CountryId { get; set; }
+    public int? CountryId { get; set; }
 
     public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
 
-    public virtual Country Country { get; set; }
+    public virtual Country? Country { get; set; }
 
-    public virtual ICollection<IncomingMessage> IncomingMessageReceivers { get; set; } = new List<IncomingMessage>();
+    public virtual ICollection<Message> MessageReceivers { get; set; } = new List<Message>();
 
-    public virtual ICollection<IncomingMessage> IncomingMessageSenders { get; set; } = new List<IncomingMessage>();
-
-    public virtual ICollection<OutgoingMessage> OutgoingMessageReceivers { get; set; } = new List<OutgoingMessage>();
-
-    public virtual ICollection<OutgoingMessage> OutgoingMessageSenders { get; set; } = new List<OutgoingMessage>();
+    public virtual ICollection<Message> MessageSenders { get; set; } = new List<Message>();
 }

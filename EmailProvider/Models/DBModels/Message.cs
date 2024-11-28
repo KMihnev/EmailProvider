@@ -1,10 +1,18 @@
-﻿namespace EmailServiceIntermediate.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmailServiceIntermediate.Models;
 
 /// <summary>
 /// Table for outgoing messages
 /// </summary>
-public partial class OutgoingMessage : IEntity
+public partial class Message : IEntity
 {
+    public Message()
+    {
+        StatusId = 1;
+    }
+
     /// <summary>
     /// ID received message
     /// </summary>
@@ -30,25 +38,18 @@ public partial class OutgoingMessage : IEntity
     /// </summary>
     public string Content { get; set; } = null!;
 
-    /// <summary>
-    /// ID of file in message
-    /// </summary>
-    public int? FileId { get; set; }
-
-    public string Status { get; set; }
-
-    public bool IsDraft { get; set; }
+    public int StatusId { get; set; }
 
     /// <summary>
-    /// Date in which the message will be send
+    /// Date in which the message was processed
     /// </summary>
-    public DateTime DateOfSend { get; set; }
+    public DateTime DateOfCompletion { get; set; }
 
-    public virtual ICollection<BulkOutgoingMessage> BulkOutgoingMessages { get; set; } = new List<BulkOutgoingMessage>();
-
-    public virtual File? File { get; set; }
+    public virtual ICollection<File> Files { get; set; } = new List<File>();
 
     public virtual User Receiver { get; set; } = null!;
 
     public virtual User Sender { get; set; } = null!;
+
+    public virtual Status Status { get; set; } = null!;
 }

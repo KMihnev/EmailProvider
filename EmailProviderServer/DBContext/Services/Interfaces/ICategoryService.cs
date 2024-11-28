@@ -8,8 +8,6 @@ namespace EmailProviderServer.DBContext.Services.Base
     {
         IEnumerable<Category> GetAll(int? nCount = null);
 
-        IEnumerable<Category> GetAllByUserId(int nId, int? nCount = null);
-
         Category GetById(int nId);
 
         Category GetByName(string strName);

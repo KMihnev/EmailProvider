@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMailProviderClient", "EMai
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{672AFA66-B921-4A80-8041-F36F73EA86A4}"
 	ProjectSection(SolutionItems) = preProject
+		Add Categories.sql = Add Categories.sql
 		Add Countries.sql = Add Countries.sql
+		Add Statuses.sql = Add Statuses.sql
 		Create DB.sql = Create DB.sql
 		Create Tables.sql = Create Tables.sql
 	EndProjectSection

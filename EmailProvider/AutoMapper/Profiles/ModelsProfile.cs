@@ -14,9 +14,11 @@ namespace EmailProvider.AutoMapper.Profiles
 
             CreateMap<EmailServiceIntermediate.Models.File, FileSerializable>();
 
-            CreateMap<IncomingMessage, IncomingMessasgeSerializable>();
-
-            CreateMap<OutgoingMessage, OutgoingMessageSerializable>();
+            CreateMap<Message, MessasgeSerializable>()
+                .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files))
+                .ForMember(dest => dest.Receiver, opt => opt.MapFrom(src => src.Receiver))
+                .ForMember(dest => dest.Sender, opt => opt.MapFrom(src => src.Sender))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
             CreateMap<BulkIncomingMessage, BulkIncomingMessageSerializable>();
 

@@ -27,8 +27,7 @@ void AddServices(IServiceCollection services)
     services.AddTransient<ICategoryService, CategoryService>();
     services.AddTransient<ICountryService, CountryService>();
     services.AddTransient<IFileService, FileService>();
-    services.AddTransient<IIncomingMessageService, IncomingMessageService>();
-    services.AddTransient<IOutgoingMessageService, OutgoingMessageService>();
+    services.AddTransient<IMessageService, MessageService>();
     services.AddTransient<IUserService, UserService>();
 }
 

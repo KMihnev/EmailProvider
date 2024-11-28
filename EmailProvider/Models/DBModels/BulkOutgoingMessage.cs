@@ -1,4 +1,7 @@
-﻿namespace EmailServiceIntermediate.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmailServiceIntermediate.Models;
 
 /// <summary>
 /// Table for incoming message to be processed
@@ -24,6 +27,4 @@ public partial class BulkOutgoingMessage : IEntity
     /// refrence to message
     /// </summary>
     public int OutgoingMessageId { get; set; }
-
-    public virtual OutgoingMessage OutgoingMessage { get; set; } = null!;
 }

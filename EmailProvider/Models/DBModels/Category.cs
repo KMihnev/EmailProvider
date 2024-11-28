@@ -1,4 +1,7 @@
-﻿namespace EmailServiceIntermediate.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmailServiceIntermediate.Models;
 
 /// <summary>
 /// Table for user-defined categories
@@ -14,13 +17,4 @@ public partial class Category : IEntity
     /// Name of category
     /// </summary>
     public string Name { get; set; } = null!;
-
-    /// <summary>
-    /// Id of creator
-    /// </summary>
-    public int UserId { get; set; }
-
-    public virtual ICollection<IncomingMessage> IncomingMessages { get; set; } = new List<IncomingMessage>();
-
-    public virtual User User { get; set; } = null!;
 }
