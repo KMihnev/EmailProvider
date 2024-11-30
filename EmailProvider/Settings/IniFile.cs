@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace EmailProvider.Settings
+namespace EmailServiceIntermediate.Settings
 {
     public class IniFile
     {

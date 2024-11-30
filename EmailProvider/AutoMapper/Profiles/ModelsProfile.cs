@@ -2,7 +2,7 @@
 using EmailServiceIntermediate.Models.Serializables;
 using EmailServiceIntermediate.Models;
 
-namespace EmailProvider.AutoMapper.Profiles
+namespace EmailServiceIntermediate.AutoMapper.Profiles
 {
     public class ModelsProfile : Profile
     {

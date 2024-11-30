@@ -1,6 +1,6 @@
-﻿using EmailProvider.Dispatches;
-using EmailProvider.Enums;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Base;
 using EMailProviderClient.Controllers.UserControl;

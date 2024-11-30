@@ -1,4 +1,4 @@
-﻿using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Controllers.Email;
 using EMailProviderClient.Controllers.UserControl;
 using System;

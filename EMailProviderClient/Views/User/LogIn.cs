@@ -1,4 +1,4 @@
-﻿using EmailProvider.Enums;
+﻿using EmailServiceIntermediate.Enums;
 using EMailProviderClient.Dispatches.Users;
 using EMailProviderClient.Validation;
 using System;

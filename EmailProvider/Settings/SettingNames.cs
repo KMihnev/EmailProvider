@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Settings
+namespace EmailServiceIntermediate.Settings
 {
     public static class SectionNames
     {

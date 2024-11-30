@@ -1,7 +1,7 @@
 ﻿//Includes
 
 using AutoMapper;
-using EmailProvider.Logging;
+using EmailServiceIntermediate.Logging;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services.Interfaces.Base;
@@ -99,7 +99,7 @@ namespace EmailProviderServer.DBContext.Services
         public async Task<T> UpdateAsync<T>(User user)
         {
             if (user == null)
-                Logger.Log(LogMessages.UserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                Logger.Log(LogMessages.UserNotFound, EmailServiceIntermediate.Enums.LogType.LogTypeLog, EmailServiceIntermediate.Enums.LogSeverity.Error);
 
             _oUserRepositoryS.Update(user);
 

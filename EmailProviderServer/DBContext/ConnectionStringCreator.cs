@@ -1,4 +1,4 @@
-﻿using EmailProvider.Settings;
+﻿using EmailServiceIntermediate.Settings;
 using EmailProviderServer.Settings;
 using System;
 using System.Collections.Generic;

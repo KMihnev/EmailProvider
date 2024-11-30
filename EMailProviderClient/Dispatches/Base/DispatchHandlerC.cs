@@ -1,5 +1,5 @@
-﻿using EmailProvider.Dispatches;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
 using System;
 using System.Net.Sockets;
 using System.Text;

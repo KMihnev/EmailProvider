@@ -1,5 +1,5 @@
-﻿using EmailProvider.Enums;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Validation
+namespace EmailServiceIntermediate.Validation
 {
     public class UserValidator : BaseValidator
     {

@@ -6,8 +6,8 @@ using System.IO;
 using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProvider.Dispatches;
-using EmailProvider.Logging;
+using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
 using AutoMapper;
 
 namespace EmailProviderServer.TCP_Server

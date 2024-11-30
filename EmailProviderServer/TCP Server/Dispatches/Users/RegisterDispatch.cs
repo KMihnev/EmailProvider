@@ -1,5 +1,5 @@
-﻿using EmailProvider.Dispatches;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
@@ -36,8 +36,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             }
 
             RegisterValidationS registerValidationS = new RegisterValidationS();
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
+            registerValidationS.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
+            registerValidationS.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
 
             if (!registerValidationS.Validate())
             {

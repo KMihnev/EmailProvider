@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EmailProvider.Enums;
-using EmailProvider.Validation;
+using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Validation;
 
 namespace EMailProviderClient.Validation
 {

@@ -1,5 +1,4 @@
-﻿using EmailProvider.Dispatches;
-using EmailProvider.Reponse;
+﻿using EmailServiceIntermediate.Dispatches;
 using System.Text.Json;
 
 namespace EmailProviderServer.TCP_Server.Dispatches.Interfaces

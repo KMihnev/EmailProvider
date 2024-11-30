@@ -1,5 +1,5 @@
-﻿using EmailProvider.Enums;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Validation;
 using System;
 using System.Collections.Generic;

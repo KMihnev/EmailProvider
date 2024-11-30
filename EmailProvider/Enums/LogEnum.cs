@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Enums
+namespace EmailServiceIntermediate.Enums
 {
     public enum LogType
     {

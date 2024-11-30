@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using EmailProvider.Dispatches;
-using EmailProvider.Enums;
+using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Enums;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services;

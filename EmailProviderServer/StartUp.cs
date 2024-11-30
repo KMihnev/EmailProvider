@@ -9,7 +9,7 @@ using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server;
 using System.Net.Sockets;
 using System.Net;
-using EmailProvider.Settings;
+using EmailServiceIntermediate.Settings;
 using EmailProviderServer.TCP_Server.Dispatches;
 
 void AddServices(IServiceCollection services)
@@ -35,7 +35,7 @@ void LoadAutoMapperProfiles(IServiceCollection services)
 {
     services.AddAutoMapper(cfg =>
     {
-        cfg.AddProfile<EmailProvider.AutoMapper.Profiles.ModelsProfile>();
+        cfg.AddProfile<EmailServiceIntermediate.AutoMapper.Profiles.ModelsProfile>();
     });
 }
 

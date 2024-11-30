@@ -1,9 +1,9 @@
-﻿using EmailProvider.Enums;
-using EmailProvider.Settings;
+﻿using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Settings;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
-namespace EmailProvider.Logging
+namespace EmailServiceIntermediate.Logging
 {
     public static class Logger
     {

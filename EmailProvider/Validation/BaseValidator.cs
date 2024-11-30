@@ -1,11 +1,11 @@
-﻿using EmailProvider.Enums;
+﻿using EmailServiceIntermediate.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Validation
+namespace EmailServiceIntermediate.Validation
 {
     public class BaseValidator : IValidator
     {

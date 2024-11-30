@@ -1,4 +1,4 @@
-﻿using EmailProvider.Validation;
+﻿using EmailServiceIntermediate.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

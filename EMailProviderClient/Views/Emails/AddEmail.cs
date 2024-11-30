@@ -1,7 +1,7 @@
 ﻿using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
-using EmailProvider.Logging;
+using EmailServiceIntermediate.Logging;
 
 namespace EMailProviderClient.Views.Emails
 {

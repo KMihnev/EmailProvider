@@ -1,4 +1,4 @@
-using EmailProvider.Settings;
+using EmailServiceIntermediate.Settings;
 using EMailProviderClient.Settings;
 using EMailProviderClient.Views.User;
 

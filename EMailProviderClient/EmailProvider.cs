@@ -1,4 +1,4 @@
-using EmailProvider.Logging;
+using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Views.Emails;
 
 namespace EMailProviderClient

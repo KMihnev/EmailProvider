@@ -1,6 +1,6 @@
 ﻿//Includes
 
-using EmailProvider.Logging;
+using EmailServiceIntermediate.Logging;
 using EmailProviderServer.DBContext.Repositories;
 using EmailServiceIntermediate.Models;
 using System.Collections.Generic;

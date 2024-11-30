@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace EmailProvider.Dispatches
+namespace EmailServiceIntermediate.Dispatches
 {
     public class SmartStreamArray : IDisposable
     {

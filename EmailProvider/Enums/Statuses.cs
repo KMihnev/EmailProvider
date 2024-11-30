@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace EmailServiceIntermediate.Enums
 {
-    public enum DispatchEnums : short
+    internal class Statuses
     {
-        Empty = 0,
-        Login,
-        Register,
-        SetUpProfile,
-        GetCountries,
-        SendEmail,
     }
 }

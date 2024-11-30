@@ -1,5 +1,5 @@
-﻿using EmailProvider.Enums;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Countries;
 using EMailProviderClient.Dispatches.Users;

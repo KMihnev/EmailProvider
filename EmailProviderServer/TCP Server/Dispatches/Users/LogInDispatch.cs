@@ -1,5 +1,5 @@
-﻿using EmailProvider.Dispatches;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
@@ -40,13 +40,13 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             bool bIsUsingEmail = false;
             if (logInValidator.IsEmail(user.Email))
             {
-                logInValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
+                logInValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
                 bIsUsingEmail = true;
             }
             else
-                logInValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Name);
+                logInValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeEmail, user.Name);
 
-            logInValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
+            logInValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
 
             if (!logInValidator.Validate())
             {

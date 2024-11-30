@@ -7,7 +7,7 @@ using EmailServiceIntermediate.Enums;
 using AutoMapper;
 using System.Diagnostics.Metrics;
 using EmailProviderServer.DBContext.Repositories;
-using EmailProvider.Logging;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 
 namespace EmailProviderServer.DBContext.Services
@@ -142,7 +142,7 @@ namespace EmailProviderServer.DBContext.Services
             Message dbRec = _mapper.Map<Message>(message);
 
             if (dbRec == null)
-                Logger.Log(LogMessages.UserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                Logger.Log(LogMessages.UserNotFound, EmailServiceIntermediate.Enums.LogType.LogTypeLog, EmailServiceIntermediate.Enums.LogSeverity.Error);
 
             oMessageRepositoryS.Update(dbRec);
 

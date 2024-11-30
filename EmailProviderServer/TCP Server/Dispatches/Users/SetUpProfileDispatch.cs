@@ -1,5 +1,5 @@
-﻿using EmailProvider.Dispatches;
-using EmailProvider.Logging;
+﻿using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
@@ -39,9 +39,9 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             }
 
             SetUpProfileValidationS setUpProfileValidator = new SetUpProfileValidationS();
-            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeName, user.Name);
-            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePhoneNumber, user.PhoneNumber);
-            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeCountry, user.CountryId.ToString());
+            setUpProfileValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeName, user.Name);
+            setUpProfileValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypePhoneNumber, user.PhoneNumber);
+            setUpProfileValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeCountry, user.CountryId.ToString());
 
             if (!setUpProfileValidator.Validate())
             {
