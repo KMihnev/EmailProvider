@@ -1,5 +1,4 @@
 ﻿using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

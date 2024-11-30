@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailServiceIntermediate.Enums
+namespace EmailProvider.Validation.Base
 {
-    internal class Statuses
+    public interface IValidator
     {
+        abstract bool Validate();
     }
 }

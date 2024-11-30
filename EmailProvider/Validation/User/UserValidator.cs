@@ -1,4 +1,5 @@
-﻿using EmailServiceIntermediate.Enums;
+﻿using EmailProvider.Validation.Base;
+using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace EmailServiceIntermediate.Validation
+namespace EmailProvider.Validation.User
 {
-    public class UserValidator : BaseValidator
+    public class UserValidator : BaseUserValidator
     {
         public UserValidator()
         {
@@ -23,7 +24,7 @@ namespace EmailServiceIntermediate.Validation
 
         public void EmptyFields()
         {
-            this.ValidationFields.Clear();
+            ValidationFields.Clear();
         }
 
         public override bool Validate()
@@ -101,7 +102,7 @@ namespace EmailServiceIntermediate.Validation
 
         protected virtual bool ValidatePassword(string Password)
         {
-            if(string.IsNullOrWhiteSpace(Password))
+            if (string.IsNullOrWhiteSpace(Password))
             {
                 Logger.LogWarning(LogMessages.RequiredFieldPassword);
                 return false;
@@ -132,7 +133,7 @@ namespace EmailServiceIntermediate.Validation
 
             if (!Regex.IsMatch(email, ValidationPatterns.EmailPattern))
             {
-                if(bLog)
+                if (bLog)
                     Logger.LogWarning(LogMessages.InvalidEmail);
                 return false;
             } //if
@@ -154,7 +155,7 @@ namespace EmailServiceIntermediate.Validation
 
         protected virtual bool ValidateCountry(int value)
         {
-            if(value < 0)
+            if (value < 0)
                 return false;
 
             return true;

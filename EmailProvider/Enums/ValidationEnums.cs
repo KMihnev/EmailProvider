@@ -16,4 +16,12 @@ namespace EmailServiceIntermediate.Enums
         ValidationTypePhoneNumber,
         ValidationTypeCountry
     }
+
+    public enum EmailValidationTypes
+    {
+        ValidationTypeNone = 0,
+        ValidationTypeSender,
+        ValidationTypeReceiver,
+        ValidationTypeSubject
+    }
 }

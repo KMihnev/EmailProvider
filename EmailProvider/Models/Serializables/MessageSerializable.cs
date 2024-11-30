@@ -16,7 +16,9 @@ namespace EmailServiceIntermediate.Models.Serializables
         public string ReceiverEmail { get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
-        public int StatusID { get; set; }
+        public int Status { get; set; }
+
+        public int Direction { get; set; }
         public DateTime DateOfCompletion { get; set; }
         public virtual ICollection<FileSerializable> Files { get; set; } = new List<FileSerializable>();
 

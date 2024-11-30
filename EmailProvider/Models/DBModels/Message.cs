@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EmailProvider.Enums;
+using EmailServiceIntermediate.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
@@ -10,7 +12,7 @@ public partial class Message : IEntity
 {
     public Message()
     {
-        StatusId = 1;
+        Status = EmailStatusProvider.GetNewStatus();
     }
 
     /// <summary>
@@ -38,7 +40,9 @@ public partial class Message : IEntity
     /// </summary>
     public string Content { get; set; } = null!;
 
-    public int StatusId { get; set; }
+    public int Status { get; set; }
+
+    public int Direction { get; set; }
 
     /// <summary>
     /// Date in which the message was processed
@@ -50,6 +54,4 @@ public partial class Message : IEntity
     public virtual User Receiver { get; set; } = null!;
 
     public virtual User Sender { get; set; } = null!;
-
-    public virtual Status Status { get; set; } = null!;
 }

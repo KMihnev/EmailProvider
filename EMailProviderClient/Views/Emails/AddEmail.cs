@@ -2,6 +2,7 @@
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
 using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Enums;
 
 namespace EMailProviderClient.Views.Emails
 {
@@ -21,7 +22,7 @@ namespace EMailProviderClient.Views.Emails
         {
             emailSerializable.ReceiverEmail = RECEIVER_EDIT.Text;
             emailSerializable.Subject = SUBJECT_EDIT.Text;
-            emailSerializable.Content = CONTENT_BOX.Text;
+            emailSerializable.Content = CONTENT_BOX.Text;   
             emailSerializable.DateOfCompletion = DateTime.Now;
 
             emailSerializable.Files = FILES_LIST.Items.Cast<ListViewItem>()
@@ -42,7 +43,7 @@ namespace EMailProviderClient.Views.Emails
 
         private async Task<bool> SaveEmail()
         {
-            emailSerializable.StatusID = 3;
+            emailSerializable.Status = EmailStatusProvider.GetNewStatus();
             if (!await SendEmailDispatchC.SendEmail(emailSerializable))
             {
                 Logger.LogError(LogMessages.ErrorSavingEmail);
@@ -67,7 +68,7 @@ namespace EMailProviderClient.Views.Emails
 
                 if (result == DialogResult.Yes)
                 {
-                    emailSerializable.StatusID = 2;
+                    emailSerializable.Status = EmailStatusProvider.GetDraftStatus();
                     if (!await SaveEmail())
                         return;
                 }

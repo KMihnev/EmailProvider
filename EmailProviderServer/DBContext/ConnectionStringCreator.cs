@@ -10,9 +10,6 @@ namespace EmailProviderServer.DBContext
 {
     public static class ConnectionStringCreator
     {
-        private static string ServerKey = "ServerName";
-        private static string DatabaseKey = "DatabaseName";
-
         public static string CreateConnectionString()
         {
             string serverName = SettingsProviderS.GetServerName();

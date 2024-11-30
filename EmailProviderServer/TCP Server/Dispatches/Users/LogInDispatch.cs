@@ -3,8 +3,8 @@ using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProviderServer.Validation;
 using EmailServiceIntermediate.Models;
+using EmailProviderServer.Validation.User;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {

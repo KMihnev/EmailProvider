@@ -39,7 +39,7 @@ namespace EmailProviderServer.DBContext.Services
         public IEnumerable<T> GetAllByStatus<T>(int nStatus, int? nCount = null)
         {
             IQueryable<Message> oQuery = this.oMessageRepositoryS
-               .All().Where(om => om.StatusId == nStatus);
+               .All().Where(om => om.Status == nStatus);
 
             if (nCount.HasValue)
                 oQuery = oQuery.Take(nCount.Value);
@@ -51,15 +51,7 @@ namespace EmailProviderServer.DBContext.Services
 
         public IEnumerable<T> GetAllDrafts<T>(int? nCount = null)
         {
-            IQueryable<Message> oQuery = this.oMessageRepositoryS
-               .All().Where(om => om.Status.Value == "Draft");
-
-            if (nCount.HasValue)
-                oQuery = oQuery.Take(nCount.Value);
-
-            var eMails = oQuery.ToList();
-
-            return _mapper.Map<IEnumerable<T>>(eMails);
+            return GetAllByStatus<T>(EmailStatusProvider.GetDraftStatus());
         }
 
         public IEnumerable<T> GetByDateOfSend<T>(DateTime dDateOfSend, DateSearchType eDateSearchType, int? nCount = null)

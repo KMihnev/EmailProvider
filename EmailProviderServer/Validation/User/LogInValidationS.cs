@@ -1,12 +1,12 @@
-﻿using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Validation;
+﻿using EmailProvider.Validation.User;
+using EmailServiceIntermediate.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProviderServer.Validation
+namespace EmailProviderServer.Validation.User
 {
     public class LogInValidationS : UserValidator
     {

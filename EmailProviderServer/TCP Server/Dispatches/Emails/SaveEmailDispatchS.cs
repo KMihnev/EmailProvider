@@ -5,6 +5,9 @@ using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation;
 using EmailServiceIntermediate.Models;
+using EmailProviderServer.Validation.User;
+using EmailProviderServer.Validation.Email;
+using EmailProvider.Enums;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -36,14 +39,26 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            UserSerializable Receiver = _userService.GetByEmail<UserSerializable>(messageSerializable.ReceiverEmail);
-            if(Receiver == null)
+            AddEmailValidationS AddEmailValidator = new AddEmailValidationS();
+            AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, messageSerializable.ReceiverEmail);
+            AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeSubject, messageSerializable.Subject);
+
+            if(AddEmailValidator.Validate())
             {
-                errorMessage = LogMessages.InteralError;
+                errorMessage = LogMessages.InvalidData;
                 return false;
             }
 
-            messageSerializable.ReceiverId = Receiver.Id;
+            UserSerializable Receiver = _userService.GetByEmail<UserSerializable>(messageSerializable.ReceiverEmail);
+
+            //ако не сме го открили при нас значи не е вътрешен
+            if (Receiver == null)
+                messageSerializable.Direction = EmailDirectionProvider.GetEmailDirectionOut();
+            else
+            {
+                messageSerializable.ReceiverId = Receiver.Id;
+                messageSerializable.Direction = EmailDirectionProvider.GetEmailDirectionInner();
+            }
 
             try
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer;
+using EmailProviderServer.DBContext;
 
 
 public partial class ApplicationDbContext : DbContext
@@ -25,14 +26,10 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<EmailServiceIntermediate.Models.File> Files { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
-
-    public virtual DbSet<Status> Statuses { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=EMAIL_DB;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer(ConnectionStringCreator.CreateConnectionString());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -145,7 +142,12 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.SenderId)
                 .HasComment("ID for sender")
                 .HasColumnName("SENDER_ID");
-            entity.Property(e => e.StatusId).HasColumnName("STATUS_ID");
+            entity.Property(e => e.Status)
+                .HasComment("Current status of email")
+                .HasColumnName("STATUS");
+            entity.Property(e => e.Status)
+                .HasComment("Direction of email")
+                .HasColumnName("DIRECTION");
             entity.Property(e => e.Subject)
                 .HasMaxLength(128)
                 .HasComment("Subject of message")
@@ -160,24 +162,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.SenderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MESSAGE_SENDER_ID");
-
-            entity.HasOne(d => d.Status).WithMany(p => p.Messages)
-                .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MESSAGE_STATUS_ID");
-        });
-
-        modelBuilder.Entity<Status>(entity =>
-        {
-            entity.ToTable("STATUSES", tb => tb.HasComment("Table for statuses"));
-
-            entity.Property(e => e.Id)
-                .HasComment("ID for statuses")
-                .HasColumnName("ID");
-            entity.Property(e => e.Value)
-                .HasMaxLength(32)
-                .HasComment("Status Value")
-                .HasColumnName("VALUE");
         });
 
         modelBuilder.Entity<User>(entity =>

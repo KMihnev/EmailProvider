@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailServiceIntermediate.Validation
+namespace EmailProvider.Validation.Base
 {
     public static class BasicValidation
     {
@@ -25,7 +25,7 @@ namespace EmailServiceIntermediate.Validation
 
         public static bool IsText(string strValue)
         {
-            return strValue.All(c =>char.IsLetterOrDigit(c) || char.IsPunctuation(c));
+            return strValue.All(c => char.IsLetterOrDigit(c) || char.IsPunctuation(c));
         }
     }
 

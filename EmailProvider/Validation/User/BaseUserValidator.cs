@@ -1,13 +1,14 @@
-﻿using EmailServiceIntermediate.Enums;
+﻿using EmailProvider.Validation.Base;
+using EmailServiceIntermediate.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailServiceIntermediate.Validation
+namespace EmailProvider.Validation.User
 {
-    public class BaseValidator : IValidator
+    public class BaseUserValidator : IValidator
     {
         protected Dictionary<UserValidationTypes, string> ValidationFields { get; set; }
 
