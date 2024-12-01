@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EmailProviderServer.DBContext.Repositories;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +10,10 @@ namespace EmailProviderServer.DBContext.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly CountryRepository _countryRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
 
-        public CountryService(CountryRepository countryRepository, IMapper mapper)
+        public CountryService(ICountryRepository countryRepository, IMapper mapper)
         {
             _countryRepository = countryRepository;
             _mapper = mapper;

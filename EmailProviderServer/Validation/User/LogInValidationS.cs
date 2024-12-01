@@ -10,11 +10,12 @@ namespace EmailProviderServer.Validation.User
 {
     public class LogInValidationS : UserValidator
     {
-        protected override bool ValidatePassword(string Password)
+        protected override bool ValidatePassword(string Password, bool bLog = false)
         {
             if (string.IsNullOrWhiteSpace(Password))
             {
-                Logger.LogWarning(LogMessages.RequiredFieldPassword);
+                if(bLog)
+                    Logger.LogWarning(LogMessages.RequiredFieldPassword);
                 return false;
             } //if
             return true;
@@ -22,7 +23,7 @@ namespace EmailProviderServer.Validation.User
 
         protected override bool ValidateEmail(string email, bool bLog = false)
         {
-            if (!base.ValidateEmail(email, bLog) && !!base.ValidateName(email))
+            if (!base.ValidateEmail(email, bLog) && !!base.ValidateName(email, bLog))
                 return false;
 
             return true;

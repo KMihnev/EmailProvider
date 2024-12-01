@@ -10,5 +10,7 @@ namespace EmailServiceIntermediate.Models.Serializables
     {
         public int Id { get; set; }
         public byte[] Content { get; set; }
+
+        public int MessageId { get; set; }
     }
 }

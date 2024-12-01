@@ -8,14 +8,15 @@ using EmailServiceIntermediate.Models;
 using EmailProviderServer.Validation.User;
 using EmailProviderServer.Validation.Email;
 using EmailProvider.Enums;
+using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     public class SaveEmailDispatchS : BaseDispatchHandler
     {
-        private readonly MessageService _messageService;
-        private readonly UserService _userService;
-        public SaveEmailDispatchS(MessageService messageService, UserService userService)
+        private readonly IMessageService _messageService;
+        private readonly IUserService _userService;
+        public SaveEmailDispatchS(IMessageService messageService, IUserService userService)
         {
             _messageService = messageService;
             _userService = userService;
@@ -23,7 +24,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            MessageSerializable messageSerializable;
+            SendMessageSerializable messageSerializable;
             try
             {
                 InPackage.Deserialize(out messageSerializable);
@@ -40,29 +41,23 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             }
 
             AddEmailValidationS AddEmailValidator = new AddEmailValidationS();
-            AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, messageSerializable.ReceiverEmail);
+
+            foreach(string email in messageSerializable.ReceiverEmails)
+            {
+                AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, email);
+            }
+
             AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeSubject, messageSerializable.Subject);
 
-            if(AddEmailValidator.Validate())
+            if(!AddEmailValidator.Validate())
             {
                 errorMessage = LogMessages.InvalidData;
                 return false;
             }
 
-            UserSerializable Receiver = _userService.GetByEmail<UserSerializable>(messageSerializable.ReceiverEmail);
-
-            //ако не сме го открили при нас значи не е вътрешен
-            if (Receiver == null)
-                messageSerializable.Direction = EmailDirectionProvider.GetEmailDirectionOut();
-            else
-            {
-                messageSerializable.ReceiverId = Receiver.Id;
-                messageSerializable.Direction = EmailDirectionProvider.GetEmailDirectionInner();
-            }
-
             try
             {
-                _messageService.CreateAsync<MessageSerializable>(messageSerializable);
+                await _messageService.ProcessMessageAsync(messageSerializable);
                 OutPackage.Serialize(true);
             }
             catch (Exception ex)

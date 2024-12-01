@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EmailProviderServer.DBContext;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server;
@@ -11,6 +10,9 @@ using System.Net.Sockets;
 using System.Net;
 using EmailServiceIntermediate.Settings;
 using EmailProviderServer.TCP_Server.Dispatches;
+using EmailProviderServer.DBContext.Repositories.Base;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
+using EmailProviderServer.DBContext.Repositories;
 
 void AddServices(IServiceCollection services)
 {
@@ -21,14 +23,24 @@ void AddServices(IServiceCollection services)
     //Базово Repository
     services.AddScoped(typeof(IRepositoryS<>), typeof(RepositoryS<>));
 
+    //Регистирране на repositories
+
+    services.AddScoped<ICountryRepository, CountryRepository>();
+    services.AddScoped<IMessageRepository, MessageRepository>();
+    services.AddScoped<IInnerMessageRepository, InnerMessageRepository>();
+    services.AddScoped<IOutgoingMessageRepository, OutgoingMessageRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
+
     //Регистриране на сервизи
-    services.AddTransient<IBulkIncomingMessageService, BulkIncomingMessageService>();
-    services.AddTransient<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
-    services.AddTransient<ICategoryService, CategoryService>();
-    services.AddTransient<ICountryService, CountryService>();
-    services.AddTransient<IFileService, FileService>();
-    services.AddTransient<IMessageService, MessageService>();
-    services.AddTransient<IUserService, UserService>();
+    services.AddScoped<IBulkIncomingMessageService, BulkIncomingMessageService>();
+    services.AddScoped<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
+    //services.AddScoped<ICategoryService, CategoryService>();
+    services.AddScoped<ICountryService, CountryService>();
+    //services.AddScoped<IFileService, FileService>();
+    services.AddScoped<IMessageService, MessageService>();
+    services.AddScoped<IUserService, UserService>();
+
+    services.AddSingleton<DispatchMapper>();
 }
 
 void LoadAutoMapperProfiles(IServiceCollection services)

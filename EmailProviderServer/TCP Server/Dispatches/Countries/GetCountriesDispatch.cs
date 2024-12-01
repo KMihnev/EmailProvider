@@ -7,14 +7,15 @@ using EmailServiceIntermediate.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches.Countries
 {
     public class GetCountriesDispatch : BaseDispatchHandler
     {
-        private readonly CountryService _countryService;
+        private readonly ICountryService _countryService;
 
-        public GetCountriesDispatch(CountryService countryService)
+        public GetCountriesDispatch(ICountryService countryService)
         {
             _countryService = countryService;
         }

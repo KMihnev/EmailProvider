@@ -1,48 +1,32 @@
-﻿using EmailProvider.Enums;
-using EmailServiceIntermediate.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 
 /// <summary>
-/// Table for outgoing messages
+/// Table for emails
 /// </summary>
 public partial class Message : IEntity
 {
-    public Message()
-    {
-        Status = EmailStatusProvider.GetNewStatus();
-    }
-
     /// <summary>
-    /// ID received message
+    /// ID of the message
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// ID for sender
-    /// </summary>
-    public int SenderId { get; set; }
-
-    /// <summary>
-    /// ID for receiver
-    /// </summary>
-    public int ReceiverId { get; set; }
-
-    /// <summary>
-    /// Subject of message
+    /// Subject of the message
     /// </summary>
     public string Subject { get; set; } = null!;
 
     /// <summary>
-    /// Content of message
+    /// Content of the message
     /// </summary>
     public string Content { get; set; } = null!;
 
+    /// <summary>
+    /// Current status of the email
+    /// </summary>
     public int Status { get; set; }
-
-    public int Direction { get; set; }
 
     /// <summary>
     /// Date in which the message was processed
@@ -51,7 +35,9 @@ public partial class Message : IEntity
 
     public virtual ICollection<File> Files { get; set; } = new List<File>();
 
-    public virtual User Receiver { get; set; } = null!;
+    public virtual ICollection<IncomingMessage> IncomingMessages { get; set; } = new List<IncomingMessage>();
 
-    public virtual User Sender { get; set; } = null!;
+    public virtual ICollection<InnerMessage> InnerMessages { get; set; } = new List<InnerMessage>();
+
+    public virtual ICollection<OutgoingMessage> OutgoingMessages { get; set; } = new List<OutgoingMessage>();
 }

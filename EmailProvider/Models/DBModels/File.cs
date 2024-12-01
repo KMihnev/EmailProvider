@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
+
 /// <summary>
 /// Table for message files
 /// </summary>

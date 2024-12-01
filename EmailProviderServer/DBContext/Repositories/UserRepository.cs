@@ -1,4 +1,5 @@
-﻿using EmailProviderServer.DBContext.Services.Interfaces.Base;
+﻿using EmailProviderServer.DBContext.Repositories.Base;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
-    public class UserRepository : IRepositoryS<User>
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -56,6 +57,11 @@ namespace EmailProviderServer.DBContext.Repositories
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        public Task<User?> GetUserByEmailAsync(string email)
+        {
+            throw new NotImplementedException();
         }
     }
 }

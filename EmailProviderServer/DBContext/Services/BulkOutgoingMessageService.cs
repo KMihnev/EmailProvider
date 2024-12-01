@@ -1,7 +1,7 @@
 ﻿//Includes
 
+using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
 namespace EmailProviderServer.DBContext.Services
 {

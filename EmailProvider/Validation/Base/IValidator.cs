@@ -8,6 +8,6 @@ namespace EmailProvider.Validation.Base
 {
     public interface IValidator
     {
-        abstract bool Validate();
+        abstract bool Validate(bool bLog = false);
     }
 }

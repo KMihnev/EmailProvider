@@ -1,9 +1,8 @@
-﻿
-using EmailServiceIntermediate.Models;
+﻿using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace EmailProviderServer.DBContext.Services.Interfaces.Base
+namespace EmailProviderServer.DBContext.Repositories.Base
 {
     public class RepositoryS<TEntity> : IRepositoryS<TEntity>
         where TEntity : class, IEntity

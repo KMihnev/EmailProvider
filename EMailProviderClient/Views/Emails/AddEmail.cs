@@ -8,19 +8,20 @@ namespace EMailProviderClient.Views.Emails
 {
     public partial class AddEmail : Form
     {
-        private MessageSerializable emailSerializable { get; set; }
+        private SendMessageSerializable emailSerializable { get; set; }
 
         public AddEmail()
         {
             InitializeComponent();
 
-            emailSerializable = new MessageSerializable();
+            emailSerializable = new SendMessageSerializable();
             emailSerializable.SenderId = UserController.GetCurrentUserID();
         }
 
         private async void SEND_BTN_Click(object sender, EventArgs e)
         {
-            emailSerializable.ReceiverEmail = RECEIVER_EDIT.Text;
+            emailSerializable.ReceiverEmails.Clear();
+            emailSerializable.ReceiverEmails = new List<string>((RECEIVER_EDIT.Text.Split(";")));
             emailSerializable.Subject = SUBJECT_EDIT.Text;
             emailSerializable.Content = CONTENT_BOX.Text;   
             emailSerializable.DateOfCompletion = DateTime.Now;

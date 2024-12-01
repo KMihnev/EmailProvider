@@ -64,7 +64,7 @@ namespace EMailProviderClient.Views.User
             else
                 user.Name = EDC_NAME.Text;
 
-            if (!FieldValidator.Validate())
+            if (!FieldValidator.Validate(true))
                 return;
 
             user.Password = EDC_PASSWORD.Text;

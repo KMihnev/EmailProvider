@@ -30,10 +30,7 @@ namespace EMailProviderClient.Dispatches.Users
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
 
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
-                {
-                    Logger.LogErrorCalling();
                     return false;
-                }
 
                 UserSerializable newUser = null;
                 OutPackage.Deserialize(out newUser);
@@ -109,10 +106,7 @@ namespace EMailProviderClient.Dispatches.Users
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
 
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
-                {
-                    Logger.LogErrorCalling();
                     return false;
-                }
 
                 UserSerializable newUser = null;
                 OutPackage.Deserialize(out newUser);

@@ -14,7 +14,7 @@ namespace EMailProviderClient.Dispatches.Emails
 {
     public class SendEmailDispatchC
     {
-        public static async Task<bool> SendEmail(MessageSerializable messageSerializable)
+        public static async Task<bool> SendEmail(SendMessageSerializable messageSerializable)
         {
             try
             {

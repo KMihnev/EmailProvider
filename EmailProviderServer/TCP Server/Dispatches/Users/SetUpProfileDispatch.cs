@@ -7,14 +7,15 @@ using EmailServiceIntermediate.Models;
 using System;
 using System.Threading.Tasks;
 using EmailProviderServer.Validation.User;
+using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     public class SetUpProfileDispatch : BaseDispatchHandler
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public SetUpProfileDispatch(UserService userService)
+        public SetUpProfileDispatch(IUserService userService)
         {
             _userService = userService;
         }

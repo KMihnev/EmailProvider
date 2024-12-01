@@ -54,7 +54,7 @@ namespace EMailProviderClient.Views.User
 
         private async void BTN_REGISTER_Click(object sender, EventArgs e)
         {
-            if (!FieldValidator.Validate())
+            if (!FieldValidator.Validate(true))
                 return;
 
             if (EDC_RE_PASSWORD.Text != EDC_PASSWORD.Text)

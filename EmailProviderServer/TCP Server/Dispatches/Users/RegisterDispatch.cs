@@ -5,14 +5,15 @@ using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.Validation.User;
+using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     public class RegisterDispatch : BaseDispatchHandler
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public RegisterDispatch(UserService userService)
+        public RegisterDispatch(IUserService userService)
         {
             _userService = userService;
         }

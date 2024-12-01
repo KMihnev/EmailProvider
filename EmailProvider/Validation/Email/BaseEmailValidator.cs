@@ -7,7 +7,7 @@ namespace EmailProvider.Validation.Email
     {
         protected Dictionary<EmailValidationTypes, string> ValidationFields { get; set; }
 
-        public virtual bool Validate()
+        public virtual bool Validate(bool bLog = false)
         {
             return true;
         }

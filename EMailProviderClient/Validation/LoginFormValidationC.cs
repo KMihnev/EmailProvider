@@ -14,7 +14,7 @@ namespace EMailProviderClient.Validation
             
         }
 
-        protected override bool ValidatePassword(string Password)
+        protected override bool ValidatePassword(string Password, bool bLog = false)
         {
             if (string.IsNullOrWhiteSpace(Password))
             {

@@ -15,14 +15,12 @@ namespace EmailProviderServer.TCP_Server
     public class TcpServerService : BackgroundService
     {
         private readonly TcpListener _listener;
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly DispatchMapper _dispatchMapper;
 
-        public TcpServerService(TcpListener listener, ApplicationDbContext context, IMapper mapper)
+        public TcpServerService(TcpListener listener, DispatchMapper dispatchMapper)
         {
             _listener = listener;
-            _context = context;
-            _mapper = mapper;
+            _dispatchMapper = dispatchMapper;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -64,8 +62,7 @@ namespace EmailProviderServer.TCP_Server
                     // Десериализираме си кода на диспача
                     InPackage.Deserialize(out int dispatchCode);
 
-                    DispatchMapper dispatchMapper = new DispatchMapper(_context, _mapper);
-                    BaseDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(dispatchCode);
+                    BaseDispatchHandler dispatchHandler = _dispatchMapper.MapDispatch(dispatchCode);
 
                     if (!await dispatchHandler?.Execute(InPackage, OutPackage))
                     {

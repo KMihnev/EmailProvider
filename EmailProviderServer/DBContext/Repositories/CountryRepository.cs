@@ -1,4 +1,5 @@
-﻿using EmailProviderServer.DBContext.Services.Interfaces.Base;
+﻿using EmailProviderServer.DBContext.Repositories.Base;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
-    public class CountryRepository : IRepositoryS<Country>
+    public class CountryRepository : ICountryRepository
     {
         private readonly ApplicationDbContext _context;
 

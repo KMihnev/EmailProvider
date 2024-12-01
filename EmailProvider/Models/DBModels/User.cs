@@ -10,9 +10,9 @@ public partial class User : IEntity
 {
     public User()
     {
-        Name = "";
         CountryId = 1;
-        PhoneNumber = "";
+        PhoneNumber = string.Empty;
+        Name = string.Empty;
     }
 
     /// <summary>
@@ -43,13 +43,15 @@ public partial class User : IEntity
     /// <summary>
     /// Country id of user
     /// </summary>
-    public int? CountryId { get; set; }
+    public int CountryId { get; set; }
 
-    public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
+    public virtual Country Country { get; set; }
 
-    public virtual Country? Country { get; set; }
+    public virtual ICollection<IncomingMessage> IncomingMessages { get; set; } = new List<IncomingMessage>();
 
-    public virtual ICollection<Message> MessageReceivers { get; set; } = new List<Message>();
+    public virtual ICollection<InnerMessage> InnerMessageReceivers { get; set; } = new List<InnerMessage>();
 
-    public virtual ICollection<Message> MessageSenders { get; set; } = new List<Message>();
+    public virtual ICollection<InnerMessage> InnerMessageSenders { get; set; } = new List<InnerMessage>();
+
+    public virtual ICollection<OutgoingMessage> OutgoingMessages { get; set; } = new List<OutgoingMessage>();
 }

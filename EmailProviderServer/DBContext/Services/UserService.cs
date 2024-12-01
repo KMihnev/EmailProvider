@@ -4,21 +4,21 @@ using AutoMapper;
 using EmailServiceIntermediate.Logging;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
 using System.Security.Cryptography;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 
 namespace EmailProviderServer.DBContext.Services
 {
     public class UserService : IUserService
     {
 
-        private readonly UserRepository _oUserRepositoryS;
+        private readonly IUserRepository _oUserRepositoryS;
         private readonly IMapper _mapper;
 
-        public UserService(UserRepository oUserRepository, IMapper mapper)
+        public UserService(IUserRepository oUserRepository, IMapper mapper)
         {
             _oUserRepositoryS = oUserRepository;
             _mapper = mapper;

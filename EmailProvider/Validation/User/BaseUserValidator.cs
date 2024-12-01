@@ -12,7 +12,7 @@ namespace EmailProvider.Validation.User
     {
         protected Dictionary<UserValidationTypes, string> ValidationFields { get; set; }
 
-        public virtual bool Validate()
+        public virtual bool Validate(bool bLog = false)
         {
             return true;
         }

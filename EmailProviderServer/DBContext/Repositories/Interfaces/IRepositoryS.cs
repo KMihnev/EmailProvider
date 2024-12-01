@@ -1,6 +1,6 @@
 ﻿//Includes
 
-namespace EmailProviderServer.DBContext.Services.Interfaces.Base
+namespace EmailProviderServer.DBContext.Repositories.Base
 {
     public interface IRepositoryS<TEntity> : IDisposable
         where TEntity : class

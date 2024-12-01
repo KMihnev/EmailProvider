@@ -4,23 +4,21 @@ using EmailServiceIntermediate.Enums;
 using EmailProviderServer.DBContext;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailProviderServer.TCP_Server.Dispatches.Countries;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Models;
+using EmailProviderServer.DBContext.Services.Base;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     public class DispatchMapper
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IServiceProvider _serviceProvider;
 
-        private readonly IMapper _mapper;
-
-        public DispatchMapper(ApplicationDbContext context, IMapper mapper)
+        public DispatchMapper(IServiceProvider serviceProvider)
         {
-            _context = context;
-            _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         public BaseDispatchHandler MapDispatch(int dispatchCode)
@@ -28,17 +26,17 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             switch ((DispatchEnums)dispatchCode)
             {
                 case DispatchEnums.Register:
-                    return new RegisterDispatch(new UserService(new UserRepository(_context), _mapper));
+                    return ActivatorUtilities.CreateInstance<RegisterDispatch>(_serviceProvider);
                 case DispatchEnums.SetUpProfile:
-                    return new SetUpProfileDispatch(new UserService(new UserRepository(_context), _mapper));
+                    return ActivatorUtilities.CreateInstance<SetUpProfileDispatch>(_serviceProvider);
                 case DispatchEnums.GetCountries:
-                    return new GetCountriesDispatch(new CountryService(new CountryRepository(_context), _mapper));
+                    return ActivatorUtilities.CreateInstance<GetCountriesDispatch>(_serviceProvider);
                 case DispatchEnums.Login:
-                    return new LoginDispatch(new UserService(new UserRepository(_context), _mapper));
+                    return ActivatorUtilities.CreateInstance<LoginDispatch>(_serviceProvider);
                 case DispatchEnums.SendEmail:
-                    return new SaveEmailDispatchS(new MessageService(new MessageRepository(_context), _mapper), new UserService(new UserRepository(_context), _mapper));
+                    return ActivatorUtilities.CreateInstance<SaveEmailDispatchS>(_serviceProvider);
                 default:
-                    return null;
+                    throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }
         }
     }

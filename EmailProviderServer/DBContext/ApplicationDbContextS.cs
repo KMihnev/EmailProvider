@@ -25,11 +25,19 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<EmailServiceIntermediate.Models.File> Files { get; set; }
 
+    public virtual DbSet<IncomingMessage> IncomingMessages { get; set; }
+
+    public virtual DbSet<InnerMessage> InnerMessages { get; set; }
+
     public virtual DbSet<Message> Messages { get; set; }
+
+    public virtual DbSet<OutgoingMessage> OutgoingMessages { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(ConnectionStringCreator.CreateConnectionString());
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=.;Database=EMAIL_DB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -121,47 +129,119 @@ public partial class ApplicationDbContext : DbContext
                 .HasConstraintName("FK_FILE_MESSAGE_ID");
         });
 
-        modelBuilder.Entity<Message>(entity =>
+        modelBuilder.Entity<IncomingMessage>(entity =>
         {
-            entity.ToTable("MESSAGES", tb => tb.HasComment("Table for outgoing messages"));
+            entity.ToTable("INCOMING_MESSAGES", tb => tb.HasComment("Table for incoming email details"));
 
             entity.Property(e => e.Id)
-                .HasComment("ID received message")
+                .HasComment("ID of incoming email")
+                .HasColumnName("ID");
+            entity.Property(e => e.MessageId)
+                .HasComment("Reference to message ID")
+                .HasColumnName("MESSAGE_ID");
+            entity.Property(e => e.ReceiverId)
+                .HasComment("Receiver user ID")
+                .HasColumnName("RECEIVER_ID");
+            entity.Property(e => e.SenderEmail)
+                .HasMaxLength(64)
+                .HasComment("Sender email address")
+                .HasColumnName("SENDER_EMAIL");
+
+            entity.HasOne(d => d.Message).WithMany(p => p.IncomingMessages)
+                .HasForeignKey(d => d.MessageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_INCOMING_MESSAGE_ID");
+
+            entity.HasOne(d => d.Receiver).WithMany(p => p.IncomingMessages)
+                .HasForeignKey(d => d.ReceiverId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_INCOMING_RECEIVER_ID");
+        });
+
+        modelBuilder.Entity<InnerMessage>(entity =>
+        {
+            entity.ToTable("INNER_MESSAGES", tb => tb.HasComment("Table for inner email details"));
+
+            entity.Property(e => e.Id)
+                .HasComment("ID of inner email")
+                .HasColumnName("ID");
+            entity.Property(e => e.MessageId)
+                .HasComment("Reference to message ID")
+                .HasColumnName("MESSAGE_ID");
+            entity.Property(e => e.ReceiverId)
+                .HasComment("Receiver user ID")
+                .HasColumnName("RECEIVER_ID");
+            entity.Property(e => e.SenderId)
+                .HasComment("Sender user ID")
+                .HasColumnName("SENDER_ID");
+
+            entity.HasOne(d => d.Message).WithMany(p => p.InnerMessages)
+                .HasForeignKey(d => d.MessageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_INNER_MESSAGE_ID");
+
+            entity.HasOne(d => d.Receiver).WithMany(p => p.InnerMessageReceivers)
+                .HasForeignKey(d => d.ReceiverId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_INNER_RECEIVER_ID");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.InnerMessageSenders)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_INNER_SENDER_ID");
+        });
+
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.ToTable("MESSAGES", tb => tb.HasComment("Table for emails"));
+
+            entity.Property(e => e.Id)
+                .HasComment("ID of the message")
                 .HasColumnName("ID");
             entity.Property(e => e.Content)
                 .HasMaxLength(896)
-                .HasComment("Content of message")
+                .HasComment("Content of the message")
                 .HasColumnName("CONTENT");
             entity.Property(e => e.DateOfCompletion)
                 .HasComment("Date in which the message was processed")
                 .HasColumnType("datetime")
                 .HasColumnName("DATE_OF_COMPLETION");
-            entity.Property(e => e.ReceiverId)
-                .HasComment("ID for receiver")
-                .HasColumnName("RECEIVER_ID");
-            entity.Property(e => e.SenderId)
-                .HasComment("ID for sender")
-                .HasColumnName("SENDER_ID");
             entity.Property(e => e.Status)
-                .HasComment("Current status of email")
+                .HasComment("Current status of the email")
                 .HasColumnName("STATUS");
-            entity.Property(e => e.Status)
-                .HasComment("Direction of email")
-                .HasColumnName("DIRECTION");
             entity.Property(e => e.Subject)
                 .HasMaxLength(128)
-                .HasComment("Subject of message")
+                .HasComment("Subject of the message")
                 .HasColumnName("SUBJECT");
+        });
 
-            entity.HasOne(d => d.Receiver).WithMany(p => p.MessageReceivers)
-                .HasForeignKey(d => d.ReceiverId)
+        modelBuilder.Entity<OutgoingMessage>(entity =>
+        {
+            entity.ToTable("OUTGOING_MESSAGES", tb => tb.HasComment("Table for outgoing email details"));
+
+            entity.Property(e => e.Id)
+                .HasComment("ID of outgoing email")
+                .HasColumnName("ID");
+            entity.Property(e => e.MessageId)
+                .HasComment("Reference to message ID")
+                .HasColumnName("MESSAGE_ID");
+            entity.Property(e => e.ReceiverEmail)
+                .HasMaxLength(64)
+                .HasComment("Receiver email address")
+                .HasColumnName("RECEIVER_EMAIL");
+            entity.Property(e => e.SenderId)
+                .HasComment("Sender user ID")
+                .HasColumnName("SENDER_ID");
+
+            entity.HasOne(d => d.Message).WithMany(p => p.OutgoingMessages)
+                .HasForeignKey(d => d.MessageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MESSAGE_RECEIVER_ID");
+                .HasConstraintName("FK_OUTGOING_MESSAGE_ID");
 
-            entity.HasOne(d => d.Sender).WithMany(p => p.MessageSenders)
+            entity.HasOne(d => d.Sender).WithMany(p => p.OutgoingMessages)
                 .HasForeignKey(d => d.SenderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MESSAGE_SENDER_ID");
+                .HasConstraintName("FK_OUTGOING_SENDER_ID");
         });
 
         modelBuilder.Entity<User>(entity =>

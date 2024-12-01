@@ -4,6 +4,7 @@ using EmailServiceIntermediate.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace EmailProvider.Validation.User
             ValidationFields.Clear();
         }
 
-        public override bool Validate()
+        public override bool Validate(bool bLog = false)
         {
             if (ValidationFields == null || ValidationFields.Count == 0)
             {
@@ -43,25 +44,25 @@ namespace EmailProvider.Validation.User
                         break;
                     case UserValidationTypes.ValidationTypeName:
                         {
-                            if (!ValidateName(pair.Value))
+                            if (!ValidateName(pair.Value, bLog))
                                 return false;
                             break;
                         } //case
                     case UserValidationTypes.ValidationTypePassword:
                         {
-                            if (!ValidatePassword(pair.Value))
+                            if (!ValidatePassword(pair.Value, bLog))
                                 return false;
                             break;
                         } //case
                     case UserValidationTypes.ValidationTypeEmail:
                         {
-                            if (!ValidateEmail(pair.Value, true))
+                            if (!ValidateEmail(pair.Value, bLog))
                                 return false;
                             break;
                         } //case
                     case UserValidationTypes.ValidationTypePhoneNumber:
                         {
-                            if (!ValidatePhoneNumber(pair.Value))
+                            if (!ValidatePhoneNumber(pair.Value, bLog))
                                 return false;
                             break;
                         } //case
@@ -89,34 +90,38 @@ namespace EmailProvider.Validation.User
             ValidationFields.Add(eValidationType, value);
         }
 
-        protected virtual bool ValidateName(string Name)
+        protected virtual bool ValidateName(string Name, bool bLog = false)
         {
             if (!BasicValidation.IsAlpha(Name))
             {
-                Logger.LogWarning(LogMessages.InvalidName);
+                if (bLog)
+                    Logger.LogWarning(LogMessages.InvalidName);
                 return false;
             } //if
 
             return true;
         }
 
-        protected virtual bool ValidatePassword(string Password)
+        protected virtual bool ValidatePassword(string Password, bool bLog = false)
         {
             if (string.IsNullOrWhiteSpace(Password))
             {
-                Logger.LogWarning(LogMessages.RequiredFieldPassword);
+                if(bLog)
+                    Logger.LogWarning(LogMessages.RequiredFieldPassword);
                 return false;
             } //if
 
             if (!BasicValidation.IsAlphaNumeric(Password))
             {
-                Logger.LogWarning(LogMessages.InvalidPassword);
+                if (bLog)
+                    Logger.LogWarning(LogMessages.InvalidPassword);
                 return false;
             } //if
 
             if (!Password.Any(char.IsUpper))
             {
-                Logger.LogWarning(LogMessages.InvalidPasswordNoUpper);
+                if (bLog)
+                    Logger.LogWarning(LogMessages.InvalidPasswordNoUpper);
                 return false;
             } //if
 
@@ -127,7 +132,8 @@ namespace EmailProvider.Validation.User
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                Logger.LogWarning(LogMessages.RequiredFieldEmail);
+                if (bLog)
+                    Logger.LogWarning(LogMessages.RequiredFieldEmail);
                 return false;
             } //if
 
@@ -141,12 +147,13 @@ namespace EmailProvider.Validation.User
             return true;
         }
 
-        protected virtual bool ValidatePhoneNumber(string phoneNumber)
+        protected virtual bool ValidatePhoneNumber(string phoneNumber, bool bLog = false)
         {
             string pattern = @"^\+?\d{1,3}? ?\d{6,14}$";
             if (!Regex.IsMatch(phoneNumber, pattern))
             {
-                Logger.LogWarning(LogMessages.InvalidPhoneNumber);
+                if (bLog)
+                    Logger.LogWarning(LogMessages.InvalidPhoneNumber);
                 return false;
             } //if
 

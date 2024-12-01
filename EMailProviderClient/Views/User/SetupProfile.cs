@@ -50,7 +50,7 @@ namespace EMailProviderClient.Views.User
 
         private async void BTN_CONTINUE_Click(object sender, EventArgs e)
         {
-            if (!UserValidatorC.Validate())
+            if (!UserValidatorC.Validate(true))
                 return;
 
             var user = UserController.GetCurrentUser();

@@ -28,7 +28,7 @@ namespace EmailProvider.Validation.Email
             ValidationFields.Clear();
         }
 
-        public override bool Validate()
+        public override bool Validate(bool bLog = false)
         {
             if (ValidationFields == null || ValidationFields.Count == 0)
             {

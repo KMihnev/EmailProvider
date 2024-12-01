@@ -22,7 +22,7 @@ namespace EMailProviderClient.Validation
             ValidationFieldsC.Add(eValidationType, textBox);
         }
 
-        public override bool Validate()
+        public override bool Validate(bool bLog = false)
         {
             EmptyFields();
             foreach (var pair in ValidationFieldsC)
@@ -30,7 +30,7 @@ namespace EMailProviderClient.Validation
                 AddValidation(pair.Key, pair.Value.Text);
             }
 
-            return base.Validate();
+            return base.Validate(bLog);
         }
 
 
