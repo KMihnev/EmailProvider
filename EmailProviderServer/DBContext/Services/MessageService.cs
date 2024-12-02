@@ -4,10 +4,6 @@ using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
 using EmailServiceIntermediate.Enums;
 using AutoMapper;
-using System.Diagnostics.Metrics;
-using EmailProviderServer.DBContext.Repositories;
-using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProvider.Models.Serializables.Base;
 
@@ -35,41 +31,17 @@ namespace EmailProviderServer.DBContext.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> GetAllByStatus<T>(int nStatus, int? nCount = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> GetAllDrafts<T>(int? nCount = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> GetByDateOfSend<T>(DateTime dDateOfSend, DateSearchType eDateSearchType, int? nCount = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T GetById<T>(int nId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task ProcessMessageAsync<TMessageDTO>(TMessageDTO messageDTO) where TMessageDTO : SendMessageDTOBase
         {
             var message = _mapper.Map<Message>(messageDTO);
 
-            var messageId = await _messageRepository.AddMessageAsync(message);
+            await _messageRepository.AddAsync(message);
+            await _messageRepository.SaveChangesAsync();
+            var messageId = message.Id;
 
             foreach (var receiverEmail in messageDTO.ReceiverEmails)
             {
-                // Дали е вътрешен потребител
-                var receiver = await _userRepository.GetUserByEmailAsync(receiverEmail);
+                var receiver = await _userRepository.GetUserByEmail(receiverEmail);
 
                 if (receiver != null)
                 {
@@ -81,7 +53,7 @@ namespace EmailProviderServer.DBContext.Services
                         ReceiverId = receiver.Id
                     };
 
-                    await _innerMessageRepository.AddInnerMessageAsync(innerMessage);
+                    await _innerMessageRepository.AddAsync(innerMessage);
                 }
                 else
                 {
@@ -93,9 +65,11 @@ namespace EmailProviderServer.DBContext.Services
                         ReceiverEmail = receiverEmail
                     };
 
-                    await _outgoingMessageRepository.AddOutgoingMessageAsync(outgoingMessage);
+                    await _outgoingMessageRepository.AddAsync(outgoingMessage);
                 }
             }
+
+            await _messageRepository.SaveChangesAsync();
         }
     }
 

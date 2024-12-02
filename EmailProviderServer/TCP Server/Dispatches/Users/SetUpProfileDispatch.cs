@@ -50,7 +50,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            User CurrentUser = _userService.GetById<User>(user.Id);
+            User CurrentUser = await _userService.GetByIdAsync<User>(user.Id);
 
             if (CurrentUser == null)
             {

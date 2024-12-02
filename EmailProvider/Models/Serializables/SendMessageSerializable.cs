@@ -1,4 +1,5 @@
 ﻿using EmailProvider.Models.Serializables.Base;
+using EmailServiceIntermediate.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +11,21 @@ namespace EmailServiceIntermediate.Models.Serializables
     public class SendMessageSerializable : SendMessageDTOBase
     {
 
-        public SendMessageSerializable()
+        public SendMessageSerializable() : base()
         {
+            DateOfCompletion = DateTime.Now;
+            Files = new List<FileSerializable>();
+            Status = EmailStatusProvider.GetCompleteStatus();
         }
 
-        public int Id { get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
         public int Status { get; set; }
 
         public string SenderEmail { get; set; }
 
-        public ICollection<string> ReceiverEmails { get; set; } = new List<string>();
         public DateTime DateOfCompletion { get; set; }
-        public virtual ICollection<FileSerializable> Files { get; set; } = new List<FileSerializable>();
+        public virtual ICollection<FileSerializable> Files { get; set; }
 
     }
 }

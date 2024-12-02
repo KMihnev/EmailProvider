@@ -44,7 +44,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             foreach(string email in messageSerializable.ReceiverEmails)
             {
-                AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, email);
+                //TO DO
+                //AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, email);
             }
 
             AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeSubject, messageSerializable.Subject);

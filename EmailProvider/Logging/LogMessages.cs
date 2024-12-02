@@ -38,6 +38,7 @@ namespace EmailServiceIntermediate.Logging
         public const string InteralError = "Internal Error";
         public const string NullObject = "{0} is null";
         public const string ErrorCalling = "Error calling: {0}";
+        public const string NullValue = "Null value in: {0}";
         public const string NoUserForEmail = "No user with this email was found";
         public const string NoUserForName = "No user with this name was found";
         public const string IncorrectPassword = "Incorrect Password";
@@ -46,5 +47,6 @@ namespace EmailServiceIntermediate.Logging
         public const string ErrorSavingEmail = "There was an error saving the email";
         public const string DoYouWishToSaveDraft = "Do you want to save this message as a draft?";
         public const string SaveAsDraft = "Save as Draft";
+        public const string RecordNotFound = "Record not found: {0}, Searched value:{1}";
     }
 }

@@ -28,6 +28,11 @@ namespace EmailServiceIntermediate.Logging
             LogError(LogMessages.ErrorCalling, methodName);
         }
 
+        public static void LogNullValue([CallerMemberName] string methodName = "")
+        {
+            LogError(LogMessages.NullValue, methodName);
+        }
+
         public static void LogError(string message, params object[] args)
         {
             string formattedMessage = string.Format(message, args);

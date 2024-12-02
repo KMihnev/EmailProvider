@@ -9,17 +9,17 @@ namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface IUserService
     {
-        IEnumerable<T> GetAll<T>(int? nCount = null);
+        Task<IEnumerable<T>> GetAllAsync<T>();
 
-        IEnumerable<T> GetAllByCountryId<T>(int nId, int? count = null);
+        Task<T> GetByEmailAsync<T>(string email);
 
-        T GetById<T>(int nId);
+        Task<T> GetByIdAsync<T>(int id);
 
-        T GetByName<T>(string strName);
+        Task<T> GetByNameAsync<T>(string name);
 
-        T GetByEmail<T>(string strEmail);
+        Task<bool> CheckIfExistsAsync(int id);
 
-        bool CheckIfExists(int nId);
+        Task<bool> CheckIfExistsEmailAsync(string email);
 
         Task<T> CreateAsync<T>(User user);
 

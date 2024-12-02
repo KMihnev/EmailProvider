@@ -24,7 +24,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Countries
         {
             try
             {
-                List<CountrySerializable> countries = _countryService.GetAll<CountrySerializable>().ToList();
+                List<CountrySerializable> countries = new List<CountrySerializable>( await _countryService.GetAllAsync<CountrySerializable>() );
 
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(countries);

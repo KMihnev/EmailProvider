@@ -46,8 +46,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            var userExists = _userService.GetByEmail<User>(user.Email) != null;
-            if (userExists)
+            if (await _userService.CheckIfExistsEmailAsync(user.Email))
             {
                 errorMessage = LogMessages.UserAlreadyExists;
                 return false;

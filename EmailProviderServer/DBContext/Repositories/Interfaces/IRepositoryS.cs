@@ -1,5 +1,7 @@
 ﻿//Includes
 
+using EmailServiceIntermediate.Models;
+
 namespace EmailProviderServer.DBContext.Repositories.Base
 {
     public interface IRepositoryS<TEntity> : IDisposable
@@ -9,7 +11,7 @@ namespace EmailProviderServer.DBContext.Repositories.Base
 
         IQueryable<TEntity> AllAsNoTracking();
 
-        IQueryable<TEntity> GetByID(int nId);
+        Task<TEntity> GetByID(int nId);
 
         Task AddAsync(TEntity entity);
 
@@ -18,5 +20,7 @@ namespace EmailProviderServer.DBContext.Repositories.Base
         void Delete(TEntity entity);
 
         Task<int> SaveChangesAsync();
+
+        Task<bool> CheckIfExists(int id);
     }
 }

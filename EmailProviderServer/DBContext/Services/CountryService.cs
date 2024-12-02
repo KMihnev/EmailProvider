@@ -2,9 +2,13 @@
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -19,41 +23,47 @@ namespace EmailProviderServer.DBContext.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<T> GetAll<T>(int? nCount = null)
+        public async Task<IEnumerable<T>> GetAllAsync<T>()
         {
-            IQueryable<Country> query = _countryRepository.All().OrderBy(c => c.Name);
+            var query = _countryRepository.AllAsNoTracking().OrderBy(c => c.Name);
 
-            if (nCount.HasValue)
-                query = query.Take(nCount.Value);
-
-            var countries = query.ToList();
+            var countries = await query.ToListAsync();
 
             return _mapper.Map<IEnumerable<T>>(countries);
         }
 
-        public T GetById<T>(int nId)
+        public async Task<T> GetByIdAsync<T>(int nId)
         {
-            var country = _countryRepository
-                .All()
-                .FirstOrDefault(x => x.Id == nId);
+            var country = await _countryRepository.GetByID(nId);
+
+            if (country == null)
+            {
+                Logger.LogError(LogMessages.RecordNotFound, this.GetType().Name, nId);
+            }
 
             return _mapper.Map<T>(country);
         }
 
-        public T GetByName<T>(string strName)
+        public async Task<T> GetByNameAsync<T>(string strName)
         {
-            var country = _countryRepository
-                .All()
-                .FirstOrDefault(x => x.Name == strName);
+            var country = await _countryRepository.GetByName(strName);
+
+            if (country == null)
+            {
+                Logger.LogError(LogMessages.RecordNotFound, this.GetType().Name, strName);
+            }
 
             return _mapper.Map<T>(country);
         }
 
-        public T GetByPhoneCode<T>(string strPhoneCode)
+        public async Task<T> GetByPhoneCodeAsync<T>(string strPhoneCode)
         {
-            var country = _countryRepository
-                .All()
-                .FirstOrDefault(x => x.PhoneNumberCode == strPhoneCode);
+            var country = await _countryRepository.GetByPhoneCode(strPhoneCode);
+
+            if (country == null)
+            {
+                Logger.LogError(LogMessages.RecordNotFound, this.GetType().Name, strPhoneCode);
+            }
 
             return _mapper.Map<T>(country);
         }

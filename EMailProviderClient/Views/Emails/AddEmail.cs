@@ -20,7 +20,6 @@ namespace EMailProviderClient.Views.Emails
 
         private async void SEND_BTN_Click(object sender, EventArgs e)
         {
-            emailSerializable.ReceiverEmails.Clear();
             emailSerializable.ReceiverEmails = new List<string>((RECEIVER_EDIT.Text.Split(";")));
             emailSerializable.Subject = SUBJECT_EDIT.Text;
             emailSerializable.Content = CONTENT_BOX.Text;   

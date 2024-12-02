@@ -57,9 +57,9 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             User recUser;
             if (bIsUsingEmail)
-                recUser = _userService.GetByEmail<User>(user.Email);
+                recUser = await _userService.GetByEmailAsync<User>(user.Email);
             else
-                recUser = _userService.GetByName<User>(user.Name);
+                recUser = await _userService.GetByNameAsync<User>(user.Name);
 
             if(bIsUsingEmail && recUser == null)
             {
@@ -81,7 +81,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                UserSerializable userSerializable = _userService.GetById<UserSerializable>(recUser.Id);
+                UserSerializable userSerializable = await _userService.GetByIdAsync<UserSerializable>(recUser.Id);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(userSerializable);
             }

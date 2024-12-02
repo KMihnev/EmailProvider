@@ -10,6 +10,9 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {
     public interface IUserRepository : IRepositoryS<User>
     {
-        Task<User?> GetUserByEmailAsync(string email);
+        Task<User> GetUserByEmail(string email);
+        Task<User> GetUserByName(string name);
+
+        Task<bool> CheckIfExistsEmail(string email);
     }
 }
