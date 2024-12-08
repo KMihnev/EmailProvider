@@ -85,6 +85,15 @@ namespace EMailProviderClient
                     : message.Content;
 
                 var item = new ListViewItem(message.DateOfCompletion.ToString("yyyy-MM-dd HH:mm"));
+
+                string emailInfo;
+                if (CurrentFolderType == SearchTypeFolder.SearchTypeFolderIncoming)
+                    emailInfo = message.SenderEmail;
+                else
+                    emailInfo = message.ReceiverEmails;
+
+                item.SubItems.Add(emailInfo);
+
                 item.SubItems.Add(formattedSubject);
                 item.SubItems.Add(formattedContent);
 
@@ -121,8 +130,9 @@ namespace EMailProviderClient
             int remainingWidth = totalWidth - (int)(totalWidth * 0.4) - SystemInformation.VerticalScrollBarWidth;
 
             EMAILS_LIST.Columns[0].Width = (int)(totalWidth * 0.1);
-            EMAILS_LIST.Columns[1].Width = (int)(totalWidth * 0.3);
-            EMAILS_LIST.Columns[2].Width = Math.Max(remainingWidth, 100);
+            EMAILS_LIST.Columns[1].Width = (int)(totalWidth * 0.2);
+            EMAILS_LIST.Columns[2].Width = (int)(totalWidth * 0.3);
+            EMAILS_LIST.Columns[3].Width = Math.Max(remainingWidth, 100);
         }
 
         private void InitializeCategories()
@@ -154,6 +164,19 @@ namespace EMailProviderClient
             if (e.Item.Tag is SearchTypeFolder selectedFolder)
             {
                 CurrentFolderType = selectedFolder;
+
+                switch (CurrentFolderType)
+                {
+                    case SearchTypeFolder.SearchTypeFolderIncoming:
+                        EMAILS_LIST.Columns[1].Text = "Sender Email";
+                        break;
+                    case SearchTypeFolder.SearchTypeFolderDrafts:
+                    case SearchTypeFolder.SearchTypeFolderOutgoing:
+                    default:
+                        EMAILS_LIST.Columns[1].Text = "Receiver Email";
+                        break;
+                }
+
                 LoadAllForCurrentFolder();
             }
         }

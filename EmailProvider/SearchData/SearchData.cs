@@ -23,6 +23,16 @@ namespace EmailProvider.SearchData
             Conditions = new List<SearchCondition>();
         }
 
+        public void Clear()
+        {
+            Conditions.Clear();
+        }
+
+        public void AddCondition(SearchCondition searchCondition)
+        {
+            Conditions.Add(searchCondition);
+        }
+
         public int GetSearchTypeFolder()
         {
             SearchTypeFolder searchType;

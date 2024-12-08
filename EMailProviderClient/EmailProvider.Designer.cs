@@ -172,9 +172,11 @@
             EMAILS_LIST.FullRowSelect = true;
             EMAILS_LIST.GridLines = true;
             EMAILS_LIST.CheckBoxes = true;
-            EMAILS_LIST.Columns.Add("Date Sent", 150);
-            EMAILS_LIST.Columns.Add("Subject", 400);
-            EMAILS_LIST.Columns.Add("Content", 1825);
+            EMAILS_LIST.Columns.Add("Date Sent", 100);
+            EMAILS_LIST.Columns.Add("Email Info", 100);
+            EMAILS_LIST.Columns.Add("Subject", 100);
+            EMAILS_LIST.Columns.Add("Content", 100);
+
             // 
             // DATE_HEADER
             // 
