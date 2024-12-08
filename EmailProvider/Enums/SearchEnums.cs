@@ -8,7 +8,6 @@ namespace EmailProvider.Enums
 {
     public enum SearchType
     {
-        SearchTypeFolder,
         SearchTypeDate,
         SearchTypeEmail
     }
@@ -28,8 +27,8 @@ namespace EmailProvider.Enums
     public enum SearchTypeFolder
     {
         SearchTypeFolderDrafts,
-        SearchTypeFolderOutgoing,
         SearchTypeFolderIncoming,
+        SearchTypeFolderOutgoing,
         SearchTypeFolderAll,
         SearchTypeFolderCustomCategory,
     }

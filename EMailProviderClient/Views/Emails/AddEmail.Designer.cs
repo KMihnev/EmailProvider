@@ -60,6 +60,7 @@
             CLOSE_BTN.TabIndex = 1;
             CLOSE_BTN.Text = "Close";
             CLOSE_BTN.UseVisualStyleBackColor = true;
+            CLOSE_BTN.Click += CLOSE_BTN_Click;
             // 
             // CONTENT_BOX
             // 

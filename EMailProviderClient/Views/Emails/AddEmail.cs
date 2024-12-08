@@ -20,10 +20,25 @@ namespace EMailProviderClient.Views.Emails
 
         private async void SEND_BTN_Click(object sender, EventArgs e)
         {
+            if (!await SaveEmail())
+            {
+                this.Show();
+                return;
+            }
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private async Task<bool> SaveEmail(bool bIsDraft = false)
+        {
             emailSerializable.ReceiverEmails = new List<string>((RECEIVER_EDIT.Text.Split(";")));
             emailSerializable.Subject = SUBJECT_EDIT.Text;
-            emailSerializable.Content = CONTENT_BOX.Text;   
+            emailSerializable.Content = CONTENT_BOX.Text;
             emailSerializable.DateOfCompletion = DateTime.Now;
+
+            if (bIsDraft)
+                emailSerializable.Status = EmailStatusProvider.GetDraftStatus();
 
             emailSerializable.Files = FILES_LIST.Items.Cast<ListViewItem>()
                 .Select(item => new FileSerializable
@@ -31,18 +46,6 @@ namespace EMailProviderClient.Views.Emails
                     Content = System.IO.File.ReadAllBytes(item.Tag.ToString())
                 }).ToList();
 
-            if (!await SaveEmail())
-           {
-               this.Show();
-               return;
-           }
-
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private async Task<bool> SaveEmail()
-        {
             if (!await SendEmailDispatchC.SendEmail(emailSerializable))
             {
                 Logger.LogError(LogMessages.ErrorSavingEmail);
@@ -56,7 +59,7 @@ namespace EMailProviderClient.Views.Emails
         {
             base.OnFormClosing(e);
 
-            if (e.CloseReason == CloseReason.UserClosing && this.DialogResult != DialogResult.OK)
+            if (e.CloseReason == CloseReason.UserClosing && this.DialogResult != DialogResult.OK && !IsEmailEmpty())
             {
                 var result = MessageBox.Show(
                     LogMessages.DoYouWishToSaveDraft,
@@ -67,14 +70,13 @@ namespace EMailProviderClient.Views.Emails
 
                 if (result == DialogResult.Yes)
                 {
-                    emailSerializable.Status = EmailStatusProvider.GetDraftStatus();
-                    if (!await SaveEmail())
+                    if (!await SaveEmail(true))
                         return;
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     this.DialogResult = DialogResult.OK;
-                    this.Close();       
+                    this.Close();
                 }
             }
         }
@@ -92,6 +94,21 @@ namespace EMailProviderClient.Views.Emails
                     FILES_LIST.Items.Add(item);
                 }
             }
+        }
+
+        private void CLOSE_BTN_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private bool IsEmailEmpty()
+        {
+            if (RECEIVER_EDIT.Text.Count() > 0
+             || SUBJECT_EDIT.Text.Count() > 0
+             || CONTENT_BOX.Text.Count() > 0)
+                return false;
+
+            return true;
         }
     }
 }

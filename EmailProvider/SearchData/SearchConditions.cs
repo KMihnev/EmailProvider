@@ -17,17 +17,6 @@ namespace EmailProvider.SearchData
         }
     }
 
-
-    public class SearchConditionFolder : SearchCondition
-    {
-        public SearchConditionFolder(SearchTypeFolder eSearchTypeDirection, string value)
-        {
-            SearchType = Enums.SearchType.SearchTypeFolder;
-            SearchSubType = (int)eSearchTypeDirection;
-            SearchValue = value;
-        }
-    }
-
     public class SearchConditionEmail : SearchCondition
     {
         public SearchConditionEmail(SearchTypeEmail eSearchConditionEmail, string value)

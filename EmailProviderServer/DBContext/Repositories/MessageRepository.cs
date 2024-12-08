@@ -19,10 +19,10 @@ namespace EmailProviderServer.DBContext.Repositories
 
         }
 
-        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType)
+        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType, string whereClause)
         {
             var results = await _context.ViewMessageSerializable
-                .FromSqlInterpolated($"EXEC SP_GET_MESSAGES @UserId = {userId}, @SearchType = {searchType}")
+                .FromSqlInterpolated($"EXEC SP_GET_MESSAGES @UserId = {userId}, @SearchType = {searchType}, @WhereClause = {whereClause}")
                 .ToListAsync();
 
             foreach (var message in results)

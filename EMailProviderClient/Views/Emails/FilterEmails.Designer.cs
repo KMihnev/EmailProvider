@@ -30,17 +30,20 @@
         {
             Filter = new Label();
             BY_DATE_GRP = new GroupBox();
+            END_DATE_LABEL = new Label();
+            BEGIN_DATE_LABEL = new Label();
+            DATE_TO = new DateTimePicker();
+            DATE_FROM = new DateTimePicker();
             BY_DATE_CHB = new CheckBox();
             BY_RECEIVER_GRP = new GroupBox();
+            SENDER_LABEL = new Label();
+            SENDER_EMAIL = new TextBox();
             EMAIL_LABEL = new Label();
             RECEIVER_EMAIL = new TextBox();
             BY_RECEIVER_CHB = new CheckBox();
             CANCEL = new Button();
             APPLY = new Button();
-            END_DATE_LABEL = new Label();
-            BEGIN_DATE_LABEL = new Label();
-            DATE_TO = new DateTimePicker();
-            DATE_FROM = new DateTimePicker();
+            CLEAR_BTN = new Button();
             BY_DATE_GRP.SuspendLayout();
             BY_RECEIVER_GRP.SuspendLayout();
             SuspendLayout();
@@ -66,73 +69,6 @@
             BY_DATE_GRP.TabIndex = 1;
             BY_DATE_GRP.TabStop = false;
             BY_DATE_GRP.Text = "By Date";
-            // 
-            // BY_DATE_CHB
-            // 
-            BY_DATE_CHB.AutoSize = true;
-            BY_DATE_CHB.Location = new Point(12, 113);
-            BY_DATE_CHB.Name = "BY_DATE_CHB";
-            BY_DATE_CHB.Size = new Size(15, 14);
-            BY_DATE_CHB.TabIndex = 2;
-            BY_DATE_CHB.UseVisualStyleBackColor = true;
-            BY_DATE_CHB.CheckedChanged += BY_DATE_CHB_CheckedChanged;
-            // 
-            // BY_RECEIVER_GRP
-            // 
-            BY_RECEIVER_GRP.Controls.Add(EMAIL_LABEL);
-            BY_RECEIVER_GRP.Controls.Add(RECEIVER_EMAIL);
-            BY_RECEIVER_GRP.Location = new Point(33, 173);
-            BY_RECEIVER_GRP.Name = "BY_RECEIVER_GRP";
-            BY_RECEIVER_GRP.Size = new Size(283, 60);
-            BY_RECEIVER_GRP.TabIndex = 3;
-            BY_RECEIVER_GRP.TabStop = false;
-            BY_RECEIVER_GRP.Text = "By Receiver";
-            // 
-            // EMAIL_LABEL
-            // 
-            EMAIL_LABEL.AutoSize = true;
-            EMAIL_LABEL.Location = new Point(11, 25);
-            EMAIL_LABEL.Name = "EMAIL_LABEL";
-            EMAIL_LABEL.Size = new Size(36, 15);
-            EMAIL_LABEL.TabIndex = 1;
-            EMAIL_LABEL.Text = "Email";
-            // 
-            // RECEIVER_EMAIL
-            // 
-            RECEIVER_EMAIL.Location = new Point(70, 22);
-            RECEIVER_EMAIL.Name = "RECEIVER_EMAIL";
-            RECEIVER_EMAIL.Size = new Size(200, 23);
-            RECEIVER_EMAIL.TabIndex = 0;
-            // 
-            // BY_RECEIVER_CHB
-            // 
-            BY_RECEIVER_CHB.AutoSize = true;
-            BY_RECEIVER_CHB.Location = new Point(12, 198);
-            BY_RECEIVER_CHB.Name = "BY_RECEIVER_CHB";
-            BY_RECEIVER_CHB.Size = new Size(15, 14);
-            BY_RECEIVER_CHB.TabIndex = 4;
-            BY_RECEIVER_CHB.UseVisualStyleBackColor = true;
-            BY_RECEIVER_CHB.CheckedChanged += BY_RECEIVER_CHB_CheckedChanged;
-            // 
-            // CANCEL
-            // 
-            CANCEL.Location = new Point(241, 245);
-            CANCEL.Name = "CANCEL";
-            CANCEL.Size = new Size(75, 23);
-            CANCEL.TabIndex = 5;
-            CANCEL.Text = "Cancel";
-            CANCEL.UseVisualStyleBackColor = true;
-            CANCEL.Click += CANCEL_Click;
-            // 
-            // APPLY
-            // 
-            APPLY.Location = new Point(160, 245);
-            APPLY.Name = "APPLY";
-            APPLY.Size = new Size(75, 23);
-            APPLY.TabIndex = 6;
-            APPLY.Text = "Apply";
-            APPLY.UseVisualStyleBackColor = true;
-            APPLY.Click += APPLY_Click;
             // 
             // END_DATE_LABEL
             // 
@@ -168,11 +104,107 @@
             DATE_FROM.Size = new Size(200, 23);
             DATE_FROM.TabIndex = 0;
             // 
+            // BY_DATE_CHB
+            // 
+            BY_DATE_CHB.AutoSize = true;
+            BY_DATE_CHB.Location = new Point(12, 113);
+            BY_DATE_CHB.Name = "BY_DATE_CHB";
+            BY_DATE_CHB.Size = new Size(15, 14);
+            BY_DATE_CHB.TabIndex = 2;
+            BY_DATE_CHB.UseVisualStyleBackColor = true;
+            BY_DATE_CHB.CheckedChanged += BY_DATE_CHB_CheckedChanged;
+            // 
+            // BY_RECEIVER_GRP
+            // 
+            BY_RECEIVER_GRP.Controls.Add(SENDER_LABEL);
+            BY_RECEIVER_GRP.Controls.Add(SENDER_EMAIL);
+            BY_RECEIVER_GRP.Controls.Add(EMAIL_LABEL);
+            BY_RECEIVER_GRP.Controls.Add(RECEIVER_EMAIL);
+            BY_RECEIVER_GRP.Location = new Point(33, 173);
+            BY_RECEIVER_GRP.Name = "BY_RECEIVER_GRP";
+            BY_RECEIVER_GRP.Size = new Size(283, 94);
+            BY_RECEIVER_GRP.TabIndex = 3;
+            BY_RECEIVER_GRP.TabStop = false;
+            BY_RECEIVER_GRP.Text = "By Email";
+            // 
+            // SENDER_LABEL
+            // 
+            SENDER_LABEL.AutoSize = true;
+            SENDER_LABEL.Location = new Point(12, 58);
+            SENDER_LABEL.Name = "SENDER_LABEL";
+            SENDER_LABEL.Size = new Size(43, 15);
+            SENDER_LABEL.TabIndex = 3;
+            SENDER_LABEL.Text = "Sender";
+            // 
+            // SENDER_EMAIL
+            // 
+            SENDER_EMAIL.Location = new Point(71, 55);
+            SENDER_EMAIL.Name = "SENDER_EMAIL";
+            SENDER_EMAIL.Size = new Size(200, 23);
+            SENDER_EMAIL.TabIndex = 2;
+            // 
+            // EMAIL_LABEL
+            // 
+            EMAIL_LABEL.AutoSize = true;
+            EMAIL_LABEL.Location = new Point(11, 25);
+            EMAIL_LABEL.Name = "EMAIL_LABEL";
+            EMAIL_LABEL.Size = new Size(51, 15);
+            EMAIL_LABEL.TabIndex = 1;
+            EMAIL_LABEL.Text = "Receiver";
+            // 
+            // RECEIVER_EMAIL
+            // 
+            RECEIVER_EMAIL.Location = new Point(70, 22);
+            RECEIVER_EMAIL.Name = "RECEIVER_EMAIL";
+            RECEIVER_EMAIL.Size = new Size(200, 23);
+            RECEIVER_EMAIL.TabIndex = 0;
+            // 
+            // BY_RECEIVER_CHB
+            // 
+            BY_RECEIVER_CHB.AutoSize = true;
+            BY_RECEIVER_CHB.Location = new Point(12, 198);
+            BY_RECEIVER_CHB.Name = "BY_RECEIVER_CHB";
+            BY_RECEIVER_CHB.Size = new Size(15, 14);
+            BY_RECEIVER_CHB.TabIndex = 4;
+            BY_RECEIVER_CHB.UseVisualStyleBackColor = true;
+            BY_RECEIVER_CHB.CheckedChanged += BY_RECEIVER_CHB_CheckedChanged;
+            // 
+            // CANCEL
+            // 
+            CANCEL.Location = new Point(241, 273);
+            CANCEL.Name = "CANCEL";
+            CANCEL.Size = new Size(75, 23);
+            CANCEL.TabIndex = 5;
+            CANCEL.Text = "Cancel";
+            CANCEL.UseVisualStyleBackColor = true;
+            CANCEL.Click += CANCEL_Click;
+            // 
+            // APPLY
+            // 
+            APPLY.Location = new Point(160, 273);
+            APPLY.Name = "APPLY";
+            APPLY.Size = new Size(75, 23);
+            APPLY.TabIndex = 6;
+            APPLY.Text = "Apply";
+            APPLY.UseVisualStyleBackColor = true;
+            APPLY.Click += APPLY_Click;
+            // 
+            // CLEAR_BTN
+            // 
+            CLEAR_BTN.Location = new Point(12, 273);
+            CLEAR_BTN.Name = "CLEAR_BTN";
+            CLEAR_BTN.Size = new Size(75, 23);
+            CLEAR_BTN.TabIndex = 7;
+            CLEAR_BTN.Text = "Clear";
+            CLEAR_BTN.UseVisualStyleBackColor = true;
+            CLEAR_BTN.Click += CLEAR_BTN_Click;
+            // 
             // FilterEmails
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(328, 280);
+            ClientSize = new Size(328, 304);
+            Controls.Add(CLEAR_BTN);
             Controls.Add(APPLY);
             Controls.Add(CANCEL);
             Controls.Add(BY_RECEIVER_CHB);
@@ -205,5 +237,8 @@
         private Label BEGIN_DATE_LABEL;
         private DateTimePicker DATE_TO;
         private DateTimePicker DATE_FROM;
+        private Label SENDER_LABEL;
+        private TextBox SENDER_EMAIL;
+        private Button CLEAR_BTN;
     }
 }

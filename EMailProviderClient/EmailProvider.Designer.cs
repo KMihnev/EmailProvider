@@ -40,10 +40,13 @@
             CMB_SORT = new ComboBox();
             ON_ADD_EMAIL = new Button();
             checkBox1 = new CheckBox();
-            EMAILS_LIST = new CheckedListBox();
             ON_ACCOUNT = new Button();
             pictureBox1 = new PictureBox();
             FILTER_BTN = new Button();
+            EMAILS_LIST = new ListView();
+            DATE_HEADER = new ColumnHeader();
+            SUBJECT_HEADER = new ColumnHeader();
+            CONTENT_HEADER = new ColumnHeader();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -132,14 +135,6 @@
             checkBox1.TabIndex = 12;
             checkBox1.UseVisualStyleBackColor = true;
             // 
-            // EMAILS_LIST
-            // 
-            EMAILS_LIST.FormattingEnabled = true;
-            EMAILS_LIST.Location = new Point(193, 139);
-            EMAILS_LIST.Name = "EMAILS_LIST";
-            EMAILS_LIST.Size = new Size(2358, 814);
-            EMAILS_LIST.TabIndex = 13;
-            // 
             // ON_ACCOUNT
             // 
             ON_ACCOUNT.Location = new Point(2313, 34);
@@ -167,15 +162,44 @@
             FILTER_BTN.UseVisualStyleBackColor = true;
             FILTER_BTN.Click += FILTER_BTN_Click;
             // 
+            // EMAILS_LIST
+            // 
+            EMAILS_LIST.Size = new Size(2355, 814);
+            EMAILS_LIST.Location = new Point(196, 139);
+            EMAILS_LIST.Name = "EMAILS_LIST";
+            EMAILS_LIST.TabIndex = 17;
+            EMAILS_LIST.View = System.Windows.Forms.View.Details;
+            EMAILS_LIST.FullRowSelect = true;
+            EMAILS_LIST.GridLines = true;
+            EMAILS_LIST.CheckBoxes = true;
+            EMAILS_LIST.Columns.Add("Date Sent", 150);
+            EMAILS_LIST.Columns.Add("Subject", 400);
+            EMAILS_LIST.Columns.Add("Content", 1825);
+            // 
+            // DATE_HEADER
+            // 
+            DATE_HEADER.Text = "Date";
+            DATE_HEADER.Width = 150;
+            // 
+            // SUBJECT_HEADER
+            // 
+            SUBJECT_HEADER.Text = "Subject";
+            SUBJECT_HEADER.Width = 200;
+            // 
+            // CONTENT_HEADER
+            // 
+            CONTENT_HEADER.Text = "Content";
+            CONTENT_HEADER.Width = 300;
+            // 
             // EmailProvider
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(2560, 973);
+            Controls.Add(EMAILS_LIST);
             Controls.Add(FILTER_BTN);
             Controls.Add(pictureBox1);
             Controls.Add(ON_ACCOUNT);
-            Controls.Add(EMAILS_LIST);
             Controls.Add(checkBox1);
             Controls.Add(ON_ADD_EMAIL);
             Controls.Add(CMB_SORT);
@@ -207,9 +231,12 @@
         private ComboBox CMB_SORT;
         private Button ON_ADD_EMAIL;
         private CheckBox checkBox1;
-        private CheckedListBox EMAILS_LIST;
         private Button ON_ACCOUNT;
         private PictureBox pictureBox1;
         private Button FILTER_BTN;
+        private ListView EMAILS_LIST;
+        private ColumnHeader DATE_HEADER;
+        private ColumnHeader SUBJECT_HEADER;
+        private ColumnHeader CONTENT_HEADER;
     }
 }

@@ -81,9 +81,9 @@ namespace EmailProviderServer.DBContext.Services
             await _messageRepository.SaveChangesAsync();
         }
 
-        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType)
+        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(SearchData seacrhData)
         {
-            return await _messageRepository.GetCombinedMessagesAsync(userId, searchType);
+            return await _messageRepository.GetCombinedMessagesAsync(seacrhData.UserID, (int)seacrhData.GetSearchTypeFolder(), seacrhData.ConstructWhereClause());
         }
     }
 

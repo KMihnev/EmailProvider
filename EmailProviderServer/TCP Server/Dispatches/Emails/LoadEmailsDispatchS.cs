@@ -44,12 +44,10 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            
-
             try
             {
                 List<ViewMessage> filteredMessages = new List<ViewMessage> ();
-                filteredMessages = await _messageService.GetCombinedMessagesAsync(searchData.UserID, (int)SearchTypeFolder.SearchTypeFolderAll);
+                filteredMessages = await _messageService.GetCombinedMessagesAsync(searchData);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }

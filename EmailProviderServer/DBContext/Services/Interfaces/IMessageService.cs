@@ -14,6 +14,6 @@ namespace EmailProviderServer.DBContext.Services.Base
     {
         Task ProcessMessageAsync<TMessageDTO>(TMessageDTO messageDTO) where TMessageDTO : BaseMessageSerializable;
 
-        Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType);
+        Task<List<ViewMessage>> GetCombinedMessagesAsync(SearchData seacrhData);
     }
 }

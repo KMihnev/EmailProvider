@@ -40,7 +40,8 @@ namespace EMailProviderClient.Dispatches.Emails
                 List<ViewMessage> messageList = null;
                 OutPackage.Deserialize(out messageList);
 
-                outMessageList = messageList;
+                outMessageList.Clear();
+                outMessageList.AddRange(messageList);
 
                 return true;
             }
