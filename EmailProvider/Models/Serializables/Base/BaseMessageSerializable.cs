@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmailProvider.Models.Serializables.Base
 {
-    public abstract class SendMessageDTOBase
+    public abstract class BaseMessageSerializable
     {
-        protected SendMessageDTOBase()
+        protected BaseMessageSerializable()
         {
             ReceiverEmails = new List<string>();
         }

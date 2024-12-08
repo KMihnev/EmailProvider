@@ -14,5 +14,6 @@ namespace EmailServiceIntermediate.Enums
         SetUpProfile,
         GetCountries,
         SendEmail,
+        LoadEmails,
     }
 }

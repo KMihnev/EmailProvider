@@ -6,6 +6,12 @@ using EmailServiceIntermediate.Enums;
 using AutoMapper;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProvider.Models.Serializables.Base;
+using EmailProvider.Enums;
+using EmailProvider.SearchData;
+using Microsoft.EntityFrameworkCore;
+using EmailServiceIntermediate.Models.Serializables;
+using AutoMapper.QueryableExtensions;
+using EmailProvider.Models.DBModels;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -14,6 +20,7 @@ namespace EmailProviderServer.DBContext.Services
         private readonly IMessageRepository _messageRepository;
         private readonly IInnerMessageRepository _innerMessageRepository;
         private readonly IOutgoingMessageRepository _outgoingMessageRepository;
+        private readonly IIncomingMessageRepository _incomingMessageRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
@@ -21,17 +28,19 @@ namespace EmailProviderServer.DBContext.Services
             IMessageRepository messageRepository,
             IInnerMessageRepository innerMessageRepository,
             IOutgoingMessageRepository outgoingMessageRepository,
+            IIncomingMessageRepository incomingMessageRepository,
             IUserRepository userRepository,
             IMapper mapper)
         {
             _messageRepository = messageRepository;
             _innerMessageRepository = innerMessageRepository;
             _outgoingMessageRepository = outgoingMessageRepository;
+            _incomingMessageRepository = incomingMessageRepository;
             _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        public async Task ProcessMessageAsync<TMessageDTO>(TMessageDTO messageDTO) where TMessageDTO : SendMessageDTOBase
+        public async Task ProcessMessageAsync<TMessageDTO>(TMessageDTO messageDTO) where TMessageDTO : BaseMessageSerializable
         {
             var message = _mapper.Map<Message>(messageDTO);
 
@@ -70,6 +79,11 @@ namespace EmailProviderServer.DBContext.Services
             }
 
             await _messageRepository.SaveChangesAsync();
+        }
+
+        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType)
+        {
+            return await _messageRepository.GetCombinedMessagesAsync(userId, searchType);
         }
     }
 

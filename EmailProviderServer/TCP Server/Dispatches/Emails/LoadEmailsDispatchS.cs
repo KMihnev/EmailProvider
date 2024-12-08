@@ -9,14 +9,17 @@ using EmailProviderServer.Validation.User;
 using EmailProviderServer.Validation.Email;
 using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailProvider.SearchData;
+using EmailProvider.Models.Serializables;
+using EmailProvider.Models.DBModels;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
-    public class SaveEmailDispatchS : BaseDispatchHandler
+    public class LoadEmailsDispatchS : BaseDispatchHandler
     {
         private readonly IMessageService _messageService;
         private readonly IUserService _userService;
-        public SaveEmailDispatchS(IMessageService messageService, IUserService userService)
+        public LoadEmailsDispatchS(IMessageService messageService, IUserService userService)
         {
             _messageService = messageService;
             _userService = userService;
@@ -24,13 +27,14 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            MessageSerializable messageSerializable;
+            SearchData searchData = new SearchData();
             try
             {
-                InPackage.Deserialize(out messageSerializable);
+                InPackage.Deserialize(out searchData);
 
-                if (messageSerializable == null)
+                if (searchData == null)
                 {
+                    Logger.LogNullValue();
                     return false;
                 }
             }
@@ -40,26 +44,14 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            AddEmailValidationS AddEmailValidator = new AddEmailValidationS();
-
-            foreach(string email in messageSerializable.ReceiverEmails)
-            {
-                //TO DO
-                //AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, email);
-            }
-
-            AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeSubject, messageSerializable.Subject);
-
-            if(!AddEmailValidator.Validate())
-            {
-                errorMessage = LogMessages.InvalidData;
-                return false;
-            }
+            
 
             try
             {
-                await _messageService.ProcessMessageAsync(messageSerializable);
+                List<ViewMessage> filteredMessages = new List<ViewMessage> ();
+                filteredMessages = await _messageService.GetCombinedMessagesAsync(searchData.UserID, (int)SearchTypeFolder.SearchTypeFolderAll);
                 OutPackage.Serialize(true);
+                OutPackage.Serialize(filteredMessages);
             }
             catch (Exception ex)
             {

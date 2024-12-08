@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace EmailServiceIntermediate.Models.Serializables
 {
-    public class SendMessageSerializable : SendMessageDTOBase
+    public class MessageSerializable : BaseMessageSerializable
     {
 
-        public SendMessageSerializable() : base()
+        public MessageSerializable() : base()
         {
             DateOfCompletion = DateTime.Now;
             Files = new List<FileSerializable>();
-            Status = EmailStatusProvider.GetCompleteStatus();
+            Status = EmailStatusProvider.GetNewStatus();
         }
 
         public string Subject { get; set; }

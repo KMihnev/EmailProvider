@@ -29,6 +29,7 @@ void AddServices(IServiceCollection services)
     services.AddScoped<IMessageRepository, MessageRepository>();
     services.AddScoped<IInnerMessageRepository, InnerMessageRepository>();
     services.AddScoped<IOutgoingMessageRepository, OutgoingMessageRepository>();
+    services.AddScoped<IIncomingMessageRepository, IncomingMessageRepository>();
     services.AddScoped<IUserRepository, UserRepository>();
 
     //Регистриране на сервизи

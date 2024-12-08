@@ -37,17 +37,13 @@
             затвориToolStripMenuItem = new ToolStripMenuItem();
             contextMenuStrip1 = new ContextMenuStrip(components);
             SEARCH_BOX = new TextBox();
-            comboBox1 = new ComboBox();
-            DATE_PICK_FROM = new DateTimePicker();
-            DATE_PICK_TO = new DateTimePicker();
-            label1 = new Label();
-            label2 = new Label();
             CMB_SORT = new ComboBox();
             ON_ADD_EMAIL = new Button();
             checkBox1 = new CheckBox();
             EMAILS_LIST = new CheckedListBox();
             ON_ACCOUNT = new Button();
             pictureBox1 = new PictureBox();
+            FILTER_BTN = new Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -101,52 +97,11 @@
             // 
             // SEARCH_BOX
             // 
-            SEARCH_BOX.Location = new Point(342, 110);
+            SEARCH_BOX.Location = new Point(217, 111);
             SEARCH_BOX.Name = "SEARCH_BOX";
-            SEARCH_BOX.Size = new Size(197, 23);
+            SEARCH_BOX.Size = new Size(209, 23);
             SEARCH_BOX.TabIndex = 4;
             SEARCH_BOX.Text = "Key word";
-            // 
-            // comboBox1
-            // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(215, 110);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(121, 23);
-            comboBox1.TabIndex = 5;
-            comboBox1.Text = "Search by";
-            // 
-            // DATE_PICK_FROM
-            // 
-            DATE_PICK_FROM.Location = new Point(589, 110);
-            DATE_PICK_FROM.Name = "DATE_PICK_FROM";
-            DATE_PICK_FROM.Size = new Size(200, 23);
-            DATE_PICK_FROM.TabIndex = 6;
-            // 
-            // DATE_PICK_TO
-            // 
-            DATE_PICK_TO.Location = new Point(823, 110);
-            DATE_PICK_TO.Name = "DATE_PICK_TO";
-            DATE_PICK_TO.Size = new Size(200, 23);
-            DATE_PICK_TO.TabIndex = 7;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(548, 114);
-            label1.Name = "label1";
-            label1.Size = new Size(38, 15);
-            label1.TabIndex = 8;
-            label1.Text = "From:";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(795, 114);
-            label2.Name = "label2";
-            label2.Size = new Size(23, 15);
-            label2.TabIndex = 9;
-            label2.Text = "To:";
             // 
             // CMB_SORT
             // 
@@ -170,7 +125,7 @@
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(195, 115);
+            checkBox1.Location = new Point(196, 115);
             checkBox1.MaximumSize = new Size(100, 0);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(15, 14);
@@ -202,22 +157,28 @@
             pictureBox1.TabIndex = 15;
             pictureBox1.TabStop = false;
             // 
+            // FILTER_BTN
+            // 
+            FILTER_BTN.Location = new Point(432, 111);
+            FILTER_BTN.Name = "FILTER_BTN";
+            FILTER_BTN.Size = new Size(105, 23);
+            FILTER_BTN.TabIndex = 16;
+            FILTER_BTN.Text = "Filter";
+            FILTER_BTN.UseVisualStyleBackColor = true;
+            FILTER_BTN.Click += FILTER_BTN_Click;
+            // 
             // EmailProvider
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(2560, 973);
+            Controls.Add(FILTER_BTN);
             Controls.Add(pictureBox1);
             Controls.Add(ON_ACCOUNT);
             Controls.Add(EMAILS_LIST);
             Controls.Add(checkBox1);
             Controls.Add(ON_ADD_EMAIL);
             Controls.Add(CMB_SORT);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(DATE_PICK_TO);
-            Controls.Add(DATE_PICK_FROM);
-            Controls.Add(comboBox1);
             Controls.Add(SEARCH_BOX);
             Controls.Add(CATEGORIES_LIST);
             Controls.Add(menuStrip1);
@@ -243,16 +204,12 @@
         private ToolStripMenuItem minimizeToolStripMenuItem;
         private ContextMenuStrip contextMenuStrip1;
         private TextBox SEARCH_BOX;
-        private ComboBox comboBox1;
-        private DateTimePicker DATE_PICK_FROM;
-        private DateTimePicker DATE_PICK_TO;
-        private Label label1;
-        private Label label2;
         private ComboBox CMB_SORT;
         private Button ON_ADD_EMAIL;
         private CheckBox checkBox1;
         private CheckedListBox EMAILS_LIST;
         private Button ON_ACCOUNT;
         private PictureBox pictureBox1;
+        private Button FILTER_BTN;
     }
 }

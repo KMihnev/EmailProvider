@@ -2,6 +2,7 @@
 using EmailServiceIntermediate.Models;
 using EmailProviderServer;
 using EmailProviderServer.DBContext;
+using EmailProvider.Models.DBModels;
 
 
 public partial class ApplicationDbContext : DbContext
@@ -34,6 +35,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<OutgoingMessage> OutgoingMessages { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<ViewMessage> ViewMessageSerializable { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -277,6 +280,13 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Country).WithMany(p => p.Users)
                 .HasForeignKey(d => d.CountryId)
                 .HasConstraintName("FK_COUNTRY_ID");
+        });
+
+        modelBuilder.Entity<ViewMessage>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToTable("ViewMessageSerializable");
+            entity.Ignore(e => e.ReceiverEmailsList);
         });
 
         OnModelCreatingPartial(modelBuilder);

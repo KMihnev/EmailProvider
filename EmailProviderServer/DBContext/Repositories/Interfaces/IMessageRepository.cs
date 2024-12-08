@@ -1,4 +1,5 @@
-﻿using EmailProviderServer.DBContext.Repositories.Base;
+﻿using EmailProvider.Models.DBModels;
+using EmailProviderServer.DBContext.Repositories.Base;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,7 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {
     public interface IMessageRepository : IRepositoryS<Message>
     {
-
+        Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType);
     }
 
     public interface IInnerMessageRepository : IRepositoryS<InnerMessage>

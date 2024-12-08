@@ -10,7 +10,7 @@ namespace EmailProviderServer.DBContext.Repositories
     public class RepositoryS<TEntity> : IRepositoryS<TEntity>
         where TEntity : class, IEntity
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
         public RepositoryS(ApplicationDbContext context)

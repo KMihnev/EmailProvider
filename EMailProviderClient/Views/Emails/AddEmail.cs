@@ -8,13 +8,13 @@ namespace EMailProviderClient.Views.Emails
 {
     public partial class AddEmail : Form
     {
-        private SendMessageSerializable emailSerializable { get; set; }
+        private MessageSerializable emailSerializable { get; set; }
 
         public AddEmail()
         {
             InitializeComponent();
 
-            emailSerializable = new SendMessageSerializable();
+            emailSerializable = new MessageSerializable();
             emailSerializable.SenderId = UserController.GetCurrentUserID();
         }
 
@@ -43,7 +43,6 @@ namespace EMailProviderClient.Views.Emails
 
         private async Task<bool> SaveEmail()
         {
-            emailSerializable.Status = EmailStatusProvider.GetNewStatus();
             if (!await SendEmailDispatchC.SendEmail(emailSerializable))
             {
                 Logger.LogError(LogMessages.ErrorSavingEmail);

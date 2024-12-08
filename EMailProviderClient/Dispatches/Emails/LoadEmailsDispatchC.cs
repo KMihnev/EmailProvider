@@ -9,12 +9,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmailProvider.Models.Serializables;
+using EmailProvider.SearchData;
+using EmailProvider.Models.DBModels;
 
 namespace EMailProviderClient.Dispatches.Emails
 {
-    public class SendEmailDispatchC
+    public class LoadEmailsDispatchC
     {
-        public static async Task<bool> SendEmail(MessageSerializable messageSerializable)
+        public static async Task<bool> LoadEmails(List<ViewMessage> outMessageList, SearchData searchData)
         {
             try
             {
@@ -22,8 +25,8 @@ namespace EMailProviderClient.Dispatches.Emails
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.SendEmail);
-                InPackage.Serialize(messageSerializable);
+                InPackage.Serialize((int)DispatchEnums.LoadEmails);
+                InPackage.Serialize(searchData);
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
@@ -33,6 +36,11 @@ namespace EMailProviderClient.Dispatches.Emails
                     Logger.LogErrorCalling();
                     return false;
                 }
+
+                List<ViewMessage> messageList = null;
+                OutPackage.Deserialize(out messageList);
+
+                outMessageList = messageList;
 
                 return true;
             }

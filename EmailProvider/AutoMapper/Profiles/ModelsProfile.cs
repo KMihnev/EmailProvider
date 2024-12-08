@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailServiceIntermediate.Models;
+using EmailProvider.Models.Serializables;
 
 namespace EmailServiceIntermediate.AutoMapper.Profiles
 {
@@ -14,7 +15,7 @@ namespace EmailServiceIntermediate.AutoMapper.Profiles
             CreateMap<Country, CountrySerializable>().ReverseMap();
             CreateMap<Models.File, FileSerializable>().ReverseMap();
 
-            CreateMap<SendMessageSerializable, Message>().ReverseMap();
+            CreateMap<MessageSerializable, Message>().ReverseMap();
 
             CreateMap<User, UserSerializable>().ReverseMap();
         }
