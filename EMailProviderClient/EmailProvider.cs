@@ -137,7 +137,11 @@ namespace EMailProviderClient
 
         private void InitializeCategories()
         {
-            CATEGORIES_LIST.View = View.List;
+            CATEGORIES_LIST.View = View.Details;
+            CATEGORIES_LIST.HeaderStyle = ColumnHeaderStyle.Clickable;
+            CATEGORIES_LIST.Columns.Clear();
+            CATEGORIES_LIST.Columns.Add("System Folders", CATEGORIES_LIST.Width - 4);
+            CATEGORIES_LIST.Columns[0].TextAlign = HorizontalAlignment.Center;
 
             AddCategory(SearchTypeFolder.SearchTypeFolderIncoming, "Received");
             AddCategory(SearchTypeFolder.SearchTypeFolderOutgoing, "Sent");

@@ -66,7 +66,7 @@
             BY_DATE_GRP.Location = new Point(33, 68);
             BY_DATE_GRP.Name = "BY_DATE_GRP";
             BY_DATE_GRP.Size = new Size(283, 99);
-            BY_DATE_GRP.TabIndex = 1;
+            BY_DATE_GRP.TabIndex = 2;
             BY_DATE_GRP.TabStop = false;
             BY_DATE_GRP.Text = "By Date";
             // 
@@ -76,7 +76,7 @@
             END_DATE_LABEL.Location = new Point(6, 64);
             END_DATE_LABEL.Name = "END_DATE_LABEL";
             END_DATE_LABEL.Size = new Size(54, 15);
-            END_DATE_LABEL.TabIndex = 3;
+            END_DATE_LABEL.TabIndex = 2;
             END_DATE_LABEL.Text = "End Date";
             // 
             // BEGIN_DATE_LABEL
@@ -85,7 +85,7 @@
             BEGIN_DATE_LABEL.Location = new Point(6, 26);
             BEGIN_DATE_LABEL.Name = "BEGIN_DATE_LABEL";
             BEGIN_DATE_LABEL.Size = new Size(64, 15);
-            BEGIN_DATE_LABEL.TabIndex = 2;
+            BEGIN_DATE_LABEL.TabIndex = 0;
             BEGIN_DATE_LABEL.Text = "Begin Date";
             // 
             // DATE_TO
@@ -94,7 +94,7 @@
             DATE_TO.Name = "DATE_TO";
             DATE_TO.ShowCheckBox = true;
             DATE_TO.Size = new Size(200, 23);
-            DATE_TO.TabIndex = 1;
+            DATE_TO.TabIndex = 3;
             // 
             // DATE_FROM
             // 
@@ -102,7 +102,7 @@
             DATE_FROM.Name = "DATE_FROM";
             DATE_FROM.ShowCheckBox = true;
             DATE_FROM.Size = new Size(200, 23);
-            DATE_FROM.TabIndex = 0;
+            DATE_FROM.TabIndex = 1;
             // 
             // BY_DATE_CHB
             // 
@@ -110,7 +110,7 @@
             BY_DATE_CHB.Location = new Point(12, 113);
             BY_DATE_CHB.Name = "BY_DATE_CHB";
             BY_DATE_CHB.Size = new Size(15, 14);
-            BY_DATE_CHB.TabIndex = 2;
+            BY_DATE_CHB.TabIndex = 1;
             BY_DATE_CHB.UseVisualStyleBackColor = true;
             BY_DATE_CHB.CheckedChanged += BY_DATE_CHB_CheckedChanged;
             // 
@@ -123,7 +123,7 @@
             BY_RECEIVER_GRP.Location = new Point(33, 173);
             BY_RECEIVER_GRP.Name = "BY_RECEIVER_GRP";
             BY_RECEIVER_GRP.Size = new Size(283, 94);
-            BY_RECEIVER_GRP.TabIndex = 3;
+            BY_RECEIVER_GRP.TabIndex = 4;
             BY_RECEIVER_GRP.TabStop = false;
             BY_RECEIVER_GRP.Text = "By Email";
             // 
@@ -133,7 +133,7 @@
             SENDER_LABEL.Location = new Point(12, 58);
             SENDER_LABEL.Name = "SENDER_LABEL";
             SENDER_LABEL.Size = new Size(43, 15);
-            SENDER_LABEL.TabIndex = 3;
+            SENDER_LABEL.TabIndex = 2;
             SENDER_LABEL.Text = "Sender";
             // 
             // SENDER_EMAIL
@@ -141,7 +141,7 @@
             SENDER_EMAIL.Location = new Point(71, 55);
             SENDER_EMAIL.Name = "SENDER_EMAIL";
             SENDER_EMAIL.Size = new Size(200, 23);
-            SENDER_EMAIL.TabIndex = 2;
+            SENDER_EMAIL.TabIndex = 3;
             // 
             // EMAIL_LABEL
             // 
@@ -149,7 +149,7 @@
             EMAIL_LABEL.Location = new Point(11, 25);
             EMAIL_LABEL.Name = "EMAIL_LABEL";
             EMAIL_LABEL.Size = new Size(51, 15);
-            EMAIL_LABEL.TabIndex = 1;
+            EMAIL_LABEL.TabIndex = 0;
             EMAIL_LABEL.Text = "Receiver";
             // 
             // RECEIVER_EMAIL
@@ -157,7 +157,7 @@
             RECEIVER_EMAIL.Location = new Point(70, 22);
             RECEIVER_EMAIL.Name = "RECEIVER_EMAIL";
             RECEIVER_EMAIL.Size = new Size(200, 23);
-            RECEIVER_EMAIL.TabIndex = 0;
+            RECEIVER_EMAIL.TabIndex = 1;
             // 
             // BY_RECEIVER_CHB
             // 
@@ -165,7 +165,7 @@
             BY_RECEIVER_CHB.Location = new Point(12, 198);
             BY_RECEIVER_CHB.Name = "BY_RECEIVER_CHB";
             BY_RECEIVER_CHB.Size = new Size(15, 14);
-            BY_RECEIVER_CHB.TabIndex = 4;
+            BY_RECEIVER_CHB.TabIndex = 3;
             BY_RECEIVER_CHB.UseVisualStyleBackColor = true;
             BY_RECEIVER_CHB.CheckedChanged += BY_RECEIVER_CHB_CheckedChanged;
             // 
@@ -174,7 +174,7 @@
             CANCEL.Location = new Point(241, 273);
             CANCEL.Name = "CANCEL";
             CANCEL.Size = new Size(75, 23);
-            CANCEL.TabIndex = 5;
+            CANCEL.TabIndex = 7;
             CANCEL.Text = "Cancel";
             CANCEL.UseVisualStyleBackColor = true;
             CANCEL.Click += CANCEL_Click;
@@ -194,7 +194,7 @@
             CLEAR_BTN.Location = new Point(12, 273);
             CLEAR_BTN.Name = "CLEAR_BTN";
             CLEAR_BTN.Size = new Size(75, 23);
-            CLEAR_BTN.TabIndex = 7;
+            CLEAR_BTN.TabIndex = 5;
             CLEAR_BTN.Text = "Clear";
             CLEAR_BTN.UseVisualStyleBackColor = true;
             CLEAR_BTN.Click += CLEAR_BTN_Click;

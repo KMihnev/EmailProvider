@@ -47,7 +47,7 @@
             SEND_BTN.Location = new Point(916, 693);
             SEND_BTN.Name = "SEND_BTN";
             SEND_BTN.Size = new Size(122, 50);
-            SEND_BTN.TabIndex = 0;
+            SEND_BTN.TabIndex = 11;
             SEND_BTN.Text = "Send";
             SEND_BTN.UseVisualStyleBackColor = true;
             SEND_BTN.Click += SEND_BTN_Click;
@@ -57,7 +57,7 @@
             CLOSE_BTN.Location = new Point(788, 693);
             CLOSE_BTN.Name = "CLOSE_BTN";
             CLOSE_BTN.Size = new Size(122, 50);
-            CLOSE_BTN.TabIndex = 1;
+            CLOSE_BTN.TabIndex = 10;
             CLOSE_BTN.Text = "Close";
             CLOSE_BTN.UseVisualStyleBackColor = true;
             CLOSE_BTN.Click += CLOSE_BTN_Click;
@@ -67,7 +67,7 @@
             CONTENT_BOX.Location = new Point(12, 154);
             CONTENT_BOX.Name = "CONTENT_BOX";
             CONTENT_BOX.Size = new Size(1026, 351);
-            CONTENT_BOX.TabIndex = 2;
+            CONTENT_BOX.TabIndex = 6;
             CONTENT_BOX.Text = "";
             // 
             // SUBJECT_EDIT
@@ -75,7 +75,7 @@
             SUBJECT_EDIT.Location = new Point(12, 110);
             SUBJECT_EDIT.Name = "SUBJECT_EDIT";
             SUBJECT_EDIT.Size = new Size(1026, 23);
-            SUBJECT_EDIT.TabIndex = 3;
+            SUBJECT_EDIT.TabIndex = 4;
             // 
             // CONTENT_LABEL
             // 
@@ -83,7 +83,7 @@
             CONTENT_LABEL.Location = new Point(12, 135);
             CONTENT_LABEL.Name = "CONTENT_LABEL";
             CONTENT_LABEL.Size = new Size(50, 15);
-            CONTENT_LABEL.TabIndex = 4;
+            CONTENT_LABEL.TabIndex = 5;
             CONTENT_LABEL.Text = "Content";
             // 
             // SUBJECT_LABEL
@@ -92,7 +92,7 @@
             SUBJECT_LABEL.Location = new Point(12, 92);
             SUBJECT_LABEL.Name = "SUBJECT_LABEL";
             SUBJECT_LABEL.Size = new Size(46, 15);
-            SUBJECT_LABEL.TabIndex = 5;
+            SUBJECT_LABEL.TabIndex = 3;
             SUBJECT_LABEL.Text = "Subject";
             // 
             // RECEIVER_EDIT
@@ -100,7 +100,7 @@
             RECEIVER_EDIT.Location = new Point(12, 67);
             RECEIVER_EDIT.Name = "RECEIVER_EDIT";
             RECEIVER_EDIT.Size = new Size(1026, 23);
-            RECEIVER_EDIT.TabIndex = 6;
+            RECEIVER_EDIT.TabIndex = 2;
             // 
             // HEADER
             // 
@@ -108,7 +108,7 @@
             HEADER.Location = new Point(12, 9);
             HEADER.Name = "HEADER";
             HEADER.Size = new Size(140, 39);
-            HEADER.TabIndex = 7;
+            HEADER.TabIndex = 0;
             HEADER.Text = "New Email";
             // 
             // RECEIVER_LABEL
@@ -117,7 +117,7 @@
             RECEIVER_LABEL.Location = new Point(12, 48);
             RECEIVER_LABEL.Name = "RECEIVER_LABEL";
             RECEIVER_LABEL.Size = new Size(51, 15);
-            RECEIVER_LABEL.TabIndex = 8;
+            RECEIVER_LABEL.TabIndex = 1;
             RECEIVER_LABEL.Text = "Receiver";
             // 
             // FILES_LIST
@@ -125,7 +125,7 @@
             FILES_LIST.Location = new Point(12, 534);
             FILES_LIST.Name = "FILES_LIST";
             FILES_LIST.Size = new Size(1026, 97);
-            FILES_LIST.TabIndex = 9;
+            FILES_LIST.TabIndex = 8;
             FILES_LIST.UseCompatibleStateImageBehavior = false;
             // 
             // FILES_LABEL
@@ -134,7 +134,7 @@
             FILES_LABEL.Location = new Point(12, 516);
             FILES_LABEL.Name = "FILES_LABEL";
             FILES_LABEL.Size = new Size(30, 15);
-            FILES_LABEL.TabIndex = 10;
+            FILES_LABEL.TabIndex = 7;
             FILES_LABEL.Text = "Files";
             // 
             // UPLOAD_BTN
@@ -142,7 +142,7 @@
             UPLOAD_BTN.Location = new Point(963, 637);
             UPLOAD_BTN.Name = "UPLOAD_BTN";
             UPLOAD_BTN.Size = new Size(75, 23);
-            UPLOAD_BTN.TabIndex = 11;
+            UPLOAD_BTN.TabIndex = 9;
             UPLOAD_BTN.Text = "Upload";
             UPLOAD_BTN.UseVisualStyleBackColor = true;
             // 

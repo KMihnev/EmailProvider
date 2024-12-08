@@ -47,17 +47,22 @@
             DATE_HEADER = new ColumnHeader();
             SUBJECT_HEADER = new ColumnHeader();
             CONTENT_HEADER = new ColumnHeader();
+            UDF_FOLDERS = new ListView();
+            UDF_FOLDERS_HEADER = new ColumnHeader();
+            SYSTEM_FOLDERS_HEADER = new ColumnHeader();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // CATEGORIES_LIST
             // 
+            CATEGORIES_LIST.Columns.AddRange(new ColumnHeader[] { SYSTEM_FOLDERS_HEADER });
             CATEGORIES_LIST.Location = new Point(12, 139);
             CATEGORIES_LIST.Name = "CATEGORIES_LIST";
-            CATEGORIES_LIST.Size = new Size(167, 814);
+            CATEGORIES_LIST.Size = new Size(167, 91);
             CATEGORIES_LIST.TabIndex = 0;
             CATEGORIES_LIST.UseCompatibleStateImageBehavior = false;
+            CATEGORIES_LIST.View = View.Details;
             // 
             // menuStrip1
             // 
@@ -193,11 +198,29 @@
             CONTENT_HEADER.Text = "Content";
             CONTENT_HEADER.Width = 300;
             // 
+            // UDF_FOLDERS
+            // 
+            UDF_FOLDERS.Columns.AddRange(new ColumnHeader[] { UDF_FOLDERS_HEADER });
+            UDF_FOLDERS.Location = new Point(12, 236);
+            UDF_FOLDERS.Name = "UDF_FOLDERS";
+            UDF_FOLDERS.Size = new Size(167, 717);
+            UDF_FOLDERS.TabIndex = 18;
+            UDF_FOLDERS.UseCompatibleStateImageBehavior = false;
+            // 
+            // UDF_FOLDERS_HEADER
+            // 
+            UDF_FOLDERS_HEADER.Text = "Personal Folders";
+            // 
+            // SYSTEM_FOLDERS_HEADER
+            // 
+            SYSTEM_FOLDERS_HEADER.Text = "System Folders";
+            // 
             // EmailProvider
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(2560, 973);
+            Controls.Add(UDF_FOLDERS);
             Controls.Add(EMAILS_LIST);
             Controls.Add(FILTER_BTN);
             Controls.Add(pictureBox1);
@@ -240,5 +263,8 @@
         private ColumnHeader DATE_HEADER;
         private ColumnHeader SUBJECT_HEADER;
         private ColumnHeader CONTENT_HEADER;
+        private ListView UDF_FOLDERS;
+        private ColumnHeader SYSTEM_FOLDERS_HEADER;
+        private ColumnHeader UDF_FOLDERS_HEADER;
     }
 }

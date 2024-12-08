@@ -45,7 +45,7 @@
             EDC_NAME.Name = "EDC_NAME";
             EDC_NAME.PlaceholderText = "Name";
             EDC_NAME.Size = new Size(168, 23);
-            EDC_NAME.TabIndex = 0;
+            EDC_NAME.TabIndex = 2;
             // 
             // EDC_PHONE_NUMBER
             // 
@@ -53,7 +53,7 @@
             EDC_PHONE_NUMBER.Name = "EDC_PHONE_NUMBER";
             EDC_PHONE_NUMBER.PlaceholderText = "Phone Number";
             EDC_PHONE_NUMBER.Size = new Size(168, 23);
-            EDC_PHONE_NUMBER.TabIndex = 1;
+            EDC_PHONE_NUMBER.TabIndex = 4;
             // 
             // CMB_COUNTRY
             // 
@@ -61,7 +61,7 @@
             CMB_COUNTRY.Location = new Point(51, 246);
             CMB_COUNTRY.Name = "CMB_COUNTRY";
             CMB_COUNTRY.Size = new Size(168, 23);
-            CMB_COUNTRY.TabIndex = 2;
+            CMB_COUNTRY.TabIndex = 3;
             CMB_COUNTRY.Text = "Country";
             CMB_COUNTRY.SelectedIndexChanged += ON_COUNTRIES_CHANGE;
             // 
@@ -72,7 +72,7 @@
             STT_SETUP_PROFILE.Location = new Point(34, 22);
             STT_SETUP_PROFILE.Name = "STT_SETUP_PROFILE";
             STT_SETUP_PROFILE.Size = new Size(212, 35);
-            STT_SETUP_PROFILE.TabIndex = 3;
+            STT_SETUP_PROFILE.TabIndex = 0;
             STT_SETUP_PROFILE.Text = "Set up profile";
             // 
             // PB_PROFILE
@@ -88,7 +88,7 @@
             BTN_UPLOAD_PICTURE.Location = new Point(77, 188);
             BTN_UPLOAD_PICTURE.Name = "BTN_UPLOAD_PICTURE";
             BTN_UPLOAD_PICTURE.Size = new Size(121, 23);
-            BTN_UPLOAD_PICTURE.TabIndex = 5;
+            BTN_UPLOAD_PICTURE.TabIndex = 1;
             BTN_UPLOAD_PICTURE.Text = "Profile Picture";
             BTN_UPLOAD_PICTURE.UseVisualStyleBackColor = true;
             BTN_UPLOAD_PICTURE.Click += BTN_UPLOAD_PICTURE_Click;
@@ -108,7 +108,7 @@
             BTN_SKIP.Location = new Point(51, 320);
             BTN_SKIP.Name = "BTN_SKIP";
             BTN_SKIP.Size = new Size(75, 23);
-            BTN_SKIP.TabIndex = 7;
+            BTN_SKIP.TabIndex = 5;
             BTN_SKIP.Text = "Skip";
             BTN_SKIP.UseVisualStyleBackColor = true;
             BTN_SKIP.Click += BTN_SKIP_Click;
