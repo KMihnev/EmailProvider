@@ -1,16 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//Includes
+using Microsoft.EntityFrameworkCore;
 using EmailServiceIntermediate.Models;
-using EmailProviderServer;
-using EmailProviderServer.DBContext;
 using EmailProvider.Models.DBModels;
 
-
+//------------------------------------------------------
+//	ApplicationDbContext
+//------------------------------------------------------
 public partial class ApplicationDbContext : DbContext
 {
+    //Constructor
     public ApplicationDbContext()
     {
     }
 
+    //Constructor
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {

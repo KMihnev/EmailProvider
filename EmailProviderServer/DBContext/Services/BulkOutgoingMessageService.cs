@@ -1,19 +1,24 @@
 ﻿//Includes
-
 using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
+
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	BulkOutgoingMessageService
+    //------------------------------------------------------
     public class BulkOutgoingMessageService : IBulkOutgoingMessageService
     {
         private readonly IRepositoryS<BulkOutgoingMessage> oBulkOutgoingMessagesRepositoryS;
 
+        //Constructor
         public BulkOutgoingMessageService(IRepositoryS<BulkOutgoingMessage> oBulkOutgoingMessagesRepository)
         {
             this.oBulkOutgoingMessagesRepositoryS = oBulkOutgoingMessagesRepository;
         }
 
+        //Methods
         public IEnumerable<BulkOutgoingMessage> GetAll(int? nCount = null)
         {
             IQueryable<BulkOutgoingMessage> oQuery = this.oBulkOutgoingMessagesRepositoryS

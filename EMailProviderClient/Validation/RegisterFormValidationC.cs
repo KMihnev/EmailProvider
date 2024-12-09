@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EMailProviderClient.Validation
 {
+    //------------------------------------------------------
+    //	RegisterFormValidationC
+    //------------------------------------------------------
     public class RegisterFormValidationC : UserValidatorC
     {
+        //Constructor
         public RegisterFormValidationC()
         {
             

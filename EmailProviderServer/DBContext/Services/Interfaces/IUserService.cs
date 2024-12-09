@@ -1,12 +1,11 @@
 ﻿//Includes
-
-using EmailServiceIntermediate.Logging;
-using EmailProviderServer.DBContext.Repositories;
 using EmailServiceIntermediate.Models;
-using System.Collections.Generic;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	IUserService
+    //------------------------------------------------------
     public interface IUserService
     {
         Task<IEnumerable<T>> GetAllAsync<T>();

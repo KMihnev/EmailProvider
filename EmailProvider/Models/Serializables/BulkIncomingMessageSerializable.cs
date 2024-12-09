@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Models.Serializables
 {
+
+    //------------------------------------------------------
+    //	BulkIncomingMessageSerializable
+    //------------------------------------------------------
+
+    /// <summary> Модел отговарящ на Модела от базата данни - годен на сериализиране </summary>
     public class BulkIncomingMessageSerializable
     {
         public int Id { get; set; }

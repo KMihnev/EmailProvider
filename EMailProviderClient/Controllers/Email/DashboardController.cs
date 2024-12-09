@@ -1,12 +1,11 @@
-﻿using EMailProviderClient.Controllers.UserControl;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EMailProviderClient.Controllers.UserControl;
 
 namespace EMailProviderClient.Controllers.Email
 {
+    //------------------------------------------------------
+    //	DashboardController
+    //------------------------------------------------------
     public class DashboardController
     {
         static EmailProvider _emailProvider;

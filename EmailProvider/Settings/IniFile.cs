@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿//Includes
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace EmailServiceIntermediate.Settings
 {
+    //------------------------------------------------------
+    //	IniFile
+    //------------------------------------------------------
+
+    /// <summary> клас за работа с INI филе </summary>
     public class IniFile
     {
         string Path;
@@ -17,7 +19,7 @@ namespace EmailServiceIntermediate.Settings
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
         static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
 
-
+        //Constructor
         public IniFile(string IniPath)
         {
             Path = new FileInfo(IniPath).FullName;
@@ -31,10 +33,17 @@ namespace EmailServiceIntermediate.Settings
         }
     }
 
+    //------------------------------------------------------
+    //	GlSettingsIni
+    //------------------------------------------------------
+
+    /// <summary> Глобален INI file </summary>
     public static class GlSettingsIni
     {
+        /// <summary> Директория на файла TO DO - да се смени да е в starting директорията на приложението </summary>
         static string IniDirectory = "E:\\EmailDomain" + "\\Settings.ini";
 
+        /// <summary> същински файл </summary>
         private static IniFile _iniFile;
 
         public static IniFile IniFile

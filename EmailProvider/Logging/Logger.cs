@@ -1,10 +1,15 @@
-﻿using EmailServiceIntermediate.Enums;
+﻿//Includes
+using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Settings;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace EmailServiceIntermediate.Logging
 {
+    //------------------------------------------------------
+    //	Logger
+    //------------------------------------------------------
+
     public static class Logger
     {
         public static void LogWarning(string message)

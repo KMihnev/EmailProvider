@@ -1,30 +1,28 @@
-﻿using AutoMapper;
-using EmailProvider.Enums;
-using EmailProvider.SearchData;
-using EmailProviderServer.DBContext.Repositories;
+﻿//Includes
+using AutoMapper;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	CountryService
+    //------------------------------------------------------
     public class CountryService : ICountryService
     {
         private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
 
+        //Constructor
         public CountryService(ICountryRepository countryRepository, IMapper mapper)
         {
             _countryRepository = countryRepository;
             _mapper = mapper;
         }
 
+        //Methods
         public async Task<IEnumerable<T>> GetAllAsync<T>()
         {
             var query = _countryRepository.AllAsNoTracking().OrderBy(c => c.Name);

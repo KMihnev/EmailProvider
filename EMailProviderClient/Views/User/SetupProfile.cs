@@ -1,18 +1,17 @@
-﻿using EmailServiceIntermediate.Enums;
+﻿//Includes
+using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Countries;
 using EMailProviderClient.Dispatches.Users;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Validation;
-using EmailServiceIntermediate.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace EMailProviderClient.Views.User
 {
+    //------------------------------------------------------
+    //	SetupProfile
+    //------------------------------------------------------
     public partial class SetupProfile : Form
     {
         private UserValidatorC UserValidatorC;

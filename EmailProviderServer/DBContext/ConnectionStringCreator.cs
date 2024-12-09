@@ -1,13 +1,11 @@
-﻿using EmailServiceIntermediate.Settings;
+﻿//Includes
 using EmailProviderServer.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext
 {
+    //------------------------------------------------------
+    //	ConnectionStringCreator
+    //------------------------------------------------------
     public static class ConnectionStringCreator
     {
         public static string CreateConnectionString()

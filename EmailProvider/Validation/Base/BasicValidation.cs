@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailProvider.Validation.Base
 {
+    //------------------------------------------------------
+    //	BasicValidation
+    //------------------------------------------------------
+
+    /// <summary> Базов клас за валидации </summary>
     public static class BasicValidation
     {
         public static bool IsAlpha(string strValue)
@@ -29,6 +30,9 @@ namespace EmailProvider.Validation.Base
         }
     }
 
+    //------------------------------------------------------
+    //	ValidationPatterns
+    //------------------------------------------------------
     public static class ValidationPatterns
     {
         public const string EmailPattern = @"^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$";

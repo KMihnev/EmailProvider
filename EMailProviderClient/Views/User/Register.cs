@@ -1,24 +1,14 @@
-﻿using EmailServiceIntermediate.Enums;
+﻿//Includes
+using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Validation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
-using EmailServiceIntermediate.Models;
 using EMailProviderClient.Dispatches.Users;
-using EmailServiceIntermediate.Models.Serializables;
 
 namespace EMailProviderClient.Views.User
 {
+    //------------------------------------------------------
+    //	Register
+    //------------------------------------------------------
     public partial class Register : Form
     {
         //Members

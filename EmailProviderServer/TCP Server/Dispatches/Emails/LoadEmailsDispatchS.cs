@@ -1,27 +1,27 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Models.Serializables;
-using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProviderServer.Validation;
-using EmailServiceIntermediate.Models;
-using EmailProviderServer.Validation.User;
-using EmailProviderServer.Validation.Email;
-using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProvider.SearchData;
 using EmailProvider.Models.DBModels;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
+    //------------------------------------------------------
+    //	LoadEmailsDispatchS
+    //------------------------------------------------------
     public class LoadEmailsDispatchS : BaseDispatchHandler
     {
         private readonly IMessageService _messageService;
+
+        //Constructor
         public LoadEmailsDispatchS(IMessageService messageService)
         {
             _messageService = messageService;
         }
 
+        //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
             SearchData searchData = new SearchData();

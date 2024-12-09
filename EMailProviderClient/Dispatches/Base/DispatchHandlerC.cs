@@ -1,12 +1,13 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
-using System;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches.Base
 {
+    //------------------------------------------------------
+    //	DispatchHandlerC
+    //------------------------------------------------------
     public class DispatchHandlerC
     {
         public async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)

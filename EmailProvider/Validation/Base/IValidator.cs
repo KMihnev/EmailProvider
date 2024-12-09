@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailProvider.Validation.Base
 {
+    //------------------------------------------------------
+    //	IValidator
+    //------------------------------------------------------
+
+    /// <summary> Базов валидатор </summary>
     public interface IValidator
     {
         abstract bool Validate(bool bLog = false);

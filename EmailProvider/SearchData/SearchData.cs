@@ -1,38 +1,47 @@
-﻿using EmailProvider.Enums;
+﻿//Includes
+using EmailProvider.Enums;
 using EmailServiceIntermediate.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProvider.SearchData
 {
+    //------------------------------------------------------
+    //	SearchData
+    //------------------------------------------------------
+
+    /// <summary> Клас за филтиране на имейли по много кондиции </summary>
     public class SearchData
     {
+        /// <summary> Идентификатор на потребител чиито имейли ще филтрираме </summary>
         public int UserID { get; set; }
 
+        /// <summary> Тип на папка в която ще търсим </summary>
         public SearchTypeFolder SearchTypeFolder { get; set; }
 
+        /// <summary> Ако типа на папката е лична, ще имаме и нейното ID </summary>
         public int UdfFolderID { get; set; }
 
+        /// <summary> Списък от кондиции </summary>
         public List<SearchCondition> Conditions {  get; set; }
 
+        //Constructor
         public SearchData()
         {
             Conditions = new List<SearchCondition>();
         }
-
+        //Methods
+        /// <summary> Зачистваме кондициите </summary>
         public void Clear()
         {
             Conditions.Clear();
         }
 
+        /// <summary> Добавяне на кондиция </summary>
         public void AddCondition(SearchCondition searchCondition)
         {
             Conditions.Add(searchCondition);
         }
 
+        /// <summary> Връща папка в която ще търсим </summary>
         public int GetSearchTypeFolder()
         {
             SearchTypeFolder searchType;
@@ -47,6 +56,7 @@ namespace EmailProvider.SearchData
             return (int)searchType;
         }
 
+        /// <summary> Конструира Where клауза което ще се използва в процедурата по търсене </summary>
         public string ConstructWhereClause()
         {
             var WhereConditions = new List<string>();

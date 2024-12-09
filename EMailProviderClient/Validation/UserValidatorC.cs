@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 using EmailProvider.Validation.User;
 using EmailServiceIntermediate.Enums;
 
 namespace EMailProviderClient.Validation
 {
+    //------------------------------------------------------
+    //	UserValidatorC
+    //------------------------------------------------------
     public class UserValidatorC : UserValidator
     {
         public Dictionary<UserValidationTypes, TextBox> ValidationFieldsC { get; set; }
 
+
+        //Methods
         public UserValidatorC()
         {
             ValidationFieldsC = new Dictionary<UserValidationTypes, TextBox>();
         }
 
+        //Methods
         public void AddValidationField(UserValidationTypes eValidationType, TextBox textBox)
         {
             ValidationFieldsC.Add(eValidationType, textBox);

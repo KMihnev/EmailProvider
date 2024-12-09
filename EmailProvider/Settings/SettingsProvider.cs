@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Settings
 {
-     public class SettingsProvider
+    //------------------------------------------------------
+    //	SettingsProvider
+    //------------------------------------------------------
+
+
+    /// <summary> Клас за предоставяне на специфични настройки </summary>
+    public class SettingsProvider
      {
          public static string GetServerPort()
          {

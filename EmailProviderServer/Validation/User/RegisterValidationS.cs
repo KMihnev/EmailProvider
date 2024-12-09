@@ -1,15 +1,15 @@
-﻿using EmailProvider.Validation.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailProvider.Validation.User;
 
 namespace EmailProviderServer.Validation.User
 {
+    //------------------------------------------------------
+    //	RegisterValidationS
+    //------------------------------------------------------
     public class RegisterValidationS : UserValidator
     {
-        public RegisterValidationS()
+        //Constructor
+        public RegisterValidationS() : base()
         {
 
         }

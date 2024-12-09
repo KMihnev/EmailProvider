@@ -1,14 +1,15 @@
-﻿using EmailProviderServer.DBContext.Repositories.Interfaces;
+﻿//Includes
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
+    //------------------------------------------------------
+    //	InnerMessageRepository
+    //------------------------------------------------------
     public class InnerMessageRepository : RepositoryS<InnerMessage>, IInnerMessageRepository
     {
+        //Constructor
         public InnerMessageRepository(ApplicationDbContext context) : base(context)
         {
 

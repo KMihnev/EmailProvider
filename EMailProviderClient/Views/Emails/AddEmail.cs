@@ -1,4 +1,5 @@
-﻿using EmailServiceIntermediate.Models.Serializables;
+﻿//Includes
+using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
 using EmailServiceIntermediate.Logging;
@@ -7,11 +8,15 @@ using EMailProviderClient.Views.Enums;
 
 namespace EMailProviderClient.Views.Emails
 {
+    //------------------------------------------------------
+    //	AddEmail
+    //------------------------------------------------------
     public partial class AddEmail : Form
     {
         private DialogMode DialogMode { get; set; }
         private MessageSerializable emailSerializable { get; set; }
 
+        //Constructor
         public AddEmail(DialogMode mode)
         {
             InitializeComponent();
@@ -22,6 +27,7 @@ namespace EMailProviderClient.Views.Emails
             InitDialog();
         }
 
+        //Methods
         private void InitDialog()
         {
             switch (DialogMode)

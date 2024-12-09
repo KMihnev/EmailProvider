@@ -1,18 +1,17 @@
 ﻿//Includes
-
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
-using EmailServiceIntermediate.Enums;
 using AutoMapper;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
-using EmailProvider.Enums;
 using EmailProvider.SearchData;
-using Microsoft.EntityFrameworkCore;
 using EmailServiceIntermediate.Models.Serializables;
-using AutoMapper.QueryableExtensions;
 using EmailProvider.Models.DBModels;
+
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	MessageService
+    //------------------------------------------------------
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
@@ -22,6 +21,7 @@ namespace EmailProviderServer.DBContext.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
+        //Constructor
         public MessageService(
             IMessageRepository messageRepository,
             IInnerMessageRepository innerMessageRepository,
@@ -38,6 +38,7 @@ namespace EmailProviderServer.DBContext.Services
             _mapper = mapper;
         }
 
+        //Methods
         public async Task ProcessMessageAsync(MessageSerializable messageDTO)
         {
             var message = _mapper.Map<Message>(messageDTO);

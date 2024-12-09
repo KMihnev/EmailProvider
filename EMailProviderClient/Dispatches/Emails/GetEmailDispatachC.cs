@@ -1,17 +1,16 @@
 ﻿using EMailProviderClient.Dispatches.Base;
+//Includes
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches.Emails
 {
-    internal class GetEmailDispatchC
+    //------------------------------------------------------
+    //	GetEmailDispatchC
+    //------------------------------------------------------
+    public class GetEmailDispatchC
     {
         public static async Task<(bool, MessageSerializable)> LoadEmail(int nMessageId)
         {

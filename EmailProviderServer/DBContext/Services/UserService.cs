@@ -5,25 +5,25 @@ using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EmailProviderServer.DBContext.Repositories.Base;
-using System.Security.Cryptography;
 
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	UserService
+    //------------------------------------------------------
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
+        //Constructor
         public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
         }
 
+        //Methods
         public async Task<IEnumerable<T>> GetAllAsync<T>()
         {
             var users = await _userRepository.AllAsNoTracking().ToListAsync();

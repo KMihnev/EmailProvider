@@ -1,24 +1,17 @@
-﻿using EmailServiceIntermediate.Logging;
+﻿//Includes
+using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Controllers.Email;
-using EMailProviderClient.Controllers.UserControl;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
 
 namespace EMailProviderClient.Views.User
 {
+    //------------------------------------------------------
+    //	StartUp
+    //------------------------------------------------------
     public partial class StartUp : Form
     {
         private bool _bClosing = false;
 
+        //Constructor
         public StartUp()
         {
             InitializeComponent();
@@ -26,6 +19,7 @@ namespace EMailProviderClient.Views.User
             this.MaximizeBox = false;
         }
 
+        //Methods
         private void StartUp_LogIn_Click(object sender, EventArgs e)
         {
             this.Hide();

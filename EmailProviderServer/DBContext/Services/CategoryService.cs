@@ -1,20 +1,25 @@
 ﻿//Includes
-
 using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	CategoryService
+    //------------------------------------------------------
+
     public class CategoryService : ICategoryService
     {
         private readonly IRepositoryS<Category> oCategoryRepositoryS;
 
+        //Constructor
         public CategoryService(IRepositoryS<Category> oCategoryRepository)
         {
             this.oCategoryRepositoryS = oCategoryRepository;
         }
 
+        //Methods
         public IEnumerable<Category> GetAll(int? nCount = null)
         {
             IQueryable<Category> oQuery = this.oCategoryRepositoryS

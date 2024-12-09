@@ -1,28 +1,29 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿//Includes
+using Microsoft.Extensions.Hosting;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using System.IO;
 using EmailProviderServer.TCP_Server.Dispatches;
-using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
-using AutoMapper;
 
 namespace EmailProviderServer.TCP_Server
 {
+    //------------------------------------------------------
+    //	TcpServerService
+    //------------------------------------------------------
     public class TcpServerService : BackgroundService
     {
         private readonly TcpListener _listener;
         private readonly DispatchMapper _dispatchMapper;
 
+        //Constructor
         public TcpServerService(TcpListener listener, DispatchMapper dispatchMapper)
         {
             _listener = listener;
             _dispatchMapper = dispatchMapper;
         }
 
+        //Methods
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _listener.Start();

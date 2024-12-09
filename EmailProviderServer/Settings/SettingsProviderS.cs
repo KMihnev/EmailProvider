@@ -1,12 +1,11 @@
-﻿using EmailServiceIntermediate.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailServiceIntermediate.Settings;
 
 namespace EmailProviderServer.Settings
 {
+    //------------------------------------------------------
+    //	SettingsProviderS
+    //------------------------------------------------------
     public class SettingsProviderS
     {
         public static string GetServerName()

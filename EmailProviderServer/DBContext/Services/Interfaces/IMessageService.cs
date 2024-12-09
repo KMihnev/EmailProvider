@@ -1,13 +1,13 @@
 ﻿//Includes
-
 using EmailProvider.Models.DBModels;
 using EmailProvider.SearchData;
-using EmailServiceIntermediate.Enums;
-using EmailServiceIntermediate.Models;
 using EmailServiceIntermediate.Models.Serializables;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	IMessageService
+    //------------------------------------------------------
     public interface IMessageService
     {
         Task ProcessMessageAsync(MessageSerializable messageDTO);

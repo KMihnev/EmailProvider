@@ -1,16 +1,15 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Base;
-using EMailProviderClient.Controllers.UserControl;
-using EmailServiceIntermediate.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches.Countries
 {
+    //------------------------------------------------------
+    //	CountriesDispatchC
+    //------------------------------------------------------
     public class CountriesDispatchC
     {
         public static async Task<bool> LoadCountries(List<CountrySerializable> countries)

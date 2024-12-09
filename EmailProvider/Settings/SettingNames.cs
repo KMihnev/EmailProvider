@@ -1,17 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Settings
 {
+    //------------------------------------------------------
+    //	SectionNames
+    //------------------------------------------------------
+
+    /// <summary> Секции в ini file </summary>
     public static class SectionNames
     {
         public const string _sectionServer = "SERVER";
         public const string _sectionClient = "CLIENT";
         public const string _sectionShared = "SHARED";
     }
+
+    //------------------------------------------------------
+    //	SettingsNames
+    //------------------------------------------------------
+
+    /// <summary> настройки в ini file </summary>
     public static class SettingsNames
     {
         public const string _paramLogFilePath = "FileLogPath";

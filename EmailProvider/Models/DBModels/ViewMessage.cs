@@ -1,12 +1,8 @@
-﻿using EmailServiceIntermediate.Models.Serializables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailProvider.Models.DBModels
 {
+    /// <summary> Модел отговарящ на процедурата по търсене </summary>
     public class ViewMessage
     {
         public int MessageId { get; set; }

@@ -1,17 +1,25 @@
-﻿using EmailServiceIntermediate.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//Includes
+using EmailServiceIntermediate.Settings;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailServiceIntermediate.Dispatches
 {
+    //------------------------------------------------------
+    //	AddressHelper
+    //------------------------------------------------------
+
+    /// <summary>
+    /// Помощен клас за конструиране на адрес на сървъра
+    /// </summary>
     public class AddressHelper
     {
-        public AddressHelper() { }
+        //Constructor
+        public AddressHelper() 
+        {
 
+        }
+
+        //Methods
         public static IPAddress GetIpAddress()
         {
             return IPAddress.Parse(SettingsProvider.GetServerIP());

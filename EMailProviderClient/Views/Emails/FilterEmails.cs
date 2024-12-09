@@ -1,21 +1,17 @@
-﻿using EmailProvider.Enums;
+﻿//Includes
+using EmailProvider.Enums;
 using EmailProvider.SearchData;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace EMailProviderClient.Views.Emails
 {
+    //------------------------------------------------------
+    //	FilterEmails
+    //------------------------------------------------------
     public partial class FilterEmails : Form
     {
         public SearchData SearchData;
 
+        //Constructor
         public FilterEmails(SearchData SearchData)
         {
             InitializeComponent();
@@ -34,6 +30,7 @@ namespace EMailProviderClient.Views.Emails
             FillData();
         }
 
+        //Methods
         private void APPLY_Click(object sender, EventArgs e)
         {
             FillConditions();

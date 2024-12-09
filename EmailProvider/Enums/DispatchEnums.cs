@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Enums
 {
+    //------------------------------------------------------
+    //	DispatchEnums
+    //------------------------------------------------------
+
+    /// <summary> Кодове за идентифициране на RPC Request-ите </summary>
     public enum DispatchEnums : short
     {
         Empty = 0,

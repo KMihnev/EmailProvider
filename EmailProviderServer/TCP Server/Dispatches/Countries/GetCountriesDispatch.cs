@@ -1,25 +1,26 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
-using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailServiceIntermediate.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches.Countries
 {
+    //------------------------------------------------------
+    //	GetCountriesDispatch
+    //------------------------------------------------------
     public class GetCountriesDispatch : BaseDispatchHandler
     {
         private readonly ICountryService _countryService;
 
+        //Constructor
         public GetCountriesDispatch(ICountryService countryService)
         {
             _countryService = countryService;
         }
 
+        //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
             try

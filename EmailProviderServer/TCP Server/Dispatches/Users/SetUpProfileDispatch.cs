@@ -1,4 +1,5 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
@@ -11,15 +12,20 @@ using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
+    //------------------------------------------------------
+    //	SetUpProfileDispatch
+    //------------------------------------------------------
     public class SetUpProfileDispatch : BaseDispatchHandler
     {
         private readonly IUserService _userService;
 
+        //Constructor
         public SetUpProfileDispatch(IUserService userService)
         {
             _userService = userService;
         }
 
+        //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
             UserSerializable user;

@@ -1,7 +1,7 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
-using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.Validation.User;
@@ -9,15 +9,20 @@ using EmailProviderServer.DBContext.Services.Base;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
+    //------------------------------------------------------
+    //	LoginDispatch
+    //------------------------------------------------------
     public class LoginDispatch : BaseDispatchHandler
     {
         private readonly IUserService _userService;
 
+        //Constructor
         public LoginDispatch(IUserService userService)
         {
             _userService = userService;
         }
 
+        //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
             User user;

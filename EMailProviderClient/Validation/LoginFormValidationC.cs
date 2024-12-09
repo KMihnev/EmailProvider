@@ -1,19 +1,20 @@
-﻿using EmailServiceIntermediate.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailServiceIntermediate.Logging;
 
 namespace EMailProviderClient.Validation
 {
+    //------------------------------------------------------
+    //	LoginFormValidationC
+    //------------------------------------------------------
     public class LoginFormValidationC : UserValidatorC
     {
+        //Constructor
         public LoginFormValidationC()
         {
             
         }
 
+        //Methods
         protected override bool ValidatePassword(string Password, bool bLog = false)
         {
             if (string.IsNullOrWhiteSpace(Password))

@@ -1,20 +1,21 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Base;
-using EmailServiceIntermediate.Models;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches.Users
 {
+    //------------------------------------------------------
+    //	UserDispatchesC
+    //------------------------------------------------------
     public class UserDispatchesC
     {
+        //Methods
+
+        /// <summary> RPC за регистриране </summary>
         public static async Task<bool> Register(EmailServiceIntermediate.Models.User user)
         {
             try
@@ -51,6 +52,7 @@ namespace EMailProviderClient.Dispatches.Users
             }
         }
 
+        /// <summary> RPC за popylwane na данни за профила </summary>
         public static async Task<bool> SetUpProfile(UserSerializable user)
         {
             try
@@ -91,6 +93,7 @@ namespace EMailProviderClient.Dispatches.Users
             return true;
         }
 
+        /// <summary> RPC за вход </summary>
         public static async Task<bool> LogIn(EmailServiceIntermediate.Models.User user)
         {
             try

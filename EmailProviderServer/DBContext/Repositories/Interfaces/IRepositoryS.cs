@@ -1,9 +1,10 @@
 ﻿//Includes
 
-using EmailServiceIntermediate.Models;
-
 namespace EmailProviderServer.DBContext.Repositories.Base
 {
+    //------------------------------------------------------
+    //	IRepositoryS
+    //------------------------------------------------------
     public interface IRepositoryS<TEntity> : IDisposable
         where TEntity : class
     {

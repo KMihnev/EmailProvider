@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//Includes
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace EmailServiceIntermediate.Dispatches
 {
+    //------------------------------------------------------
+    //	SmartStreamArray
+    //------------------------------------------------------
+
     public class SmartStreamArray : IDisposable
     {
         private MemoryStream _stream;
         private BinaryWriter _writer;
         private BinaryReader _reader;
 
+
+        //Constructor
         public SmartStreamArray()
         {
             Reset();
@@ -22,6 +24,8 @@ namespace EmailServiceIntermediate.Dispatches
         {
             Dispose();   
         }
+
+        //Methods
 
         /// <summary> Сериализираме обкет към масив от байтове и го записваме в stream-а, реда на сериализиране и десериализиране трябва да е еднакъв!!! </summary>
         public void Serialize(object obj)
@@ -80,6 +84,7 @@ namespace EmailServiceIntermediate.Dispatches
             _writer = new BinaryWriter(_stream);
         }
 
+        /// <summary> Освобождаване на памет </summary>
         public void Dispose()
         {
             _stream?.Dispose();
@@ -88,6 +93,7 @@ namespace EmailServiceIntermediate.Dispatches
             GC.SuppressFinalize(this);
         }
 
+        /// <summary> Зануляване на потока </summary>
         public void Reset()
         {
             _stream = new MemoryStream();
@@ -95,6 +101,7 @@ namespace EmailServiceIntermediate.Dispatches
             _writer = new BinaryWriter(_stream);
         }
 
+        /// <summary> Зареждаме данните директно от потока в масива ни </summary>
         public void LoadFromStream(Stream networkStream)
         {
             byte[] lengthPrefix = new byte[4];
@@ -104,14 +111,16 @@ namespace EmailServiceIntermediate.Dispatches
             while (totalBytesRead < 4)
             {
                 int bytesRead = networkStream.Read(lengthPrefix, totalBytesRead, 4 - totalBytesRead);
-                if (bytesRead == 0) throw new IOException("Disconnected before reading the length prefix.");
+                if (bytesRead == 0) 
+                    throw new IOException("Disconnected before reading the length prefix.");
+
                 totalBytesRead += bytesRead;
             }
 
             int messageLength = BitConverter.ToInt32(lengthPrefix, 0);
 
-            if (messageLength <= 0 || messageLength > 10_000_000) // Validate message length
-                throw new IOException($"Invalid message length: {messageLength}");
+            if (messageLength <= 0)
+                throw new IOException($"Invalid message length");
 
             // чедтем същинските данни
             byte[] payload = new byte[messageLength];
@@ -119,7 +128,9 @@ namespace EmailServiceIntermediate.Dispatches
             while (totalBytesRead < messageLength)
             {
                 int bytesRead = networkStream.Read(payload, totalBytesRead, messageLength - totalBytesRead);
-                if (bytesRead == 0) throw new IOException("Disconnected before reading the full payload.");
+                if (bytesRead == 0) 
+                    throw new IOException("Disconnected before reading the full payload.");
+
                 totalBytesRead += bytesRead;
             }
 

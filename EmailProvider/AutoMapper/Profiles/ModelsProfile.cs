@@ -1,11 +1,20 @@
-﻿using AutoMapper;
+﻿//Includes
+using AutoMapper;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailServiceIntermediate.Models;
 
 namespace EmailServiceIntermediate.AutoMapper.Profiles
 {
+    //------------------------------------------------------
+    //  ModelsProfile
+    //------------------------------------------------------
+
+    /// <summary>
+    /// Профил за основни модели
+    /// </summary>
     public class ModelsProfile : Profile
     {
+        //Constructor
         public ModelsProfile()
         {
             CreateMap<BulkIncomingMessage, BulkIncomingMessageSerializable>().ReverseMap();

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Enums
 {
+    //------------------------------------------------------
+    //	LogType
+    //------------------------------------------------------
     public enum LogType
     {
         LogTypeNone = 0,
@@ -14,6 +13,9 @@ namespace EmailServiceIntermediate.Enums
         LogTypeScreenLog,
     }
 
+    //------------------------------------------------------
+    //	LogSeverity
+    //------------------------------------------------------
     public enum LogSeverity
     {
         Info = 0,

@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Enums
 {
 
+    //------------------------------------------------------
+    //	EmailStatusProvider
+    //------------------------------------------------------
     public class EmailStatusProvider
     {
+        //------------------------------------------------------
+        //	EmailStatuses
+        //------------------------------------------------------
         private enum EmailStatuses : int
         {
             EmailStatusNew = 0,
             EmailStatusDraft = 1,
             EmailStatusComplete = 2,
         }
+
 
         public static int GetDraftStatus()
         {

@@ -1,12 +1,12 @@
-﻿using EmailServiceIntermediate.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailServiceIntermediate.Settings;
+
 
 namespace EMailProviderClient.Settings
 {
+    //------------------------------------------------------
+    //	SettingsProviderC
+    //------------------------------------------------------
     public class SettingsProviderC
     {
         public static string GetServerIP()

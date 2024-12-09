@@ -1,13 +1,12 @@
-﻿using EmailServiceIntermediate.Models.Serializables;
-using EmailServiceIntermediate.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailServiceIntermediate.Models.Serializables;
 
 namespace EMailProviderClient.Controllers.UserControl
 {
+    //------------------------------------------------------
+    //	UserController
+    //------------------------------------------------------
+
     public class UserController
     {
         public static UserSerializable _currentUser { get; set; }

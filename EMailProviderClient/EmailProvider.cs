@@ -1,6 +1,6 @@
+//Includes
 using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Views.Emails;
-using EmailServiceIntermediate.Models.Serializables;
 using EmailProvider.SearchData;
 using EmailProvider.Enums;
 using EMailProviderClient.Controllers.UserControl;
@@ -11,6 +11,9 @@ using EmailServiceIntermediate.Enums;
 
 namespace EMailProviderClient
 {
+    //------------------------------------------------------
+    //	EmailProvider
+    //------------------------------------------------------
     public partial class EmailProvider : Form
     {
         private bool _bClosing = false;
@@ -19,6 +22,7 @@ namespace EMailProviderClient
 
         private List<ViewMessage> messageList;
 
+        //Constructor
         public EmailProvider()
         {
             InitializeComponent();
@@ -36,6 +40,7 @@ namespace EMailProviderClient
             EMAILS_LIST.ItemActivate += EMAILS_LIST_ItemActivate;
         }
 
+        //Methods
         private void EmailProvider_Load(object sender, EventArgs e)
         {
         }

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
 namespace EmailServiceIntermediate.Logging
 {
+    //------------------------------------------------------
+    //	LogMessages
+    //------------------------------------------------------
     public static class LogMessages
     {
         public const string InvalidName = "Name: Only Alphabetic characters are allowed";

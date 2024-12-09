@@ -1,24 +1,27 @@
-﻿using EmailProviderServer.DBContext.Repositories.Base;
-using EmailProviderServer.DBContext.Repositories.Interfaces;
+﻿//Includes
+using EmailProviderServer.DBContext.Repositories.Base;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
+    //------------------------------------------------------
+    //	RepositoryS
+    //------------------------------------------------------
     public class RepositoryS<TEntity> : IRepositoryS<TEntity>
         where TEntity : class, IEntity
     {
         protected readonly ApplicationDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
+        //Constructor
         public RepositoryS(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<TEntity>();
         }
 
+        //Methods
         public async Task AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);

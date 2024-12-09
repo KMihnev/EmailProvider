@@ -1,22 +1,21 @@
-﻿using EmailProviderServer.DBContext.Repositories.Base;
+﻿//Includes
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
+    //------------------------------------------------------
+    //	CountryRepository
+    //------------------------------------------------------
     public class CountryRepository : RepositoryS<Country>, ICountryRepository
     {
+        //Constructor
         public CountryRepository(ApplicationDbContext context) : base(context)
         {
         }
 
+        //Methods
         public async Task<Country> GetByName(string name)
         {
             return await _dbSet.FirstOrDefaultAsync(x => x.Name == name);

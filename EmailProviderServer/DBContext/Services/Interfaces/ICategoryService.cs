@@ -4,6 +4,9 @@ using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	ICategoryService
+    //------------------------------------------------------
     public interface ICategoryService
     {
         IEnumerable<Category> GetAll(int? nCount = null);

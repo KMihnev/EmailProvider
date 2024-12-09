@@ -1,24 +1,23 @@
-﻿using EmailProvider.Models.DBModels;
-using EmailProviderServer.DBContext.Repositories.Base;
+﻿//Includes
+using EmailProvider.Models.DBModels;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
+    //------------------------------------------------------
+    //	MessageRepository
+    //------------------------------------------------------
     public class MessageRepository : RepositoryS<Message>, IMessageRepository
     {
-
+        //Constructor
         public MessageRepository(ApplicationDbContext context) : base (context)
         {
 
         }
 
+        //Methods
         public async Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType, string whereClause)
         {
             var results = await _context.ViewMessageSerializable

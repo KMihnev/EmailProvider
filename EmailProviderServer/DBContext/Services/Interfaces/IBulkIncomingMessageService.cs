@@ -4,6 +4,9 @@ using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	IBulkIncomingMessageService
+    //------------------------------------------------------
     public interface IBulkIncomingMessageService
     {
         int GetCount();

@@ -1,15 +1,16 @@
-﻿using EmailProvider.Validation.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailProvider.Validation.User;
+
 
 namespace EmailProviderServer.Validation.User
 {
+    //------------------------------------------------------
+    //	SetUpProfileValidationS
+    //------------------------------------------------------
     public class SetUpProfileValidationS : UserValidator
     {
-        public SetUpProfileValidationS()
+        //Constructor
+        public SetUpProfileValidationS() : base()
         {
         }
     }

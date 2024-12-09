@@ -1,17 +1,15 @@
-﻿using EmailServiceIntermediate.Dispatches;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
-using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EMailProviderClient.Dispatches.Emails
 {
+    //------------------------------------------------------
+    //	SendEmailDispatchC
+    //------------------------------------------------------
     public class SendEmailDispatchC
     {
         public static async Task<bool> SendEmail(MessageSerializable messageSerializable)

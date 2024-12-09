@@ -1,18 +1,16 @@
-﻿using EmailProvider.Validation.Base;
-using EmailProvider.Validation.User;
+﻿//Includes
+using EmailProvider.Validation.Base;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 namespace EmailProvider.Validation.Email
 {
+    //------------------------------------------------------
+    //	EmailValidator
+    //------------------------------------------------------
     public class EmailValidator : BaseEmailValidator
     {
+        /// <summary> Валидатор за имейли </summary>
         public EmailValidator()
         {
             ValidationFields = new Dictionary<EmailValidationTypes, string>();

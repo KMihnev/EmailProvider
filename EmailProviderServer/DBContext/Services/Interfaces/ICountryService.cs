@@ -4,6 +4,9 @@ using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	ICountryService
+    //------------------------------------------------------
     public interface ICountryService
     {
         Task<IEnumerable<T>> GetAllAsync<T>();

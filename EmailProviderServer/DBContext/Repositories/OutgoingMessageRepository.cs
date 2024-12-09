@@ -1,16 +1,17 @@
-﻿using EmailProviderServer.DBContext.Repositories.Interfaces;
+﻿//Includes
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
+    //------------------------------------------------------
+    //	OutgoingMessageRepository
+    //------------------------------------------------------
     public class OutgoingMessageRepository : RepositoryS<OutgoingMessage>, IOutgoingMessageRepository
     {
         private readonly ApplicationDbContext _context;
 
+        //Constructor
         public OutgoingMessageRepository(ApplicationDbContext context) : base(context)
         {
         }

@@ -1,15 +1,13 @@
-﻿using EmailProvider.Models.DBModels;
+﻿//Includes
+using EmailProvider.Models.DBModels;
 using EmailProviderServer.DBContext.Repositories.Base;
 using EmailServiceIntermediate.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {
+    //------------------------------------------------------
+    //	IMessageRepository
+    //------------------------------------------------------
     public interface IMessageRepository : IRepositoryS<Message>
     {
         Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType, string whereClause);
@@ -17,16 +15,25 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
         Task<Message> GetByIDIncludingAll(int nId);
     }
 
+    //------------------------------------------------------
+    //	IInnerMessageRepository
+    //------------------------------------------------------
     public interface IInnerMessageRepository : IRepositoryS<InnerMessage>
     {
 
     }
 
+    //------------------------------------------------------
+    //	IOutgoingMessageRepository
+    //------------------------------------------------------
     public interface IOutgoingMessageRepository : IRepositoryS<OutgoingMessage>
     {
 
     }
 
+    //------------------------------------------------------
+    //	IIncomingMessageRepository
+    //------------------------------------------------------
     public interface IIncomingMessageRepository : IRepositoryS<IncomingMessage>
     {
 

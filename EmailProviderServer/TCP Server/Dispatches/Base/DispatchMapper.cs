@@ -1,27 +1,26 @@
-﻿using AutoMapper;
-using EmailServiceIntermediate.Dispatches;
+﻿//Includes
 using EmailServiceIntermediate.Enums;
-using EmailProviderServer.DBContext;
-using EmailProviderServer.DBContext.Repositories;
-using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Countries;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailServiceIntermediate.Models;
-using EmailProviderServer.DBContext.Services.Base;
 using Microsoft.Extensions.DependencyInjection;
 using EmailProviderServer.TCP_Server.Dispatches.Emails;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
+    //------------------------------------------------------
+    //	DispatchMapper
+    //------------------------------------------------------
     public class DispatchMapper
     {
         private readonly IServiceProvider _serviceProvider;
 
+        //Constructor
         public DispatchMapper(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
+        //Methods
         public BaseDispatchHandler MapDispatch(int dispatchCode)
         {
             switch ((DispatchEnums)dispatchCode)

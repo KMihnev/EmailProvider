@@ -1,15 +1,21 @@
-﻿using EmailProvider.Validation.User;
+﻿//Includes
+using EmailProvider.Validation.User;
 using EmailServiceIntermediate.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.Validation.User
 {
+    //------------------------------------------------------
+    //	LogInValidationS
+    //------------------------------------------------------
     public class LogInValidationS : UserValidator
     {
+        //Constructor
+        public LogInValidationS() : base()
+        {
+            
+        }
+
+        //Methods
         protected override bool ValidatePassword(string Password, bool bLog = false)
         {
             if (string.IsNullOrWhiteSpace(Password))
