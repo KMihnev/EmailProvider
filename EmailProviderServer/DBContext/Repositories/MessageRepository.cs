@@ -35,5 +35,21 @@ namespace EmailProviderServer.DBContext.Repositories
 
             return results;
         }
+
+        public async Task<Message> GetByIDIncludingAll(int id)
+        {
+            return await _dbSet
+                .Include(m => m.InnerMessages)
+                .ThenInclude(im => im.Sender)
+                .Include(m => m.InnerMessages)
+                .ThenInclude(im => im.Receiver)
+                .Include(m => m.OutgoingMessages)
+                .ThenInclude(im => im.Sender)
+                .Include(m => m.IncomingMessages)
+                .ThenInclude(im => im.Receiver)
+                .Include(m => m.Files)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
     }
 }

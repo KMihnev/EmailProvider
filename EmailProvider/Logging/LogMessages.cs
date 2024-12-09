@@ -48,5 +48,6 @@ namespace EmailServiceIntermediate.Logging
         public const string DoYouWishToSaveDraft = "Do you want to save this message as a draft?";
         public const string SaveAsDraft = "Save as Draft";
         public const string RecordNotFound = "Record not found: {0}, Searched value:{1}";
+        public const string UpdateRecordError = "Updating record failed";
     }
 }

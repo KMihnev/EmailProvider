@@ -13,6 +13,8 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
     public interface IMessageRepository : IRepositoryS<Message>
     {
         Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType, string whereClause);
+
+        Task<Message> GetByIDIncludingAll(int nId);
     }
 
     public interface IInnerMessageRepository : IRepositoryS<InnerMessage>

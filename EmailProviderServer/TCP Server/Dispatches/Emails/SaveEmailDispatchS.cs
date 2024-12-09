@@ -9,17 +9,16 @@ using EmailProviderServer.Validation.User;
 using EmailProviderServer.Validation.Email;
 using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailServiceIntermediate.Enums;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     public class SaveEmailDispatchS : BaseDispatchHandler
     {
         private readonly IMessageService _messageService;
-        private readonly IUserService _userService;
-        public SaveEmailDispatchS(IMessageService messageService, IUserService userService)
+        public SaveEmailDispatchS(IMessageService messageService)
         {
             _messageService = messageService;
-            _userService = userService;
         }
 
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
@@ -58,7 +57,20 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                await _messageService.ProcessMessageAsync(messageSerializable);
+                bool bExists = await _messageService.CheckIfExists(messageSerializable.Id);
+                if (bExists)
+                {
+                    if (!await _messageService.UpdateMessageAsync(messageSerializable.Id, messageSerializable))
+                    {
+                        errorMessage = LogMessages.UpdateRecordError;
+                        return false;
+                    }
+                }
+                else
+                {
+                    await _messageService.ProcessMessageAsync(messageSerializable);
+                }
+
                 OutPackage.Serialize(true);
             }
             catch (Exception ex)

@@ -9,6 +9,7 @@ using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.DBContext.Services.Base;
 using Microsoft.Extensions.DependencyInjection;
+using EmailProviderServer.TCP_Server.Dispatches.Emails;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -37,6 +38,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                     return ActivatorUtilities.CreateInstance<SaveEmailDispatchS>(_serviceProvider);
                 case DispatchEnums.LoadEmails:
                     return ActivatorUtilities.CreateInstance<LoadEmailsDispatchS>(_serviceProvider);
+                case DispatchEnums.GetEmail:
+                    return ActivatorUtilities.CreateInstance<GetEmailDispatchS>(_serviceProvider);
                 default:
                     throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }

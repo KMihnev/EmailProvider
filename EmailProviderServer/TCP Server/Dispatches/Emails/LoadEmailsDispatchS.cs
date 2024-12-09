@@ -10,7 +10,6 @@ using EmailProviderServer.Validation.Email;
 using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProvider.SearchData;
-using EmailProvider.Models.Serializables;
 using EmailProvider.Models.DBModels;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
@@ -18,11 +17,9 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     public class LoadEmailsDispatchS : BaseDispatchHandler
     {
         private readonly IMessageService _messageService;
-        private readonly IUserService _userService;
-        public LoadEmailsDispatchS(IMessageService messageService, IUserService userService)
+        public LoadEmailsDispatchS(IMessageService messageService)
         {
             _messageService = messageService;
-            _userService = userService;
         }
 
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)

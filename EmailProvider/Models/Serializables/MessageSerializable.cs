@@ -1,5 +1,4 @@
-﻿using EmailProvider.Models.Serializables.Base;
-using EmailServiceIntermediate.Enums;
+﻿using EmailServiceIntermediate.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace EmailServiceIntermediate.Models.Serializables
 {
-    public class MessageSerializable : BaseMessageSerializable
+    public class MessageSerializable
     {
 
-        public MessageSerializable() : base()
+        public MessageSerializable()
         {
             DateOfCompletion = DateTime.Now;
             Files = new List<FileSerializable>();
             Status = EmailStatusProvider.GetNewStatus();
         }
+        public int Id { get; set; }
+        public int SenderId { get; set; }
+        public IEnumerable<string> ReceiverEmails { get; set; }
 
         public string Subject { get; set; }
         public string Content { get; set; }

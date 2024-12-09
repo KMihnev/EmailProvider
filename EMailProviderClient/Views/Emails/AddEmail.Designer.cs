@@ -44,7 +44,7 @@
             // 
             // SEND_BTN
             // 
-            SEND_BTN.Location = new Point(916, 693);
+            SEND_BTN.Location = new Point(788, 693);
             SEND_BTN.Name = "SEND_BTN";
             SEND_BTN.Size = new Size(122, 50);
             SEND_BTN.TabIndex = 11;
@@ -54,7 +54,7 @@
             // 
             // CLOSE_BTN
             // 
-            CLOSE_BTN.Location = new Point(788, 693);
+            CLOSE_BTN.Location = new Point(916, 693);
             CLOSE_BTN.Name = "CLOSE_BTN";
             CLOSE_BTN.Size = new Size(122, 50);
             CLOSE_BTN.TabIndex = 10;

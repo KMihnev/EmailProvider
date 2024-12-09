@@ -1,12 +1,13 @@
 using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Views.Emails;
 using EmailServiceIntermediate.Models.Serializables;
-using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EmailProvider.Enums;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
 using EmailProvider.Models.DBModels;
+using EMailProviderClient.Views.Enums;
+using EmailServiceIntermediate.Enums;
 
 namespace EMailProviderClient
 {
@@ -31,6 +32,8 @@ namespace EMailProviderClient
             messageList = new List<ViewMessage>();
 
             InitializeCategories();
+
+            EMAILS_LIST.ItemActivate += EMAILS_LIST_ItemActivate;
         }
 
         private void EmailProvider_Load(object sender, EventArgs e)
@@ -39,8 +42,10 @@ namespace EMailProviderClient
 
         private void ON_ADD_EMAIL_Click(object sender, EventArgs e)
         {
-            var AddEmailForm = new AddEmail();
+            var AddEmailForm = new AddEmail(Views.Enums.DialogMode.DialogModeAdd);
             AddEmailForm.ShowDialog();
+            if (AddEmailForm.DialogResult == DialogResult.OK)
+                LoadAllForCurrentFolder();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -183,6 +188,38 @@ namespace EMailProviderClient
 
                 LoadAllForCurrentFolder();
             }
+        }
+
+        private async void EMAILS_LIST_ItemActivate(object sender, EventArgs e)
+        {
+            if (EMAILS_LIST.SelectedItems.Count == 0)
+                return;
+
+            int selectedIndex = EMAILS_LIST.SelectedItems[0].Index;
+            if (selectedIndex < 0 || selectedIndex >= messageList.Count)
+                return;
+
+            var selectedMessageId = messageList[selectedIndex].MessageId;
+
+            var (result, messageSerializable) = await GetEmailDispatchC.LoadEmail(selectedMessageId);
+
+            if (!result || messageSerializable == null)
+                return;
+
+            int draftStatus = EmailStatusProvider.GetDraftStatus();
+
+            DialogMode dialogMode;
+            if (messageSerializable.Status == draftStatus)
+                dialogMode = DialogMode.DialogModeEdit;
+            else
+                dialogMode = DialogMode.DialogModePreview;
+
+            var addEmailForm = new AddEmail(dialogMode);
+            addEmailForm.LoadMessage(messageSerializable);
+            addEmailForm.ShowDialog();
+
+            if(dialogMode != DialogMode.DialogModePreview)
+                LoadAllForCurrentFolder();
         }
     }
 }

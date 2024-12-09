@@ -1,8 +1,6 @@
 ﻿//Includes
 
 using EmailProvider.Models.DBModels;
-using EmailProvider.Models.Serializables;
-using EmailProvider.Models.Serializables.Base;
 using EmailProvider.SearchData;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Models;
@@ -12,8 +10,16 @@ namespace EmailProviderServer.DBContext.Services.Base
 {
     public interface IMessageService
     {
-        Task ProcessMessageAsync<TMessageDTO>(TMessageDTO messageDTO) where TMessageDTO : BaseMessageSerializable;
+        Task ProcessMessageAsync(MessageSerializable messageDTO);
 
         Task<List<ViewMessage>> GetCombinedMessagesAsync(SearchData seacrhData);
+
+        Task<T> GetByIDIncludingAll<T>(int id);
+
+        Task<T> GetByIdAsync<T>(int id);
+
+        Task<bool> CheckIfExists(int id);
+
+        Task<bool> UpdateMessageAsync(int messageId, MessageSerializable updatedMessage);
     }
 }

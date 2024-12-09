@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using EmailProvider.Enums;
-using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Repositories.Interfaces;

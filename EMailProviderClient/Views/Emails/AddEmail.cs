@@ -3,19 +3,100 @@ using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Enums;
+using EMailProviderClient.Views.Enums;
 
 namespace EMailProviderClient.Views.Emails
 {
     public partial class AddEmail : Form
     {
+        private DialogMode DialogMode { get; set; }
         private MessageSerializable emailSerializable { get; set; }
 
-        public AddEmail()
+        public AddEmail(DialogMode mode)
         {
             InitializeComponent();
 
+            this.DialogMode = mode;
             emailSerializable = new MessageSerializable();
             emailSerializable.SenderId = UserController.GetCurrentUserID();
+            InitDialog();
+        }
+
+        private void InitDialog()
+        {
+            switch (DialogMode)
+            {
+                case DialogMode.DialogModePreview:
+                    DialogModePreview();
+                    break;
+                case DialogMode.DialogModeAdd:
+                    DialogModeAdd();
+                    break;
+                case DialogMode.DialogModeEdit:
+                    DialogModeEdit();
+                    break;
+                default:
+                    break;
+            }
+
+            if (DialogMode == DialogMode.DialogModePreview)
+                DialogModePreview();
+        }
+
+        private void DialogModePreview()
+        {
+            SEND_BTN.Hide();
+
+            foreach (Control ctrl in this.Controls)
+            {
+                ctrl.Enabled = false;
+            }
+
+            CLOSE_BTN.Enabled = true;
+
+        }
+
+        private void DialogModeEdit()
+        {
+        }
+
+        private void FillDialogData()
+        {
+            if (emailSerializable.ReceiverEmails != null && emailSerializable.ReceiverEmails.Count() > 0)
+            {
+                RECEIVER_EDIT.Text = string.Join(";", emailSerializable.ReceiverEmails);
+            }
+            else
+            {
+                RECEIVER_EDIT.Text = string.Empty;
+            }
+
+            SUBJECT_EDIT.Text = emailSerializable.Subject ?? string.Empty;
+            CONTENT_BOX.Text = emailSerializable.Content ?? string.Empty;
+
+            FILES_LIST.Items.Clear();
+            if (emailSerializable.Files != null)
+            {
+                foreach (var file in emailSerializable.Files)
+                {
+                    ListViewItem item = new ListViewItem("AttachedFile")
+                    {
+                    };
+
+                    FILES_LIST.Items.Add(item);
+                }
+            }
+        }
+
+        public void LoadMessage(MessageSerializable message)
+        {
+            this.emailSerializable = message;
+            FillDialogData();
+        }
+
+        private void DialogModeAdd()
+        {
+            return;
         }
 
         private async void SEND_BTN_Click(object sender, EventArgs e)
@@ -39,6 +120,8 @@ namespace EMailProviderClient.Views.Emails
 
             if (bIsDraft)
                 emailSerializable.Status = EmailStatusProvider.GetDraftStatus();
+            else
+                emailSerializable.Status= EmailStatusProvider.GetNewStatus();
 
             emailSerializable.Files = FILES_LIST.Items.Cast<ListViewItem>()
                 .Select(item => new FileSerializable
@@ -59,8 +142,23 @@ namespace EMailProviderClient.Views.Emails
         {
             base.OnFormClosing(e);
 
-            if (e.CloseReason == CloseReason.UserClosing && this.DialogResult != DialogResult.OK && !IsEmailEmpty())
+            bool bIsExistingDraft = DialogMode == DialogMode.DialogModeEdit && emailSerializable.Status == EmailStatusProvider.GetDraftStatus();
+            bool bIsNewMessage = DialogMode == DialogMode.DialogModeAdd && emailSerializable.Status == EmailStatusProvider.GetNewStatus();
+
+            if (DialogMode == DialogMode.DialogModePreview)
+                return;
+
+            if (e.CloseReason != CloseReason.UserClosing)
+                return;
+
+            if (this.DialogResult == DialogResult.OK)
+                return;
+
+            if (bIsNewMessage)
             {
+                if (IsEmailEmpty())
+                    return;
+
                 var result = MessageBox.Show(
                     LogMessages.DoYouWishToSaveDraft,
                     LogMessages.SaveAsDraft,
@@ -78,6 +176,12 @@ namespace EMailProviderClient.Views.Emails
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
+            }
+
+            if(bIsExistingDraft)
+            {
+                if (!await SaveEmail(true))
+                    return;
             }
         }
 
