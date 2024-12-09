@@ -13,6 +13,11 @@ public partial class File : IEntity
     public int Id { get; set; }
 
     /// <summary>
+    /// Name of file
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// Content of file
     /// </summary>
     public byte[] Content { get; set; } = null!;

@@ -49,6 +49,7 @@
             // 
             EDC_PASSWORD.Location = new Point(45, 113);
             EDC_PASSWORD.Name = "EDC_PASSWORD";
+            EDC_PASSWORD.PasswordChar = '*';
             EDC_PASSWORD.PlaceholderText = "Password";
             EDC_PASSWORD.Size = new Size(172, 23);
             EDC_PASSWORD.TabIndex = 2;
@@ -57,6 +58,7 @@
             // 
             EDC_RE_PASSWORD.Location = new Point(45, 142);
             EDC_RE_PASSWORD.Name = "EDC_RE_PASSWORD";
+            EDC_RE_PASSWORD.PasswordChar = '*';
             EDC_RE_PASSWORD.PlaceholderText = "Repeat Password";
             EDC_RE_PASSWORD.Size = new Size(172, 23);
             EDC_RE_PASSWORD.TabIndex = 3;

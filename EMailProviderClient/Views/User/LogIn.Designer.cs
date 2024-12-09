@@ -57,6 +57,7 @@
             // 
             EDC_PASSWORD.Location = new Point(34, 123);
             EDC_PASSWORD.Name = "EDC_PASSWORD";
+            EDC_PASSWORD.PasswordChar = '*';
             EDC_PASSWORD.PlaceholderText = "Password";
             EDC_PASSWORD.Size = new Size(142, 23);
             EDC_PASSWORD.TabIndex = 2;

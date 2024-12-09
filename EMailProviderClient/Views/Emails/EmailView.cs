@@ -11,13 +11,13 @@ namespace EMailProviderClient.Views.Emails
     //------------------------------------------------------
     //	AddEmail
     //------------------------------------------------------
-    public partial class AddEmail : Form
+    public partial class EMAIL_VIEW : Form
     {
         private DialogMode DialogMode { get; set; }
         private MessageSerializable emailSerializable { get; set; }
 
         //Constructor
-        public AddEmail(DialogMode mode)
+        public EMAIL_VIEW(DialogMode mode)
         {
             InitializeComponent();
 
@@ -25,6 +25,7 @@ namespace EMailProviderClient.Views.Emails
             emailSerializable = new MessageSerializable();
             emailSerializable.SenderId = UserController.GetCurrentUserID();
             InitDialog();
+            AddFileContextMenu();
         }
 
         //Methods
@@ -49,6 +50,14 @@ namespace EMailProviderClient.Views.Emails
                 DialogModePreview();
         }
 
+        private void AddFileContextMenu()
+        {
+            FILES_LIST.ContextMenuStrip = FILES_CONTEXT;
+
+            this.downloadToolStripMenuItem.Click += DownloadFileMenuItem_Click;
+            this.removeToolStripMenuItem.Click += RemoveFileMenuItem_Click;
+        }
+
         private void DialogModePreview()
         {
             SEND_BTN.Hide();
@@ -58,6 +67,7 @@ namespace EMailProviderClient.Views.Emails
                 ctrl.Enabled = false;
             }
 
+            FILES_LIST.Enabled = true;
             CLOSE_BTN.Enabled = true;
 
         }
@@ -81,17 +91,20 @@ namespace EMailProviderClient.Views.Emails
             CONTENT_BOX.Text = emailSerializable.Content ?? string.Empty;
 
             FILES_LIST.Items.Clear();
-            if (emailSerializable.Files != null)
-            {
-                foreach (var file in emailSerializable.Files)
-                {
-                    ListViewItem item = new ListViewItem("AttachedFile")
-                    {
-                    };
 
-                    FILES_LIST.Items.Add(item);
-                }
+            if (emailSerializable.Files == null)
+                return;
+
+            foreach (var file in emailSerializable.Files)
+            {
+                ListViewItem item = new ListViewItem(file.Name)
+                {
+                    Tag = file,
+                };
+
+                FILES_LIST.Items.Add(item);
             }
+
         }
 
         public void LoadMessage(MessageSerializable message)
@@ -127,13 +140,7 @@ namespace EMailProviderClient.Views.Emails
             if (bIsDraft)
                 emailSerializable.Status = EmailStatusProvider.GetDraftStatus();
             else
-                emailSerializable.Status= EmailStatusProvider.GetNewStatus();
-
-            emailSerializable.Files = FILES_LIST.Items.Cast<ListViewItem>()
-                .Select(item => new FileSerializable
-                {
-                    Content = System.IO.File.ReadAllBytes(item.Tag.ToString())
-                }).ToList();
+                emailSerializable.Status = EmailStatusProvider.GetNewStatus();
 
             if (!await SendEmailDispatchC.SendEmail(emailSerializable))
             {
@@ -184,25 +191,10 @@ namespace EMailProviderClient.Views.Emails
                 }
             }
 
-            if(bIsExistingDraft)
+            if (bIsExistingDraft)
             {
                 if (!await SaveEmail(true))
                     return;
-            }
-        }
-
-        private void UPLOAD_BTN_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    ListViewItem item = new ListViewItem(openFileDialog.SafeFileName)
-                    {
-                        Tag = openFileDialog.FileName
-                    };
-                    FILES_LIST.Items.Add(item);
-                }
             }
         }
 
@@ -219,6 +211,82 @@ namespace EMailProviderClient.Views.Emails
                 return false;
 
             return true;
+        }
+
+        private void UPLOAD_BTN_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            var file = new FileSerializable
+            {
+                Content = System.IO.File.ReadAllBytes(openFileDialog.FileName),
+                Name = System.IO.Path.GetFileName(openFileDialog.FileName)
+            };
+
+            emailSerializable.Files.Add(file);
+
+            ListViewItem item = new ListViewItem(file.Name)
+            {
+                Tag = file
+            };
+
+            FILES_LIST.Items.Add(item);
+        }
+
+        private void DownloadFileMenuItem_Click(object sender, EventArgs e)
+        {
+            if(FILES_LIST.SelectedItems.Count <= 0)
+                return;
+
+            var selectedItem = FILES_LIST.SelectedItems[0];
+            var file = selectedItem.Tag as FileSerializable;
+
+            if (file == null)
+                return;
+             
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = file.Name
+            };
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                System.IO.File.WriteAllBytes(saveFileDialog.FileName, file.Content);
+                MessageBox.Show("File downloaded successfully.", "Download File", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Download File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void RemoveFileMenuItem_Click(object sender, EventArgs e)
+        {
+            if (FILES_LIST.SelectedItems.Count <= 0)
+                return;
+
+            foreach (ListViewItem selectedItem in FILES_LIST.SelectedItems)
+            {
+                var fileContent = selectedItem.Tag as FileSerializable;
+
+                if (fileContent != null)
+                {
+                    emailSerializable.Files.Remove(fileContent);
+                }
+
+                FILES_LIST.Items.Remove(selectedItem);
+            }
+        }
+
+        private void FILES_CONTEXT_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(DialogMode == DialogMode.DialogModePreview)
+             removeToolStripMenuItem.Enabled = false;
         }
     }
 }

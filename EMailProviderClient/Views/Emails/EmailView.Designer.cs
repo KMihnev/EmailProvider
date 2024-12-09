@@ -1,6 +1,6 @@
 ﻿namespace EMailProviderClient.Views.Emails
 {
-    partial class AddEmail
+    partial class EMAIL_VIEW
     {
         /// <summary>
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             SEND_BTN = new Button();
             CLOSE_BTN = new Button();
             CONTENT_BOX = new RichTextBox();
@@ -40,6 +41,10 @@
             FILES_LIST = new ListView();
             FILES_LABEL = new Label();
             UPLOAD_BTN = new Button();
+            FILES_CONTEXT = new ContextMenuStrip(components);
+            downloadToolStripMenuItem = new ToolStripMenuItem();
+            removeToolStripMenuItem = new ToolStripMenuItem();
+            FILES_CONTEXT.SuspendLayout();
             SuspendLayout();
             // 
             // SEND_BTN
@@ -145,8 +150,28 @@
             UPLOAD_BTN.TabIndex = 9;
             UPLOAD_BTN.Text = "Upload";
             UPLOAD_BTN.UseVisualStyleBackColor = true;
+            UPLOAD_BTN.Click += UPLOAD_BTN_Click;
             // 
-            // AddEmail
+            // FILES_CONTEXT
+            // 
+            FILES_CONTEXT.Items.AddRange(new ToolStripItem[] { downloadToolStripMenuItem, removeToolStripMenuItem });
+            FILES_CONTEXT.Name = "FILES_CONTEXT";
+            FILES_CONTEXT.Size = new Size(181, 70);
+            FILES_CONTEXT.Opening += FILES_CONTEXT_Opening;
+            // 
+            // downloadToolStripMenuItem
+            // 
+            downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
+            downloadToolStripMenuItem.Size = new Size(180, 22);
+            downloadToolStripMenuItem.Text = "Download";
+            // 
+            // removeToolStripMenuItem
+            // 
+            removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            removeToolStripMenuItem.Size = new Size(180, 22);
+            removeToolStripMenuItem.Text = "Remove";
+            // 
+            // EMAIL_VIEW
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -163,8 +188,9 @@
             Controls.Add(CONTENT_BOX);
             Controls.Add(CLOSE_BTN);
             Controls.Add(SEND_BTN);
-            Name = "AddEmail";
+            Name = "EMAIL_VIEW";
             Text = "AddEmail";
+            FILES_CONTEXT.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -183,5 +209,8 @@
         private ListView FILES_LIST;
         private Label FILES_LABEL;
         private Button UPLOAD_BTN;
+        private ContextMenuStrip FILES_CONTEXT;
+        private ToolStripMenuItem downloadToolStripMenuItem;
+        private ToolStripMenuItem removeToolStripMenuItem;
     }
 }

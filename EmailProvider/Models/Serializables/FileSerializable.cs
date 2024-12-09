@@ -11,6 +11,9 @@ namespace EmailServiceIntermediate.Models.Serializables
     public class FileSerializable
     {
         public int Id { get; set; }
+
+        public string Name { get; set; }
+
         public byte[] Content { get; set; }
 
         public int MessageId { get; set; }

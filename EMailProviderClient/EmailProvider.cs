@@ -47,7 +47,7 @@ namespace EMailProviderClient
 
         private void ON_ADD_EMAIL_Click(object sender, EventArgs e)
         {
-            var AddEmailForm = new AddEmail(Views.Enums.DialogMode.DialogModeAdd);
+            var AddEmailForm = new EMAIL_VIEW(Views.Enums.DialogMode.DialogModeAdd);
             AddEmailForm.ShowDialog();
             if (AddEmailForm.DialogResult == DialogResult.OK)
                 LoadAllForCurrentFolder();
@@ -219,7 +219,7 @@ namespace EMailProviderClient
             else
                 dialogMode = DialogMode.DialogModePreview;
 
-            var addEmailForm = new AddEmail(dialogMode);
+            var addEmailForm = new EMAIL_VIEW(dialogMode);
             addEmailForm.LoadMessage(messageSerializable);
             addEmailForm.ShowDialog();
 

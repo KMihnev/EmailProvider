@@ -122,6 +122,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasComment("Id of file")
                 .HasColumnName("ID");
+            entity.Property(e => e.Name)
+                .HasComment("Name of file")
+                .HasColumnName("NAME");
             entity.Property(e => e.Content)
                 .HasComment("Content of file")
                 .HasColumnName("CONTENT");
