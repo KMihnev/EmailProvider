@@ -39,6 +39,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                     return ActivatorUtilities.CreateInstance<LoadEmailsDispatchS>(_serviceProvider);
                 case DispatchEnums.GetEmail:
                     return ActivatorUtilities.CreateInstance<GetEmailDispatchS>(_serviceProvider);
+                case DispatchEnums.DeleteEmails:
+                    return ActivatorUtilities.CreateInstance<DeleteEmailDispatchS>(_serviceProvider);
                 default:
                     throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }

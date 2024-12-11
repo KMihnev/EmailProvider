@@ -17,5 +17,6 @@ namespace EmailServiceIntermediate.Enums
         SendEmail,
         LoadEmails,
         GetEmail,
+        DeleteEmails,
     }
 }

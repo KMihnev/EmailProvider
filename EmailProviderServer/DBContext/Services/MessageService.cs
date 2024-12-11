@@ -18,6 +18,7 @@ namespace EmailProviderServer.DBContext.Services
         private readonly IInnerMessageRepository _innerMessageRepository;
         private readonly IOutgoingMessageRepository _outgoingMessageRepository;
         private readonly IIncomingMessageRepository _incomingMessageRepository;
+        private readonly IFileRepository _fileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
@@ -27,6 +28,7 @@ namespace EmailProviderServer.DBContext.Services
             IInnerMessageRepository innerMessageRepository,
             IOutgoingMessageRepository outgoingMessageRepository,
             IIncomingMessageRepository incomingMessageRepository,
+            IFileRepository fileRepository,
             IUserRepository userRepository,
             IMapper mapper)
         {
@@ -34,6 +36,7 @@ namespace EmailProviderServer.DBContext.Services
             _innerMessageRepository = innerMessageRepository;
             _outgoingMessageRepository = outgoingMessageRepository;
             _incomingMessageRepository = incomingMessageRepository;
+            _fileRepository = fileRepository;
             _userRepository = userRepository;
             _mapper = mapper;
         }
@@ -172,6 +175,42 @@ namespace EmailProviderServer.DBContext.Services
             _messageRepository.Update(existingMessage);
             await _messageRepository.SaveChangesAsync();
 
+            return true;
+        }
+
+        public async Task<bool> DeleteMessagesAsync(IEnumerable<int> messageIds)
+        {
+            var messages = await _messageRepository.GetByIDsIncludingAll(messageIds);
+
+            if (messages == null || !messages.Any())
+                return false;
+
+            foreach (var message in messages)
+            {
+                foreach (var incomingMessage in message.IncomingMessages)
+                {
+                    _incomingMessageRepository.Delete(incomingMessage);
+                }
+
+                foreach (var innerMessage in message.InnerMessages)
+                {
+                    _innerMessageRepository.Delete(innerMessage);
+                }
+
+                foreach (var outgoingMessage in message.OutgoingMessages)
+                {
+                    _outgoingMessageRepository.Delete(outgoingMessage);
+                }
+
+                foreach (var file in message.Files)
+                {
+                    _fileRepository.Delete(file);
+                }
+
+                _messageRepository.Delete(message);
+            }
+
+            await _messageRepository.SaveChangesAsync();
             return true;
         }
     }

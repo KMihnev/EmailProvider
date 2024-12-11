@@ -30,14 +30,13 @@ void AddServices(IServiceCollection services)
     services.AddScoped<IInnerMessageRepository, InnerMessageRepository>();
     services.AddScoped<IOutgoingMessageRepository, OutgoingMessageRepository>();
     services.AddScoped<IIncomingMessageRepository, IncomingMessageRepository>();
+    services.AddScoped<IFileRepository, FileRepository>();
     services.AddScoped<IUserRepository, UserRepository>();
 
     //Регистриране на сервизи
     services.AddScoped<IBulkIncomingMessageService, BulkIncomingMessageService>();
     services.AddScoped<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
-    //services.AddScoped<ICategoryService, CategoryService>();
     services.AddScoped<ICountryService, CountryService>();
-    //services.AddScoped<IFileService, FileService>();
     services.AddScoped<IMessageService, MessageService>();
     services.AddScoped<IUserService, UserService>();
 

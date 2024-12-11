@@ -13,6 +13,8 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
         Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType, string whereClause);
 
         Task<Message> GetByIDIncludingAll(int nId);
+
+        Task<List<Message>> GetByIDsIncludingAll(IEnumerable<int> ids);
     }
 
     //------------------------------------------------------

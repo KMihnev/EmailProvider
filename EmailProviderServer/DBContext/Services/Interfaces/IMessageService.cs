@@ -21,5 +21,7 @@ namespace EmailProviderServer.DBContext.Services.Base
         Task<bool> CheckIfExists(int id);
 
         Task<bool> UpdateMessageAsync(int messageId, MessageSerializable updatedMessage);
+
+        Task<bool> DeleteMessagesAsync(IEnumerable<int> messageIds);
     }
 }

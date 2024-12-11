@@ -11,7 +11,7 @@ namespace EmailProvider.Validation.Base
     {
         public static bool IsAlpha(string strValue)
         {
-            return strValue.All(char.IsLetter);
+            return strValue.All(c => char.IsLetter(c) || char.IsWhiteSpace(c));
         }
 
         public static bool IsNumeric(string strValue)

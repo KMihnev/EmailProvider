@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             CATEGORIES_LIST = new ListView();
+            SYSTEM_FOLDERS_HEADER = new ColumnHeader();
             menuStrip1 = new MenuStrip();
             изходToolStripMenuItem = new ToolStripMenuItem();
             minimizeToolStripMenuItem = new ToolStripMenuItem();
@@ -50,8 +51,11 @@
             UDF_FOLDERS = new ListView();
             UDF_FOLDERS_HEADER = new ColumnHeader();
             SYSTEM_FOLDERS_HEADER = new ColumnHeader();
+            contextMenuStrip2 = new ContextMenuStrip(components);
+            deleteToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            contextMenuStrip2.SuspendLayout();
             SuspendLayout();
             // 
             // CATEGORIES_LIST
@@ -63,6 +67,10 @@
             CATEGORIES_LIST.TabIndex = 0;
             CATEGORIES_LIST.UseCompatibleStateImageBehavior = false;
             CATEGORIES_LIST.View = View.Details;
+            // 
+            // SYSTEM_FOLDERS_HEADER
+            // 
+            SYSTEM_FOLDERS_HEADER.Text = "System Folders";
             // 
             // menuStrip1
             // 
@@ -170,10 +178,12 @@
             // EMAILS_LIST
             // 
             EMAILS_LIST.Size = new Size(2355, 814);
+            EMAILS_LIST.ContextMenuStrip = contextMenuStrip2;
             EMAILS_LIST.Location = new Point(196, 139);
             EMAILS_LIST.Name = "EMAILS_LIST";
             EMAILS_LIST.TabIndex = 17;
-            EMAILS_LIST.View = System.Windows.Forms.View.Details;
+            EMAILS_LIST.UseCompatibleStateImageBehavior = false;
+            EMAILS_LIST.View = View.Details;
             EMAILS_LIST.FullRowSelect = true;
             EMAILS_LIST.GridLines = true;
             EMAILS_LIST.CheckBoxes = true;
@@ -215,6 +225,18 @@
             // 
             SYSTEM_FOLDERS_HEADER.Text = "System Folders";
             // 
+            // contextMenuStrip2
+            // 
+            contextMenuStrip2.Items.AddRange(new ToolStripItem[] { deleteToolStripMenuItem });
+            contextMenuStrip2.Name = "contextMenuStrip2";
+            contextMenuStrip2.Size = new Size(181, 48);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new Size(180, 22);
+            deleteToolStripMenuItem.Text = "Delete";
+            // 
             // EmailProvider
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -239,6 +261,7 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            contextMenuStrip2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -266,5 +289,7 @@
         private ListView UDF_FOLDERS;
         private ColumnHeader SYSTEM_FOLDERS_HEADER;
         private ColumnHeader UDF_FOLDERS_HEADER;
+        private ContextMenuStrip contextMenuStrip2;
+        private ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

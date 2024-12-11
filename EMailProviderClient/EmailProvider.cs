@@ -38,6 +38,8 @@ namespace EMailProviderClient
             InitializeCategories();
 
             EMAILS_LIST.ItemActivate += EMAILS_LIST_ItemActivate;
+
+            AddEmailListContextMenu();
         }
 
         //Methods
@@ -224,6 +226,44 @@ namespace EMailProviderClient
             addEmailForm.ShowDialog();
 
             if(dialogMode != DialogMode.DialogModePreview)
+                LoadAllForCurrentFolder();
+        }
+
+        private void AddEmailListContextMenu()
+        {
+            EMAILS_LIST.ContextMenuStrip = contextMenuStrip2;
+
+            this.deleteToolStripMenuItem.Click += DeleteCheckedEmails_Click;
+        }
+
+        private async void DeleteCheckedEmails_Click(object sender, EventArgs e)
+        {
+            var checkedItems = EMAILS_LIST.CheckedItems;
+            if (checkedItems.Count == 0)
+                return;
+
+            var messageIdsToDelete = new List<int>();
+            foreach (ListViewItem item in checkedItems)
+            {
+                int index = item.Index;
+                if (index >= 0 && index < messageList.Count)
+                {
+                    messageIdsToDelete.Add(messageList[index].MessageId);
+                }
+            }
+
+            var confirmResult = MessageBox.Show(
+                "Are you sure you want to delete the selected emails?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirmResult != DialogResult.Yes)
+                return;
+
+            bool deleteResult = await DeleteEmailDispatchC.DeleteEmails(messageIdsToDelete);
+
+            if (deleteResult)
                 LoadAllForCurrentFolder();
         }
     }

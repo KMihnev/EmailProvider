@@ -50,5 +50,20 @@ namespace EmailProviderServer.DBContext.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
+        public async Task<List<Message>> GetByIDsIncludingAll(IEnumerable<int> ids)
+        {
+            return await _dbSet
+                .Where(m => ids.Contains(m.Id))
+                .Include(m => m.InnerMessages)
+                .ThenInclude(im => im.Sender)
+                .Include(m => m.InnerMessages)
+                .ThenInclude(im => im.Receiver)
+                .Include(m => m.OutgoingMessages)
+                .ThenInclude(om => om.Sender)
+                .Include(m => m.IncomingMessages)
+                .ThenInclude(im => im.Receiver)
+                .Include(m => m.Files)
+                .ToListAsync();
+        }
     }
 }
