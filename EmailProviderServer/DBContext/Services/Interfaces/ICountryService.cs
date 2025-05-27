@@ -1,6 +1,5 @@
 ﻿//Includes
 
-using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {

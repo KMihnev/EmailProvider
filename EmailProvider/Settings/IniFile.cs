@@ -41,7 +41,7 @@ namespace EmailServiceIntermediate.Settings
     public static class GlSettingsIni
     {
         /// <summary> Директория на файла TO DO - да се смени да е в starting директорията на приложението </summary>
-        static string IniDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings.ini");
+        static string IniDirectory = Path.Combine(Environment.CurrentDirectory, "Settings.ini");
 
         /// <summary> същински файл </summary>
         private static IniFile _iniFile;

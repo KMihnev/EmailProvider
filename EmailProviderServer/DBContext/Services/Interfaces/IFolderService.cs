@@ -1,18 +1,19 @@
 ﻿//Includes
 
+
 using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
     //------------------------------------------------------
-    //	ICategoryService
+    //	IFolderService
     //------------------------------------------------------
-    public interface ICategoryService
+    public interface IFolderService
     {
-        IEnumerable<Category> GetAll(int? nCount = null);
+        IEnumerable<Folder> GetAll(int? nCount = null);
 
-        Category GetById(int nId);
+        Folder GetById(int nId);
 
-        Category GetByName(string strName);
+        Folder GetByName(string strName);
     }
 }

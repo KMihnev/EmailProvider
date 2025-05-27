@@ -4,7 +4,6 @@ using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Dispatches.Base;
 using EmailProvider.SearchData;
-using EmailProvider.Models.DBModels;
 
 namespace EMailProviderClient.Dispatches.Emails
 {

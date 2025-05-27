@@ -5,12 +5,17 @@ using EmailProvider.SearchData;
 using EmailProvider.Enums;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
-using EmailProvider.Models.DBModels;
 using EMailProviderClient.Views.Enums;
 using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Models.Serializables;
 
 namespace EMailProviderClient
 {
+    enum SystemFolders
+    {
+        Incoming = 0, Outgoing = 1, Drafts = 2
+    }
+
     //------------------------------------------------------
     //	EmailProvider
     //------------------------------------------------------
@@ -18,9 +23,9 @@ namespace EMailProviderClient
     {
         private bool _bClosing = false;
         private SearchData SearchData = new SearchData();
-        private SearchTypeFolder CurrentFolderType;
+        private SystemFolders CurrentFolderType;
 
-        private List<ViewMessage> messageList;
+        private List<MessageSerializable> messageList;
 
         //Constructor
         public EmailProvider()
@@ -32,8 +37,8 @@ namespace EMailProviderClient
             this.EMAILS_LIST.Resize += (sender, e) => AdjustColumnWidths();
             AdjustColumnWidths();
 
-            CurrentFolderType = SearchTypeFolder.SearchTypeFolderOutgoing;
-            messageList = new List<ViewMessage>();
+            CurrentFolderType = SystemFolders.Outgoing;
+            messageList = new List<MessageSerializable>();
 
             InitializeCategories();
 
@@ -92,17 +97,17 @@ namespace EMailProviderClient
                     ? message.Subject.Substring(0, MaxSubjectLength - 3) + "..."
                     : message.Subject;
 
-                string formattedContent = message.Content.Length > MaxContentLength
-                    ? message.Content.Substring(0, MaxContentLength - 3) + "..."
-                    : message.Content;
+                string formattedContent = message.Body.Length > MaxContentLength
+                    ? message.Body.Substring(0, MaxContentLength - 3) + "..."
+                    : message.Body;
 
-                var item = new ListViewItem(message.DateOfCompletion.ToString("yyyy-MM-dd HH:mm"));
+                var item = new ListViewItem(message.DateOfRegistration.ToString("yyyy-MM-dd HH:mm"));
 
                 string emailInfo;
-                if (CurrentFolderType == SearchTypeFolder.SearchTypeFolderIncoming)
-                    emailInfo = message.SenderEmail;
+                if (CurrentFolderType == SystemFolders.Incoming)
+                    emailInfo = message.FromEmail;
                 else
-                    emailInfo = message.ReceiverEmails;
+                    emailInfo = string.Join(";",message.Recipients.Select(e=>e.Email));
 
                 item.SubItems.Add(emailInfo);
 
@@ -127,11 +132,29 @@ namespace EMailProviderClient
 
         private async void LoadAllForCurrentFolder()
         {
-            SearchData.UserID = UserController.GetCurrentUserID();
-            SearchData.SearchTypeFolder = CurrentFolderType;
+            SearchData.UserId = UserController.GetCurrentUserID();
 
-            if(! await LoadEmailsDispatchC.LoadEmails(messageList, SearchData))
-                return;
+            switch (CurrentFolderType)
+            {
+                case SystemFolders.Incoming:
+                {
+                    if (!await LoadEmailsDispatchC.LoadIncomingEmails(messageList, SearchData))
+                        return;
+                    break;
+                }
+                case SystemFolders.Outgoing:
+                {
+                    if (!await LoadEmailsDispatchC.LoadOutgoingEmails(messageList, SearchData))
+                        return;
+                    break;
+                }
+                case SystemFolders.Drafts:
+                {
+                    if (!await LoadEmailsDispatchC.LoadDrafts(messageList, SearchData))
+                        return;
+                    break;
+                }
+            }
 
             FillEmailList();
         }
@@ -155,9 +178,9 @@ namespace EMailProviderClient
             CATEGORIES_LIST.Columns.Add("System Folders", CATEGORIES_LIST.Width - 4);
             CATEGORIES_LIST.Columns[0].TextAlign = HorizontalAlignment.Center;
 
-            AddCategory(SearchTypeFolder.SearchTypeFolderIncoming, "Received");
-            AddCategory(SearchTypeFolder.SearchTypeFolderOutgoing, "Sent");
-            AddCategory(SearchTypeFolder.SearchTypeFolderDrafts, "Drafts");
+            AddCategory(SystemFolders.Incoming, "Received");
+            AddCategory(SystemFolders.Outgoing, "Sent");
+            AddCategory(SystemFolders.Drafts, "Drafts");
 
             if (CATEGORIES_LIST.Items.Count > 0)
             {
@@ -167,7 +190,7 @@ namespace EMailProviderClient
             CATEGORIES_LIST.ItemSelectionChanged += CategoriesList_ItemSelectionChanged;
         }
 
-        private void AddCategory(SearchTypeFolder folderType, string displayName)
+        private void AddCategory(SystemFolders folderType, string displayName)
         {
             CATEGORIES_LIST.Items.Add(new ListViewItem(displayName) { Tag = folderType });
         }
@@ -177,17 +200,17 @@ namespace EMailProviderClient
             if (!e.IsSelected)
                 return;
 
-            if (e.Item.Tag is SearchTypeFolder selectedFolder)
+            if (e.Item.Tag is SystemFolders selectedFolder)
             {
                 CurrentFolderType = selectedFolder;
 
                 switch (CurrentFolderType)
                 {
-                    case SearchTypeFolder.SearchTypeFolderIncoming:
+                    case SystemFolders.Incoming:
                         EMAILS_LIST.Columns[1].Text = "Sender Email";
                         break;
-                    case SearchTypeFolder.SearchTypeFolderDrafts:
-                    case SearchTypeFolder.SearchTypeFolderOutgoing:
+                    case SystemFolders.Drafts:
+                    case SystemFolders.Outgoing:
                     default:
                         EMAILS_LIST.Columns[1].Text = "Receiver Email";
                         break;
@@ -206,17 +229,15 @@ namespace EMailProviderClient
             if (selectedIndex < 0 || selectedIndex >= messageList.Count)
                 return;
 
-            var selectedMessageId = messageList[selectedIndex].MessageId;
+            var selectedMessageId = messageList[selectedIndex].Id;
 
             var (result, messageSerializable) = await GetEmailDispatchC.LoadEmail(selectedMessageId);
 
             if (!result || messageSerializable == null)
                 return;
 
-            int draftStatus = EmailStatusProvider.GetDraftStatus();
-
             DialogMode dialogMode;
-            if (messageSerializable.Status == draftStatus)
+            if (messageSerializable.Status == EmailStatuses.EmailStatusDraft)
                 dialogMode = DialogMode.DialogModeEdit;
             else
                 dialogMode = DialogMode.DialogModePreview;
@@ -248,7 +269,7 @@ namespace EMailProviderClient
                 int index = item.Index;
                 if (index >= 0 && index < messageList.Count)
                 {
-                    messageIdsToDelete.Add(messageList[index].MessageId);
+                    messageIdsToDelete.Add(messageList[index].Id);
                 }
             }
 

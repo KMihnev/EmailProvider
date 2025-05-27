@@ -5,6 +5,7 @@ using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation.Email;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailProvider.Models.Serializables;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -42,7 +43,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             AddEmailValidationS AddEmailValidator = new AddEmailValidationS();
 
-            foreach(string email in messageSerializable.ReceiverEmails)
+            foreach(MessageRecipientSerializable email in messageSerializable.Recipients)
             {
                 //TO DO
                 //AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, email);

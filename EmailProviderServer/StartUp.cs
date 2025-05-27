@@ -13,6 +13,7 @@ using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Repositories;
+using EmailProviderServer.DBContext.Services.Interfaces;
 
 void AddServices(IServiceCollection services)
 {
@@ -26,17 +27,16 @@ void AddServices(IServiceCollection services)
     //Регистирране на repositories
 
     services.AddScoped<ICountryRepository, CountryRepository>();
+    services.AddScoped<IUserMessageRepository, UserMessageRepository>();
     services.AddScoped<IMessageRepository, MessageRepository>();
-    services.AddScoped<IInnerMessageRepository, InnerMessageRepository>();
-    services.AddScoped<IOutgoingMessageRepository, OutgoingMessageRepository>();
-    services.AddScoped<IIncomingMessageRepository, IncomingMessageRepository>();
     services.AddScoped<IFileRepository, FileRepository>();
     services.AddScoped<IUserRepository, UserRepository>();
 
     //Регистриране на сервизи
     services.AddScoped<IBulkIncomingMessageService, BulkIncomingMessageService>();
+    services.AddScoped<IUserMessageService, UserMessageService>();
     services.AddScoped<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
-    services.AddScoped<ICountryService, CountryService>();
+    services.AddScoped<ICountryService, FolderService>();
     services.AddScoped<IMessageService, MessageService>();
     services.AddScoped<IUserService, UserService>();
 

@@ -27,10 +27,9 @@ namespace EmailProvider.SearchData
     public class SearchConditionEmail : SearchCondition
     {
         //Constructor
-        public SearchConditionEmail(SearchTypeEmail eSearchConditionEmail, string value)
+        public SearchConditionEmail(string value)
         {
             SearchType = Enums.SearchType.SearchTypeEmail;
-            SearchSubType = (int)eSearchConditionEmail;
             SearchValue = value;
         }
     }

@@ -3,8 +3,8 @@ using AutoMapper;
 using EmailServiceIntermediate.Logging;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {

@@ -1,5 +1,4 @@
-﻿using EmailProvider.Models.DBModels;
-using EmailProviderServer.DBContext.Repositories.Base;
+﻿using EmailProviderServer.DBContext.Repositories.Base;
 
 namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {

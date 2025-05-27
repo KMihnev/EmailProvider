@@ -15,8 +15,10 @@ namespace EmailServiceIntermediate.Enums
         SetUpProfile,
         GetCountries,
         SendEmail,
-        LoadEmails,
         GetEmail,
         DeleteEmails,
+        ReceiveEmails,
+        LoadIncomingEmails,
+        LoadOutgoingEmails
     }
 }

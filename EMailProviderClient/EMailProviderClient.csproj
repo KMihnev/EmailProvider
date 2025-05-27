@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <PlatformTarget>x86</PlatformTarget>
-    <BaseOutputPath>E:\EmailDomain\EmailProvider\Build</BaseOutputPath>
+    <BaseOutputPath>C:\Users\krist\OneDrive\Desktop\EmailExecutables</BaseOutputPath>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 

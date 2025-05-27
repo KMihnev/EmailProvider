@@ -1,8 +1,8 @@
-﻿//Includes
-using EmailProvider.Models.DBModels;
+﻿// Includes
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
@@ -11,58 +11,34 @@ namespace EmailProviderServer.DBContext.Repositories
     //------------------------------------------------------
     public class MessageRepository : RepositoryS<Message>, IMessageRepository
     {
-        //Constructor
-        public MessageRepository(ApplicationDbContext context) : base (context)
-        {
+        private readonly ApplicationDbContext _context;
 
+        // Constructor
+        public MessageRepository(ApplicationDbContext context) : base(context)
+        {
+            _context = context;
         }
 
-        //Methods
-        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(int userId, int searchType, string whereClause)
-        {
-            var results = await _context.ViewMessageSerializable
-                .FromSqlInterpolated($"EXEC SP_GET_MESSAGES @UserId = {userId}, @SearchType = {searchType}, @WhereClause = {whereClause}")
-                .ToListAsync();
 
-            foreach (var message in results)
-            {
-                if (!string.IsNullOrEmpty(message.ReceiverEmails))
-                {
-                    message.ReceiverEmailsList = message.ReceiverEmails.Split(';').ToList();
-                }
-            }
 
-            return results;
-        }
-
-        public async Task<Message> GetByIDIncludingAll(int id)
+        // Get full message with all related data
+        public async Task<Message?> GetByIDIncludingAll(int id)
         {
             return await _dbSet
-                .Include(m => m.InnerMessages)
-                .ThenInclude(im => im.Sender)
-                .Include(m => m.InnerMessages)
-                .ThenInclude(im => im.Receiver)
-                .Include(m => m.OutgoingMessages)
-                .ThenInclude(im => im.Sender)
-                .Include(m => m.IncomingMessages)
-                .ThenInclude(im => im.Receiver)
+                .Include(m => m.MessageRecipients)
                 .Include(m => m.Files)
+                .Include(m => m.UserMessages)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
+        // Get multiple messages by IDs, including related data
         public async Task<List<Message>> GetByIDsIncludingAll(IEnumerable<int> ids)
         {
             return await _dbSet
                 .Where(m => ids.Contains(m.Id))
-                .Include(m => m.InnerMessages)
-                .ThenInclude(im => im.Sender)
-                .Include(m => m.InnerMessages)
-                .ThenInclude(im => im.Receiver)
-                .Include(m => m.OutgoingMessages)
-                .ThenInclude(om => om.Sender)
-                .Include(m => m.IncomingMessages)
-                .ThenInclude(im => im.Receiver)
+                .Include(m => m.MessageRecipients)
                 .Include(m => m.Files)
+                .Include(m => m.UserMessages)
                 .ToListAsync();
         }
     }

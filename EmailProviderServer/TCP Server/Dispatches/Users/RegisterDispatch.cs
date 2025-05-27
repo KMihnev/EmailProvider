@@ -3,9 +3,9 @@ using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailServiceIntermediate.Models;
 using EmailProviderServer.Validation.User;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -25,7 +25,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            User user;
+            User user = new User();
             try
             {
                 InPackage.Deserialize(out user);

@@ -1,11 +1,13 @@
 ﻿//Includes
 using EmailProviderServer.DBContext.Services.Base;
-using EmailServiceIntermediate.Models;
 using AutoMapper;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models.Serializables;
-using EmailProvider.Models.DBModels;
+using EmailProviderServer.Helpers;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -15,9 +17,6 @@ namespace EmailProviderServer.DBContext.Services
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly IInnerMessageRepository _innerMessageRepository;
-        private readonly IOutgoingMessageRepository _outgoingMessageRepository;
-        private readonly IIncomingMessageRepository _incomingMessageRepository;
         private readonly IFileRepository _fileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
@@ -25,67 +24,76 @@ namespace EmailProviderServer.DBContext.Services
         //Constructor
         public MessageService(
             IMessageRepository messageRepository,
-            IInnerMessageRepository innerMessageRepository,
-            IOutgoingMessageRepository outgoingMessageRepository,
-            IIncomingMessageRepository incomingMessageRepository,
             IFileRepository fileRepository,
             IUserRepository userRepository,
             IMapper mapper)
         {
             _messageRepository = messageRepository;
-            _innerMessageRepository = innerMessageRepository;
-            _outgoingMessageRepository = outgoingMessageRepository;
-            _incomingMessageRepository = incomingMessageRepository;
             _fileRepository = fileRepository;
             _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        //Methods
-        public async Task ProcessMessageAsync(MessageSerializable messageDTO)
+        // Create and save a new message
+        public async Task ProcessMessageAsync(MessageSerializable dto)
         {
-            var message = _mapper.Map<Message>(messageDTO);
-
-            await _messageRepository.AddAsync(message);
-            await _messageRepository.SaveChangesAsync();
-            var messageId = message.Id;
-
-            foreach (var receiverEmail in messageDTO.ReceiverEmails)
+            var message = new Message
             {
-                var receiver = await _userRepository.GetUserByEmail(receiverEmail);
+                FromEmail = dto.FromEmail,
+                Subject = dto.Subject,
+                Body = dto.Body,
+                DateOfRegistration = DateTime.UtcNow,
+                Direction = dto.Direction,
+                Status = dto.Status,
+            };
 
-                if (receiver != null)
+            // Add recipients
+            foreach (var recipientDto in dto.Recipients)
+            {
+                message.MessageRecipients.Add(new MessageRecipient
                 {
-                    //Вътрешен
-                    var innerMessage = new InnerMessage
-                    {
-                        MessageId = messageId,
-                        SenderId = messageDTO.SenderId,
-                        ReceiverId = receiver.Id
-                    };
+                    Email = recipientDto.Email
+                });
+            }
 
-                    await _innerMessageRepository.AddAsync(innerMessage);
-                }
-                else
+            // Add user messages (sender)
+            var sender = await _userRepository.GetUserByEmail(dto.FromEmail);
+            message.UserMessages.Add(new UserMessage
+            {
+                UserId = sender.Id,
+                IsRead = true,
+                IsDeleted = false,
+                Pinned = false
+            });
+
+            // Add user messages (internal recipients)
+            foreach (var recipientDto in dto.Recipients)
+            {
+                var internalUser = await _userRepository.GetUserByEmail(recipientDto.Email);
+                if (internalUser != null)
                 {
-                    //Външен
-                    var outgoingMessage = new OutgoingMessage
+                    message.UserMessages.Add(new UserMessage
                     {
-                        MessageId = messageId,
-                        SenderId = messageDTO.SenderId,
-                        ReceiverEmail = receiverEmail
-                    };
-
-                    await _outgoingMessageRepository.AddAsync(outgoingMessage);
+                        UserId = internalUser.Id,
+                        IsRead = false,
+                        IsDeleted = false,
+                        Pinned = false
+                    });
                 }
             }
 
-            await _messageRepository.SaveChangesAsync();
-        }
+            // Add files
+            foreach (var fileDto in dto.Files)
+            {
+                message.Files.Add(new EmailServiceIntermediate.Models.File
+                {
+                    Name = fileDto.Name,
+                    Content = fileDto.Content
+                });
+            }
 
-        public async Task<List<ViewMessage>> GetCombinedMessagesAsync(SearchData seacrhData)
-        {
-            return await _messageRepository.GetCombinedMessagesAsync(seacrhData.UserID, (int)seacrhData.GetSearchTypeFolder(), seacrhData.ConstructWhereClause());
+            await _messageRepository.AddAsync(message);
+            await _messageRepository.SaveChangesAsync();
         }
 
         public async Task<T> GetByIDIncludingAll<T>(int id)
@@ -99,120 +107,38 @@ namespace EmailProviderServer.DBContext.Services
             return await _messageRepository.CheckIfExists(id);
         }
 
-        public async Task<T> GetByIdAsync<T>(int id)
-        {
-            var message = await _messageRepository.GetByID(id);
-            return _mapper.Map<T>(message);
-        }
-
         public async Task<bool> UpdateMessageAsync(int messageId, MessageSerializable updatedMessageDTO)
         {
-            var existingMessage = await _messageRepository.GetByIDIncludingAll(messageId);
+            var message = await _messageRepository.GetByIDIncludingAll(messageId);
+            if (message == null) return false;
 
-            if (existingMessage == null)
-                return false;
-            
-            //обновяваме данни за самият имейл
-            existingMessage.Subject = updatedMessageDTO.Subject;
-            existingMessage.Content = updatedMessageDTO.Content;
-            existingMessage.Status = updatedMessageDTO.Status;
+            message.Subject = updatedMessageDTO.Subject;
+            message.Body = updatedMessageDTO.Body;
+            message.Status = updatedMessageDTO.Status;
 
-            //зареждаме всички имейли до които ще изпращаме
-            var existingReceiverEmails = new HashSet<string>();
-            existingReceiverEmails.UnionWith(existingMessage.InnerMessages.Select(im => im.Receiver.Email));
-            existingReceiverEmails.UnionWith(existingMessage.OutgoingMessages.Select(om => om.ReceiverEmail));
+            var updatedEmails = updatedMessageDTO.Recipients.Select(r => r.Email).ToHashSet();
+            var currentEmails = message.MessageRecipients.Select(r => r.Email).ToHashSet();
 
-            var newReceiverEmails = new HashSet<string>(updatedMessageDTO.ReceiverEmails);
-
-            //Махаме липсващи вътрешни
-            var innerMessagesToRemove = existingMessage.InnerMessages
-                .Where(im => !newReceiverEmails.Contains(im.Receiver.Email))
-                .ToList();
-
-            foreach (var im in innerMessagesToRemove)
+            // Remove recipients no longer present
+            var toRemove = message.MessageRecipients.Where(r => !updatedEmails.Contains(r.Email)).ToList();
+            foreach (var r in toRemove)
             {
-                _innerMessageRepository.Delete(im);
+                message.MessageRecipients.Remove(r);
             }
 
-            //Махаме липсващи външни
-            var outgoingMessagesToRemove = existingMessage.OutgoingMessages
-                .Where(om => !newReceiverEmails.Contains(om.ReceiverEmail))
-                .ToList();
-            foreach (var om in outgoingMessagesToRemove)
+            // Add new recipients
+            foreach (var recipient in updatedEmails.Except(currentEmails))
             {
-                _outgoingMessageRepository.Delete(om);
+                message.MessageRecipients.Add(new MessageRecipient
+                {
+                    Email = recipient,
+                    MessageId = message.Id
+                });
             }
 
-            //добавяме нови
-            foreach (var receiverEmail in newReceiverEmails)
-            {
-                if (!existingReceiverEmails.Contains(receiverEmail))
-                {
-                    var receiver = await _userRepository.GetUserByEmail(receiverEmail);
-                    if (receiver != null)
-                    {
-                        var newInnerMessage = new InnerMessage
-                        {
-                            MessageId = existingMessage.Id,
-                            SenderId = updatedMessageDTO.SenderId,
-                            ReceiverId = receiver.Id
-                        };
-                        await _innerMessageRepository.AddAsync(newInnerMessage);
-                    }
-                    else
-                    {
-                        var newOutgoingMessage = new OutgoingMessage
-                        {
-                            MessageId = existingMessage.Id,
-                            SenderId = updatedMessageDTO.SenderId,
-                            ReceiverEmail = receiverEmail
-                        };
-                        await _outgoingMessageRepository.AddAsync(newOutgoingMessage);
-                    }
-                }
-            }
-
-            _messageRepository.Update(existingMessage);
-            await _messageRepository.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DeleteMessagesAsync(IEnumerable<int> messageIds)
-        {
-            var messages = await _messageRepository.GetByIDsIncludingAll(messageIds);
-
-            if (messages == null || !messages.Any())
-                return false;
-
-            foreach (var message in messages)
-            {
-                foreach (var incomingMessage in message.IncomingMessages)
-                {
-                    _incomingMessageRepository.Delete(incomingMessage);
-                }
-
-                foreach (var innerMessage in message.InnerMessages)
-                {
-                    _innerMessageRepository.Delete(innerMessage);
-                }
-
-                foreach (var outgoingMessage in message.OutgoingMessages)
-                {
-                    _outgoingMessageRepository.Delete(outgoingMessage);
-                }
-
-                foreach (var file in message.Files)
-                {
-                    _fileRepository.Delete(file);
-                }
-
-                _messageRepository.Delete(message);
-            }
-
+            _messageRepository.Update(message);
             await _messageRepository.SaveChangesAsync();
             return true;
         }
     }
-
 }

@@ -2,7 +2,6 @@
 using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
-
 namespace EmailProviderServer.DBContext.Services
 {
     //------------------------------------------------------

@@ -1,42 +1,55 @@
-﻿//Includes
+﻿using EmailProvider.Enums;
+using EmailServiceIntermediate.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 
 /// <summary>
-/// Table for emails
+/// Table for storing message metadata and content
 /// </summary>
 public partial class Message : IEntity
 {
     /// <summary>
-    /// ID of the message
+    /// ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
+    /// Sender email address
+    /// </summary>
+    public string FromEmail { get; set; } = null!;
+
+    /// <summary>
     /// Subject of the message
     /// </summary>
-    public string Subject { get; set; } = null!;
+    public string? Subject { get; set; }
 
     /// <summary>
-    /// Content of the message
+    /// Body/content of the message
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string? Body { get; set; }
 
     /// <summary>
-    /// Current status of the email
+    /// Date/time the message was sent
     /// </summary>
-    public int Status { get; set; }
+    public DateTime? DateOfRegistration { get; set; }
 
     /// <summary>
-    /// Date in which the message was processed
+    /// Message direction (incoming, outgoing, internal)
     /// </summary>
-    public DateTime DateOfCompletion { get; set; }
+    public EmailDirections Direction { get; set; }
+
+    /// <summary>
+    /// Message status (draft, sent, etc.)
+    /// </summary>
+    public EmailStatuses Status { get; set; }
+
+    public bool IsInternal { get; set; }
 
     public virtual ICollection<File> Files { get; set; } = new List<File>();
 
-    public virtual ICollection<IncomingMessage> IncomingMessages { get; set; } = new List<IncomingMessage>();
+    public virtual ICollection<MessageRecipient> MessageRecipients { get; set; } = new List<MessageRecipient>();
 
-    public virtual ICollection<InnerMessage> InnerMessages { get; set; } = new List<InnerMessage>();
-
-    public virtual ICollection<OutgoingMessage> OutgoingMessages { get; set; } = new List<OutgoingMessage>();
+    public virtual ICollection<UserMessage> UserMessages { get; set; } = new List<UserMessage>();
 }

@@ -1,29 +1,30 @@
-﻿//Includes
+﻿using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 
 /// <summary>
-/// Table for message files
+/// Table for storing attachments/files linked to messages
 /// </summary>
 public partial class File : IEntity
 {
     /// <summary>
-    /// Id of file
+    /// File ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// Name of file
+    /// File name including extension
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
-    /// Content of file
+    /// Binary content of the file
     /// </summary>
     public byte[] Content { get; set; } = null!;
 
     /// <summary>
-    /// Message which contains the file
+    /// Message ID the file is attached to
     /// </summary>
     public int MessageId { get; set; }
 

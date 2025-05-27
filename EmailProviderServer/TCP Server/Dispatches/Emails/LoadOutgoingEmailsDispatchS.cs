@@ -4,21 +4,24 @@ using EmailServiceIntermediate.Logging;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProvider.SearchData;
-using EmailProvider.Models.DBModels;
+using EmailServiceIntermediate.Models;
+using EmailProviderServer.DBContext.Services.Interfaces;
+using EmailProviderServer.DBContext.Services;
+using EmailServiceIntermediate.Models.Serializables;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadEmailsDispatchS : BaseDispatchHandler
+    public class LoadOutgoingEmailsDispatchS : BaseDispatchHandler
     {
-        private readonly IMessageService _messageService;
+        private readonly IUserMessageService _userMessageService;
 
         //Constructor
-        public LoadEmailsDispatchS(IMessageService messageService)
+        public LoadOutgoingEmailsDispatchS(IUserMessageService userMessageService)
         {
-            _messageService = messageService;
+            _userMessageService = userMessageService;
         }
 
         //Methods
@@ -43,8 +46,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                List<ViewMessage> filteredMessages = new List<ViewMessage> ();
-                filteredMessages = await _messageService.GetCombinedMessagesAsync(searchData);
+                List<MessageSerializable> filteredMessages = new List<MessageSerializable>();
+                filteredMessages = await _userMessageService.GetOutgoingMessagesAsync<MessageSerializable>(searchData, 0, 10);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }

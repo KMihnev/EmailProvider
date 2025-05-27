@@ -4,6 +4,8 @@ using EmailServiceIntermediate.Logging;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProvider.SearchData;
+using EmailServiceIntermediate.Models;
+using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.DBContext.Services;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
@@ -11,25 +13,25 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class DeleteEmailDispatchS : BaseDispatchHandler
+    public class LoadIncomingEmailsDispatchS : BaseDispatchHandler
     {
-        private readonly IMessageService _messageService;
+        private readonly IUserMessageService _userMessageService;
 
         //Constructor
-        public DeleteEmailDispatchS(IMessageService messageService)
+        public LoadIncomingEmailsDispatchS(IUserMessageService userMessageService)
         {
-            _messageService = messageService;
+            _userMessageService = userMessageService;
         }
 
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            List<int> messagewsToDelete = new List<int>();
+            SearchData searchData = new SearchData();
             try
             {
-                InPackage.Deserialize(out messagewsToDelete);
+                InPackage.Deserialize(out searchData);
 
-                if (messagewsToDelete == null)
+                if (searchData == null)
                 {
                     Logger.LogNullValue();
                     return false;
@@ -43,8 +45,10 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-               // await _messageService.DeleteMessagesAsync(messagewsToDelete);
+                List<Message> filteredMessages = new List<Message>();
+                filteredMessages = await _userMessageService.GetIncomingMessagesAsync<Message>(searchData, 0, 10);
                 OutPackage.Serialize(true);
+                OutPackage.Serialize(filteredMessages);
             }
             catch (Exception ex)
             {

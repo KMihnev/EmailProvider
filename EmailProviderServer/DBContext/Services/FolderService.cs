@@ -10,13 +10,13 @@ namespace EmailProviderServer.DBContext.Services
     //------------------------------------------------------
     //	CountryService
     //------------------------------------------------------
-    public class CountryService : ICountryService
+    public class FolderService : ICountryService
     {
         private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
 
         //Constructor
-        public CountryService(ICountryRepository countryRepository, IMapper mapper)
+        public FolderService(ICountryRepository countryRepository, IMapper mapper)
         {
             _countryRepository = countryRepository;
             _mapper = mapper;

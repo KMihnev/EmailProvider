@@ -91,15 +91,9 @@ namespace EMailProviderClient.Views.Emails
             if (RECEIVER_EMAIL.Text.Length <= 0)
                 return;
 
-            SearchConditionEmail searchConditionReceiver = new SearchConditionEmail(SearchTypeEmail.SearchTypeEmailReceiver, RECEIVER_EMAIL.Text);
+            SearchConditionEmail searchConditionReceiver = new SearchConditionEmail(RECEIVER_EMAIL.Text);
             SearchData.AddCondition(searchConditionReceiver);
 
-
-            if (SENDER_EMAIL.Text.Length <= 0)
-                return;
-
-            SearchConditionEmail searchConditionSender = new SearchConditionEmail(SearchTypeEmail.SearchTypeEmailSender, SENDER_EMAIL.Text);
-            SearchData.AddCondition(searchConditionSender);
         }
 
         private void CLEAR_BTN_Click(object sender, EventArgs e)
@@ -163,18 +157,8 @@ namespace EMailProviderClient.Views.Emails
             if (condition == null)
                 return;
 
-            switch ((SearchTypeEmail)condition.SearchSubType)
-            {
-                case SearchTypeEmail.SearchTypeEmailReceiver:
-                    RECEIVER_EMAIL.Text = condition.SearchValue;
-                    BY_RECEIVER_CHB.Checked = true;
-                    break;
-
-                case SearchTypeEmail.SearchTypeEmailSender:
-                    SENDER_EMAIL.Text = condition.SearchValue;
-                    BY_RECEIVER_CHB.Checked = true;
-                    break;
-            }
+            RECEIVER_EMAIL.Text = condition.SearchValue;
+            BY_RECEIVER_CHB.Checked = true;
         }
     }
 }

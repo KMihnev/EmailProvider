@@ -4,11 +4,11 @@ using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailServiceIntermediate.Models;
 using System;
 using System.Threading.Tasks;
 using EmailProviderServer.Validation.User;
 using EmailProviderServer.DBContext.Services.Base;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {

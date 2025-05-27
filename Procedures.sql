@@ -1,102 +1,84 @@
-CREATE OR ALTER PROCEDURE SP_GET_MESSAGES
-    @UserId INT,
-    @SearchType INT = 3,
-    @WhereClause NVARCHAR(MAX) = NULL
+﻿USE EMAIL_DB
+GO
+
+--Добавяне на описание на колона
+IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = N'SP_ADD_COLUMN_DESCRIPTION')
+BEGIN
+    EXEC sp_dropextendedproperty N'MS_Description',N'SCHEMA',N'dbo',N'PROCEDURE',N'SP_ADD_COLUMN_DESCRIPTION'
+    DROP PROCEDURE [SP_ADD_COLUMN_DESCRIPTION]
+END
+GO
+
+CREATE PROCEDURE SP_ADD_COLUMN_DESCRIPTION
+    @DESCRIPTION NVARCHAR(MAX),
+    @TABLE_NAME NVARCHAR(128),
+    @COLUMN_NAME NVARCHAR(128)
 AS
 BEGIN
-    SET NOCOUNT ON;
+    DECLARE @SCHEMA_NAME NVARCHAR(128) = 'dbo'
+    DECLARE @Sql NVARCHAR(MAX)
 
-    DECLARE @IncomingCondition NVARCHAR(MAX) = 'M.ID IN (
-        SELECT MESSAGE_ID FROM INCOMING_MESSAGES WHERE RECEIVER_ID = @UserId
-        UNION
-        SELECT MESSAGE_ID FROM INNER_MESSAGES WHERE RECEIVER_ID = @UserId
-    )';
-
-    DECLARE @OutgoingCondition NVARCHAR(MAX) = 'M.ID IN (
-        SELECT MESSAGE_ID FROM OUTGOING_MESSAGES WHERE SENDER_ID = @UserId
-        UNION
-        SELECT MESSAGE_ID FROM INNER_MESSAGES WHERE SENDER_ID = @UserId
-    )';
-
-    DECLARE @CombinedCondition NVARCHAR(MAX);
-
-    IF @SearchType = 1
-        SET @CombinedCondition = @IncomingCondition;
-    ELSE IF @SearchType = 2
-        SET @CombinedCondition = @OutgoingCondition;
-    ELSE 
-        SET @CombinedCondition = '(' + @IncomingCondition + ' OR ' + @OutgoingCondition + ')';
-
-    DECLARE @FinalWhere NVARCHAR(MAX) = 
-	CASE 
-         WHEN @WhereClause IS NOT NULL AND LTRIM(RTRIM(@WhereClause)) <> '' 
-         THEN 'AND ' + @WhereClause 
-         ELSE '' 
-     END;
-
-    DECLARE @Sql NVARCHAR(MAX) = '
-    WITH SenderCandidates AS
-    (
-        SELECT M.ID AS MessageId,
-               US_OUT.EMAIL AS OutgoingSender,
-               US_IN.EMAIL AS InnerSender,
-               INCM.SENDER_EMAIL AS IncomingSender
-        FROM MESSAGES M
-        LEFT JOIN OUTGOING_MESSAGES OMSG ON OMSG.MESSAGE_ID = M.ID
-        LEFT JOIN USERS US_OUT ON OMSG.SENDER_ID = US_OUT.ID
-
-        LEFT JOIN INNER_MESSAGES IM ON IM.MESSAGE_ID = M.ID
-        LEFT JOIN USERS US_IN ON IM.SENDER_ID = US_IN.ID
-
-        LEFT JOIN INCOMING_MESSAGES INCM ON INCM.MESSAGE_ID = M.ID
-    ),
-    SenderInfo AS
-    (
-        SELECT MessageId,
-               COALESCE(MAX(OutgoingSender), MAX(InnerSender), MAX(IncomingSender)) AS SenderEmail
-        FROM SenderCandidates
-        GROUP BY MessageId
-    ),
-    ReceiverInfo AS
-    (
-        SELECT 
-            MSG_ID,
-            STRING_AGG(ReceiverEmail, '';'') AS ReceiverEmails
-        FROM
-        (
-            SELECT DISTINCT IM.MESSAGE_ID AS MSG_ID, U.EMAIL AS ReceiverEmail
-            FROM INCOMING_MESSAGES IM
-            JOIN USERS U ON IM.RECEIVER_ID = U.ID
-
-            UNION
-
-            SELECT DISTINCT OMSG.MESSAGE_ID AS MSG_ID, OMSG.RECEIVER_EMAIL AS ReceiverEmail
-            FROM OUTGOING_MESSAGES OMSG
-
-            UNION
-
-            SELECT DISTINCT IM2.MESSAGE_ID AS MSG_ID, U2.EMAIL AS ReceiverEmail
-            FROM INNER_MESSAGES IM2
-            JOIN USERS U2 ON IM2.RECEIVER_ID = U2.ID
-        ) R
-        GROUP BY MSG_ID
-    )
-
-    SELECT 
-        M.ID AS MessageId,
-        M.SUBJECT AS Subject,
-        M.CONTENT AS Content,
-        SI.SenderEmail AS SenderEmail,
-        RI.ReceiverEmails AS ReceiverEmails,
-        M.DATE_OF_COMPLETION AS DateOfCompletion,
-        M.STATUS AS Status
-    FROM MESSAGES M
-    JOIN SenderInfo SI ON M.ID = SI.MessageId
-    LEFT JOIN ReceiverInfo RI ON M.ID = RI.MSG_ID
-    WHERE ' + @CombinedCondition + '
-    ' + @FinalWhere + '
-    ORDER BY M.DATE_OF_COMPLETION DESC;';
-
-    EXEC sp_executesql @Sql, N'@UserId INT', @UserId;
+    SET @Sql = N'EXEC sys.sp_addextendedproperty '
+           + N'@name = N''MS_Description'', '
+           + N'@value = N''' + @DESCRIPTION + ''', '
+           + N'@level0type = N''SCHEMA'', '
+           + N'@level0name = N''' + @SCHEMA_NAME + ''', '
+           + N'@level1type = N''TABLE'', '
+           + N'@level1name = N''' + @TABLE_NAME + ''', '
+           + N'@level2type = N''COLUMN'', '
+           + N'@level2name = N''' + @COLUMN_NAME + ''';';
+    EXEC sp_executesql @Sql
 END
+GO
+
+EXEC sp_addextendedproperty N'MS_Description', N'Stored procedure to add a description to a column', N'SCHEMA', N'dbo', N'PROCEDURE', N'SP_ADD_COLUMN_DESCRIPTION'
+GO
+
+
+-- Сваляне на таблица
+IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = N'SP_DROP_TABLE')
+BEGIN
+    EXEC sp_dropextendedproperty N'MS_Description',N'SCHEMA',N'dbo',N'PROCEDURE',N'SP_DROP_TABLE'
+    DROP PROCEDURE [SP_DROP_TABLE]
+END
+GO
+
+CREATE PROCEDURE [SP_DROP_TABLE]
+    @TABLE_NAME NVARCHAR(128)
+AS
+BEGIN
+    IF EXISTS 
+	(
+        SELECT * FROM sys.objects
+       WHERE object_id=OBJECT_ID(@TABLE_NAME) AND type = 'U'
+    )
+    BEGIN
+        DECLARE @SQL NVARCHAR(MAX)
+        DECLARE @COLUMN_NAME NVARCHAR(128)
+
+        DECLARE ColumnCursor CURSOR FOR
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = @TABLE_NAME AND TABLE_SCHEMA = 'dbo'
+
+        OPEN ColumnCursor
+        FETCH NEXT FROM ColumnCursor INTO @COLUMN_NAME
+
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+            SET @SQL = 'EXEC sp_dropextendedproperty N''MS_Description'', N''SCHEMA'', N''dbo'', N''TABLE'', N''' + @TABLE_NAME + ''', N''COLUMN'', N''' + @COLUMN_NAME + ''''
+            EXEC sp_executesql @SQL
+            FETCH NEXT FROM ColumnCursor INTO @COLUMN_NAME
+        END
+
+        CLOSE ColumnCursor
+        DEALLOCATE ColumnCursor
+
+        SET @SQL = N'DROP TABLE dbo.[' + @TABLE_NAME + ']'
+        EXEC sp_executesql @SQL
+    END
+END
+GO
+
+EXEC sp_addextendedproperty N'MS_Description', N'Stored procedure to drop a table with all column descriptions', N'SCHEMA', N'dbo', N'PROCEDURE', N'SP_DROP_TABLE'
 GO

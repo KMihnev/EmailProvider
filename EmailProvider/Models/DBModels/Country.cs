@@ -1,24 +1,24 @@
-﻿//Includes
+﻿using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
-
 /// <summary>
-/// Table for countries
+/// Table for countries list
 /// </summary>
 public partial class Country : IEntity
 {
     /// <summary>
-    /// Id of country
+    /// Country ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// Name of country
+    /// Name of the country
     /// </summary>
     public string Name { get; set; } = null!;
 
     /// <summary>
-    /// Beginning code of phone number for country
+    /// Country dialing code prefix
     /// </summary>
     public string PhoneNumberCode { get; set; } = null!;
 

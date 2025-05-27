@@ -1,4 +1,6 @@
 ﻿//Includes
+using EmailProvider.Enums;
+using EmailProvider.Models.Serializables;
 using EmailServiceIntermediate.Enums;
 
 namespace EmailServiceIntermediate.Models.Serializables
@@ -14,22 +16,21 @@ namespace EmailServiceIntermediate.Models.Serializables
 
         public MessageSerializable()
         {
-            DateOfCompletion = DateTime.Now;
+ 
             Files = new List<FileSerializable>();
-            Status = EmailStatusProvider.GetNewStatus();
+            Status = EmailStatuses.EmailStatusNew;
         }
+
         public int Id { get; set; }
-        public int SenderId { get; set; }
-        public IEnumerable<string> ReceiverEmails { get; set; }
+        public string FromEmail { get; set; } = null!;
+        public string Subject { get; set; } = null!;
+        public string Body { get; set; } = null!;
+        public DateTime DateOfRegistration { get; set; }
+        public EmailStatuses Status { get; set; }
+        public EmailDirections Direction { get; set; }
 
-        public string Subject { get; set; }
-        public string Content { get; set; }
-        public int Status { get; set; }
-
-        public string SenderEmail { get; set; }
-
-        public DateTime DateOfCompletion { get; set; }
-        public virtual ICollection<FileSerializable> Files { get; set; }
+        public List<MessageRecipientSerializable> Recipients { get; set; } = new();
+        public List<FileSerializable> Files { get; set; } = new();
 
     }
 }

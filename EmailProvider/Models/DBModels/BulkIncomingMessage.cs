@@ -1,4 +1,5 @@
-﻿//Includes
+﻿using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 

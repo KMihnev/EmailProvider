@@ -5,6 +5,8 @@ using EMailProviderClient.Dispatches.Emails;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Enums;
 using EMailProviderClient.Views.Enums;
+using EmailProvider.Models.Serializables;
+using EmailProvider.Enums;
 
 namespace EMailProviderClient.Views.Emails
 {
@@ -23,7 +25,8 @@ namespace EMailProviderClient.Views.Emails
 
             this.DialogMode = mode;
             emailSerializable = new MessageSerializable();
-            emailSerializable.SenderId = UserController.GetCurrentUserID();
+            emailSerializable.FromEmail = UserController.GetCurrentUserEmail();
+            emailSerializable.Direction = EmailDirections.EmailDirectionOut;
             InitDialog();
             AddFileContextMenu();
         }
@@ -78,17 +81,12 @@ namespace EMailProviderClient.Views.Emails
 
         private void FillDialogData()
         {
-            if (emailSerializable.ReceiverEmails != null && emailSerializable.ReceiverEmails.Count() > 0)
-            {
-                RECEIVER_EDIT.Text = string.Join(";", emailSerializable.ReceiverEmails);
-            }
-            else
-            {
-                RECEIVER_EDIT.Text = string.Empty;
-            }
+            var toRecipients = emailSerializable.Recipients.Select(r => r.Email);
+
+            RECEIVER_EDIT.Text = string.Join(";", toRecipients);
 
             SUBJECT_EDIT.Text = emailSerializable.Subject ?? string.Empty;
-            CONTENT_BOX.Text = emailSerializable.Content ?? string.Empty;
+            CONTENT_BOX.Text = emailSerializable.Body ?? string.Empty;
 
             FILES_LIST.Items.Clear();
 
@@ -132,15 +130,19 @@ namespace EMailProviderClient.Views.Emails
 
         private async Task<bool> SaveEmail(bool bIsDraft = false)
         {
-            emailSerializable.ReceiverEmails = new List<string>((RECEIVER_EDIT.Text.Split(";")));
+            emailSerializable.Recipients = RECEIVER_EDIT.Text
+            .Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(email => new MessageRecipientSerializable { Email = email} )
+            .ToList();
+
+            emailSerializable.Body = CONTENT_BOX.Text;
             emailSerializable.Subject = SUBJECT_EDIT.Text;
-            emailSerializable.Content = CONTENT_BOX.Text;
-            emailSerializable.DateOfCompletion = DateTime.Now;
+            emailSerializable.DateOfRegistration = DateTime.Now;
 
             if (bIsDraft)
-                emailSerializable.Status = EmailStatusProvider.GetDraftStatus();
+                emailSerializable.Status = EmailStatuses.EmailStatusDraft;
             else
-                emailSerializable.Status = EmailStatusProvider.GetNewStatus();
+                emailSerializable.Status = EmailStatuses.EmailStatusNew;
 
             if (!await SendEmailDispatchC.SendEmail(emailSerializable))
             {
@@ -155,8 +157,8 @@ namespace EMailProviderClient.Views.Emails
         {
             base.OnFormClosing(e);
 
-            bool bIsExistingDraft = DialogMode == DialogMode.DialogModeEdit && emailSerializable.Status == EmailStatusProvider.GetDraftStatus();
-            bool bIsNewMessage = DialogMode == DialogMode.DialogModeAdd && emailSerializable.Status == EmailStatusProvider.GetNewStatus();
+            bool bIsExistingDraft = DialogMode == DialogMode.DialogModeEdit && emailSerializable.Status == EmailStatuses.EmailStatusDraft;
+            bool bIsNewMessage = DialogMode == DialogMode.DialogModeAdd && emailSerializable.Status == EmailStatuses.EmailStatusNew;
 
             if (DialogMode == DialogMode.DialogModePreview)
                 return;

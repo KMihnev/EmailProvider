@@ -1,56 +1,60 @@
-﻿//Includes
+﻿using EmailServiceIntermediate.Models;
+using System;
+using System.Collections.Generic;
 
 namespace EmailServiceIntermediate.Models;
 
 /// <summary>
-/// Table for users
+/// Table for system users
 /// </summary>
 public partial class User : IEntity
 {
     public User()
     {
-        CountryId = 1;
-        PhoneNumber = string.Empty;
+        Id = 0;
         Name = string.Empty;
+        Email = string.Empty;
+        Password = string.Empty;
+        PhoneNumber = string.Empty;
+        CountryId = 0;
+        Folders = new List<Folder>();
+        UserMessages = new List<UserMessage>();
+        Country = null;
     }
 
     /// <summary>
-    /// ID for users
+    /// User ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// Name of user
+    /// Full name of the user
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     /// <summary>
-    /// Email of user
+    /// Email address of the user
     /// </summary>
-    public string Email { get; set; } = null!;
+    public string Email { get; set; }
 
     /// <summary>
-    /// Password of user
+    /// Password hash or secret
     /// </summary>
-    public string Password { get; set; } = null!;
+    public string Password { get; set; }
 
     /// <summary>
-    /// Phone number of user
+    /// User phone number
     /// </summary>
-    public string PhoneNumber { get; set; } = null!;
+    public string PhoneNumber { get; set; }
 
     /// <summary>
-    /// Country id of user
+    /// Foreign key to country
     /// </summary>
     public int CountryId { get; set; }
 
-    public virtual Country Country { get; set; }
+    public virtual Country? Country { get; set; } = null!;
 
-    public virtual ICollection<IncomingMessage> IncomingMessages { get; set; } = new List<IncomingMessage>();
+    public virtual ICollection<Folder> Folders { get; set; }
 
-    public virtual ICollection<InnerMessage> InnerMessageReceivers { get; set; } = new List<InnerMessage>();
-
-    public virtual ICollection<InnerMessage> InnerMessageSenders { get; set; } = new List<InnerMessage>();
-
-    public virtual ICollection<OutgoingMessage> OutgoingMessages { get; set; } = new List<OutgoingMessage>();
+    public virtual ICollection<UserMessage> UserMessages { get; set; }
 }

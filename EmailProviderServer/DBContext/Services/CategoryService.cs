@@ -9,20 +9,20 @@ namespace EmailProviderServer.DBContext.Services
     //	CategoryService
     //------------------------------------------------------
 
-    public class CategoryService : ICategoryService
+    public class CategoryService : IFolderService
     {
-        private readonly IRepositoryS<Category> oCategoryRepositoryS;
+        private readonly IRepositoryS<Folder> oCategoryRepositoryS;
 
         //Constructor
-        public CategoryService(IRepositoryS<Category> oCategoryRepository)
+        public CategoryService(IRepositoryS<Folder> oCategoryRepository)
         {
             this.oCategoryRepositoryS = oCategoryRepository;
         }
 
         //Methods
-        public IEnumerable<Category> GetAll(int? nCount = null)
+        public IEnumerable<Folder> GetAll(int? nCount = null)
         {
-            IQueryable<Category> oQuery = this.oCategoryRepositoryS
+            IQueryable<Folder> oQuery = this.oCategoryRepositoryS
                 .All();
 
             if (nCount.HasValue)
@@ -31,7 +31,7 @@ namespace EmailProviderServer.DBContext.Services
             return oQuery.ToList();
         }
 
-        public Category GetById(int nId)
+        public Folder GetById(int nId)
         {
             var oCategory = this.oCategoryRepositoryS
                 .All()
@@ -40,7 +40,7 @@ namespace EmailProviderServer.DBContext.Services
             return oCategory;
         }
 
-        public Category GetByName(string strName)
+        public Folder GetByName(string strName)
         {
             var oCategory = this.oCategoryRepositoryS
                 .All()
