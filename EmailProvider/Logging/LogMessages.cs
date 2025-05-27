@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
-namespace EmailProvider.Logging
+namespace EmailServiceIntermediate.Logging
 {
+    //------------------------------------------------------
+    //	LogMessages
+    //------------------------------------------------------
     public static class LogMessages
     {
         public const string InvalidName = "Name: Only Alphabetic characters are allowed";
@@ -34,5 +33,20 @@ namespace EmailProvider.Logging
         public const string DispatchErrorGetCountries = "Error calling GetCountries dispatch";
         public const string NoCountriesLoaded = "No countries have been loaded";
         public const string NoCountrySelected = "No countries has been selected";
+        public const string InvalidData = "InvalidData";
+        public const string InteralError = "Internal Error";
+        public const string NullObject = "{0} is null";
+        public const string ErrorCalling = "Error calling: {0}";
+        public const string NullValue = "Null value in: {0}";
+        public const string NoUserForEmail = "No user with this email was found";
+        public const string NoUserForName = "No user with this name was found";
+        public const string IncorrectPassword = "Incorrect Password";
+        public const string ExitSureCheck = "Are you sure you want to close the applciation?";
+        public const string ExitConfirmation = "Do you wish to leave?";
+        public const string ErrorSavingEmail = "There was an error saving the email";
+        public const string DoYouWishToSaveDraft = "Do you want to save this message as a draft?";
+        public const string SaveAsDraft = "Save as Draft";
+        public const string RecordNotFound = "Record not found: {0}, Searched value:{1}";
+        public const string UpdateRecordError = "Updating record failed";
     }
 }

@@ -1,80 +1,71 @@
-﻿using EmailProvider.Logging;
-using EmailProviderServer.DBContext;
-using EmailProviderServer.DBContext.Repositories;
-using EmailProviderServer.DBContext.Services;
-using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailServiceIntermediate.Models;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProviderServer.Validation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+using EmailProviderServer.Validation.User;
+using EmailProviderServer.DBContext.Services.Base;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
-    public class RegisterHandler : BaseDispatchHandler
+    //------------------------------------------------------
+    //	RegisterDispatch
+    //------------------------------------------------------
+    public class RegisterDispatch : BaseDispatchHandler
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public RegisterHandler(UserService userService)
+        //Constructor
+        public RegisterDispatch(IUserService userService)
         {
             _userService = userService;
-            response = new EmailProvider.Reponse.Response();
         }
 
-        public async override Task<bool> Execute(JsonElement parameters) 
+        //Methods
+        public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            User user;
+            User user = new User();
             try
             {
-                if (!parameters.TryGetProperty("user", out JsonElement userElement))
-                {
-                    return false;
-                }
-
-                user = JsonSerializer.Deserialize<User>(userElement.GetRawText());
+                InPackage.Deserialize(out user);
 
                 if (user == null)
                 {
-                    Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
                     return false;
                 }
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                Logger.LogError(LogMessages.InteralError);
                 return false;
             }
 
             RegisterValidationS registerValidationS = new RegisterValidationS();
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
-            registerValidationS.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
-            if (!registerValidationS.Validate())
-                return false;
+            registerValidationS.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
+            registerValidationS.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
 
-            var userExists = _userService.GetByEmail(user.Email) != null;
-            if (userExists)
+            if (!registerValidationS.Validate())
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.UserAlreadyExists;
-                Logger.Log(LogMessages.UserAlreadyExists, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                errorMessage = LogMessages.InvalidData;
+                return false;
+            }
+
+            if (await _userService.CheckIfExistsEmailAsync(user.Email))
+            {
+                errorMessage = LogMessages.UserAlreadyExists;
                 return false;
             }
 
             try
             {
-                await _userService.CreateAsync(user);
-                response.Data = user;
+                UserSerializable userSerializable = await _userService.CreateAsync<UserSerializable>(user);
+                OutPackage.Serialize(true);
+                OutPackage.Serialize(userSerializable);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.ErrorAddingUser;
-                Logger.Log(LogMessages.ErrorAddingUser, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                Logger.LogError(LogMessages.InteralError);
                 return false;
             }
 

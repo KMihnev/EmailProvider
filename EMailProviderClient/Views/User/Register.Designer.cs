@@ -43,23 +43,25 @@
             EDC_EMAIL.Name = "EDC_EMAIL";
             EDC_EMAIL.PlaceholderText = "Email";
             EDC_EMAIL.Size = new Size(172, 23);
-            EDC_EMAIL.TabIndex = 0;
+            EDC_EMAIL.TabIndex = 1;
             // 
             // EDC_PASSWORD
             // 
             EDC_PASSWORD.Location = new Point(45, 113);
             EDC_PASSWORD.Name = "EDC_PASSWORD";
+            EDC_PASSWORD.PasswordChar = '*';
             EDC_PASSWORD.PlaceholderText = "Password";
             EDC_PASSWORD.Size = new Size(172, 23);
-            EDC_PASSWORD.TabIndex = 1;
+            EDC_PASSWORD.TabIndex = 2;
             // 
             // EDC_RE_PASSWORD
             // 
             EDC_RE_PASSWORD.Location = new Point(45, 142);
             EDC_RE_PASSWORD.Name = "EDC_RE_PASSWORD";
+            EDC_RE_PASSWORD.PasswordChar = '*';
             EDC_RE_PASSWORD.PlaceholderText = "Repeat Password";
             EDC_RE_PASSWORD.Size = new Size(172, 23);
-            EDC_RE_PASSWORD.TabIndex = 2;
+            EDC_RE_PASSWORD.TabIndex = 3;
             // 
             // StaticRegister
             // 
@@ -68,7 +70,7 @@
             StaticRegister.Location = new Point(66, 27);
             StaticRegister.Name = "StaticRegister";
             StaticRegister.Size = new Size(133, 35);
-            StaticRegister.TabIndex = 3;
+            StaticRegister.TabIndex = 0;
             StaticRegister.Text = "Register";
             // 
             // BTN_REGISTER
@@ -76,7 +78,7 @@
             BTN_REGISTER.Location = new Point(142, 209);
             BTN_REGISTER.Name = "BTN_REGISTER";
             BTN_REGISTER.Size = new Size(75, 23);
-            BTN_REGISTER.TabIndex = 4;
+            BTN_REGISTER.TabIndex = 6;
             BTN_REGISTER.Text = "Register";
             BTN_REGISTER.UseVisualStyleBackColor = true;
             BTN_REGISTER.Click += BTN_REGISTER_Click;
@@ -98,7 +100,7 @@
             STT_GO_TO_LOGIN.Location = new Point(48, 173);
             STT_GO_TO_LOGIN.Name = "STT_GO_TO_LOGIN";
             STT_GO_TO_LOGIN.Size = new Size(162, 15);
-            STT_GO_TO_LOGIN.TabIndex = 6;
+            STT_GO_TO_LOGIN.TabIndex = 4;
             STT_GO_TO_LOGIN.Text = "Already have a profile? LogIn!";
             STT_GO_TO_LOGIN.Click += STT_GO_TO_LOGIN_Click;
             // 

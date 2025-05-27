@@ -1,61 +1,36 @@
-﻿using EmailProviderServer.DBContext.Services.Interfaces.Base;
+﻿//Includes
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailProviderServer.DBContext.Repositories
 {
-    public class UserRepository : IRepositoryS<User>
+    //------------------------------------------------------
+    //	UserRepository
+    //------------------------------------------------------
+    public class UserRepository : RepositoryS<User>, IUserRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public UserRepository(ApplicationDbContext context)
+        //Constructor
+        public UserRepository(ApplicationDbContext context) : base (context)
         {
-            _context = context;
+
         }
 
-        public IQueryable<User> All()
+        //Methods
+        public async Task<User> GetUserByEmail(string email)
         {
-            return _context.Users;
+            return await _dbSet.FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public IQueryable<User> GetByID(int nId)
+        public async Task<User> GetUserByName(string name)
         {
-            return _context.Users.Where(x=>x.Id == nId);
+            return await _dbSet.FirstOrDefaultAsync(x => x.Name == name);
         }
 
-        public IQueryable<User> AllAsNoTracking()
+        public async Task<bool> CheckIfExistsEmail(string email)
         {
-            return _context.Users.AsNoTracking();
-        }
-
-        public async Task AddAsync(User entity)
-        {
-            await _context.Users.AddAsync(entity);
-        }
-
-        public void Update(User entity)
-        {
-            _context.Users.Update(entity);
-        }
-
-        public void Delete(User entity)
-        {
-            _context.Users.Remove(entity);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
+            var user = await GetUserByEmail(email);
+            return user != null;
         }
     }
 }

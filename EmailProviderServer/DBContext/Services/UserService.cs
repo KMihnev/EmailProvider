@@ -1,91 +1,88 @@
 ﻿//Includes
-
 using AutoMapper;
-using EmailProvider.Logging;
-using EmailProviderServer.DBContext.Repositories;
+using EmailServiceIntermediate.Logging;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	UserService
+    //------------------------------------------------------
     public class UserService : IUserService
     {
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        private readonly UserRepository oUserRepositoryS;
-
-        public UserService(UserRepository oUserRepository)
+        //Constructor
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            this.oUserRepositoryS = oUserRepository;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public IEnumerable<User> GetAll(int? nCount = null)
+        //Methods
+        public async Task<IEnumerable<T>> GetAllAsync<T>()
         {
-            IQueryable<User> oQuery = this.oUserRepositoryS
-               .All();
-
-            if (nCount.HasValue)
-                oQuery = oQuery.Take(nCount.Value);
-
-            return oQuery.ToList();
+            var users = await _userRepository.AllAsNoTracking().ToListAsync();
+            return _mapper.Map<IEnumerable<T>>(users);
         }
 
-        public IEnumerable<User> GetAllByCountryId(int nId, int? nCount = null)
+        public async Task<T> GetByEmailAsync<T>(string email)
         {
-            IQueryable<User> oQuery = this.oUserRepositoryS
-               .All().Where(u => u.CountryId == nId);
+            var user = await _userRepository.GetUserByEmail(email);
 
-            if (nCount.HasValue)
-                oQuery = oQuery.Take(nCount.Value);
-
-            return oQuery.ToList();
+            return _mapper.Map<T>(user)!;
         }
 
-        public User GetByEmail(string strEmail)
+        public async Task<T> GetByIdAsync<T>(int id)
         {
-            var oUser = this.oUserRepositoryS
-            .All()
-                .Where(u => u.Email == strEmail)
-                .FirstOrDefault();
-            return oUser;
+            var user = await _userRepository.GetByID(id);
+            return _mapper.Map<T>(user);
         }
 
-        public User GetById(int nId)
+        public async Task<T> GetByNameAsync<T>(string name)
         {
-            var oUser = this.oUserRepositoryS
-                .All()
-                .Where(x => x.Id == nId)
-                .FirstOrDefault();
-            return oUser;
+            var user = await _userRepository.GetUserByName(name);
+
+            return _mapper.Map<T>(user);
         }
 
-        public User GetByName(string strName)
+        public async Task<bool> CheckIfExistsAsync(int id)
         {
-            var oUser = this.oUserRepositoryS
-                 .All()
-                 .Where(u => u.Name == strName)
-                 .FirstOrDefault();
-            return oUser;
+            return await _userRepository.CheckIfExists(id);
         }
 
-        public async Task CreateAsync(User user)
+        public async Task<bool> CheckIfExistsEmailAsync(string email)
         {
-            user.Country = null;
-            await oUserRepositoryS.AddAsync(user);
-
-            await oUserRepositoryS.SaveChangesAsync();
+            return await _userRepository.CheckIfExistsEmail(email);
         }
 
-        public async Task UpdateAsync(int nId,User user)
+        public async Task<T> CreateAsync<T>(User user)
         {
             if (user == null)
-                Logger.Log(LogMessages.UserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                Logger.LogNullValue();
 
-            oUserRepositoryS.Update(user);
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
 
-            await oUserRepositoryS.SaveChangesAsync();
+            return _mapper.Map<T>(user);
+        }
+
+        public async Task<T> UpdateAsync<T>(User user)
+        {
+            if (user == null)
+            {
+                Logger.LogNullValue();
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            _userRepository.Update(user);
+            await _userRepository.SaveChangesAsync();
+
+            return _mapper.Map<T>(user);
         }
     }
 }

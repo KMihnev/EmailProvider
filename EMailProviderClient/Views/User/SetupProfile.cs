@@ -1,35 +1,30 @@
-﻿using EmailProvider.Enums;
-using EmailProvider.Logging;
-using EMailProviderClient.Dispatches;
-using EMailProviderClient.UserControl;
+﻿//Includes
+using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Models.Serializables;
+using EMailProviderClient.Dispatches.Countries;
+using EMailProviderClient.Dispatches.Users;
+using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Validation;
-using EmailServiceIntermediate.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace EMailProviderClient.Views.User
 {
+    //------------------------------------------------------
+    //	SetupProfile
+    //------------------------------------------------------
     public partial class SetupProfile : Form
     {
         private UserValidatorC UserValidatorC;
-
+        private bool _isExiting = false;
         public SetupProfile(bool firstTime = true)
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             AddValidation();
             LoadCountries();
 
-            if (firstTime)
-                BTN_SKIP.Text = LogMessages.BtnTextSkip;
-            else
-                BTN_SKIP.Text = LogMessages.BtnTextCancel;
+            BTN_SKIP.Text = firstTime ? LogMessages.BtnTextSkip : LogMessages.BtnTextCancel;
         }
 
         private void SetupProfile_Load(object sender, EventArgs e)
@@ -43,38 +38,39 @@ namespace EMailProviderClient.Views.User
             OpenFileDialog ofd = new OpenFileDialog();
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                PB_PROFILE.ImageLocation = ofd.FileName.ToString();
+                PB_PROFILE.ImageLocation = ofd.FileName;
             }
         }
 
         private void BTN_SKIP_Click(object sender, EventArgs e)
         {
-            GoToMainScreen();
+            this.Close();
         }
 
         private async void BTN_CONTINUE_Click(object sender, EventArgs e)
         {
-            if (!UserValidatorC.Validate())
+            if (!UserValidatorC.Validate(true))
                 return;
 
-            EmailServiceIntermediate.Models.User user = UserController.GetCurrentUser();
-            user.PhoneNumber = EDC_PHONE_NUMBER.Text;
+            var user = UserController.GetCurrentUser();
             user.Name = EDC_NAME.Text;
+            user.PhoneNumber = EDC_PHONE_NUMBER.Text;
 
             if (CMB_COUNTRY.SelectedIndex < 0)
+            {
                 Logger.Log(LogMessages.NoCountrySelected, LogType.LogTypeScreen, LogSeverity.Warning);
+                return;
+            }
+
+            var selectedCountry = (CountrySerializable)CMB_COUNTRY.SelectedItem;
+            user.CountryId = selectedCountry.Id;
 
             if (!await UserDispatchesC.SetUpProfile(user))
+            {
+                this.Show();
                 return;
+            }
 
-            GoToMainScreen();
-        }
-
-        private void GoToMainScreen()
-        {
-            this.Hide();
-            var emailProvider = new EmailProvider();
-            emailProvider.ShowDialog();
             this.Close();
         }
 
@@ -87,11 +83,11 @@ namespace EMailProviderClient.Views.User
 
         private async void LoadCountries()
         {
-            List<Country> listCountries = new List<Country>();
+            List<CountrySerializable> listCountries = new List<CountrySerializable>();
             if (!await CountriesDispatchC.LoadCountries(listCountries))
                 return;
 
-            if(listCountries.Count == 0)
+            if (listCountries.Count == 0)
                 return;
 
             this.Invoke((MethodInvoker)delegate
@@ -99,13 +95,26 @@ namespace EMailProviderClient.Views.User
                 CMB_COUNTRY.DataSource = listCountries;
                 CMB_COUNTRY.DisplayMember = "Name";
                 CMB_COUNTRY.ValueMember = "Id";
+
+                if (listCountries.Count > 0)
+                {
+                    CountrySerializable currentCountry = listCountries.FirstOrDefault(c => c.Name == "Unknown");
+                    if (currentCountry == null)
+                        return;
+
+                    CMB_COUNTRY.SelectedItem = currentCountry;
+                    EDC_PHONE_NUMBER.Text = currentCountry.PhoneNumberCode;
+                }
             });
         }
 
         private void ON_COUNTRIES_CHANGE(object sender, EventArgs e)
         {
-            if(EDC_PHONE_NUMBER.Text == string.Empty)
-                EDC_PHONE_NUMBER.Text = (CMB_COUNTRY.SelectedItem as Country).PhoneNumberCode;
+            var selectedCountry = CMB_COUNTRY.SelectedItem as CountrySerializable;
+            if (selectedCountry != null)
+            {
+                EDC_PHONE_NUMBER.Text = selectedCountry.PhoneNumberCode;
+            }
         }
     }
 }

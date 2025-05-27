@@ -51,15 +51,16 @@
             EDC_NAME.Name = "EDC_NAME";
             EDC_NAME.PlaceholderText = "Email / Username";
             EDC_NAME.Size = new Size(142, 23);
-            EDC_NAME.TabIndex = 3;
+            EDC_NAME.TabIndex = 1;
             // 
             // EDC_PASSWORD
             // 
             EDC_PASSWORD.Location = new Point(34, 123);
             EDC_PASSWORD.Name = "EDC_PASSWORD";
+            EDC_PASSWORD.PasswordChar = '*';
             EDC_PASSWORD.PlaceholderText = "Password";
             EDC_PASSWORD.Size = new Size(142, 23);
-            EDC_PASSWORD.TabIndex = 4;
+            EDC_PASSWORD.TabIndex = 2;
             // 
             // STT_SUGGESTION
             // 
@@ -68,7 +69,7 @@
             STT_SUGGESTION.Location = new Point(18, 151);
             STT_SUGGESTION.Name = "STT_SUGGESTION";
             STT_SUGGESTION.Size = new Size(176, 15);
-            STT_SUGGESTION.TabIndex = 5;
+            STT_SUGGESTION.TabIndex = 3;
             STT_SUGGESTION.Text = "Dont have an account? Register!";
             STT_SUGGESTION.Click += STT_SUGGESTION_Click;
             // 
@@ -77,7 +78,7 @@
             BTN_LOGIN.Location = new Point(119, 197);
             BTN_LOGIN.Name = "BTN_LOGIN";
             BTN_LOGIN.Size = new Size(75, 23);
-            BTN_LOGIN.TabIndex = 6;
+            BTN_LOGIN.TabIndex = 5;
             BTN_LOGIN.Text = "Log In";
             BTN_LOGIN.UseVisualStyleBackColor = true;
             BTN_LOGIN.Click += BTN_LOGIN_Click;
@@ -87,7 +88,7 @@
             BTN_CANCEL.Location = new Point(20, 197);
             BTN_CANCEL.Name = "BTN_CANCEL";
             BTN_CANCEL.Size = new Size(75, 23);
-            BTN_CANCEL.TabIndex = 7;
+            BTN_CANCEL.TabIndex = 4;
             BTN_CANCEL.Text = "Cancel";
             BTN_CANCEL.UseVisualStyleBackColor = true;
             BTN_CANCEL.Click += BTN_CANCEL_Click;

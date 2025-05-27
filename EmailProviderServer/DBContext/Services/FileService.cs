@@ -1,20 +1,23 @@
 ﻿//Includes
-
+using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
-using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
+    //------------------------------------------------------
+    //	FileService
+    //------------------------------------------------------
     public class FileService : IFileService
     {
         private readonly IRepositoryS<EmailServiceIntermediate.Models.File> oFileRepositoryS;
 
+        //Constructor
         public FileService(IRepositoryS<EmailServiceIntermediate.Models.File> oFileRepository)
         {
             this.oFileRepositoryS = oFileRepository;
         }
 
+        //Methods
         public IEnumerable<EmailServiceIntermediate.Models.File> GetAll(int? nCount = null)
         {
             IQueryable<EmailServiceIntermediate.Models.File> oQuery = this.oFileRepositoryS

@@ -1,9 +1,15 @@
-﻿using EmailProvider.Enums;
-using EmailProvider.Settings;
+﻿//Includes
+using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Settings;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
-namespace EmailProvider.Logging
+namespace EmailServiceIntermediate.Logging
 {
+    //------------------------------------------------------
+    //	Logger
+    //------------------------------------------------------
+
     public static class Logger
     {
         public static void LogWarning(string message)
@@ -11,14 +17,43 @@ namespace EmailProvider.Logging
             Log(message, LogType.LogTypeScreen, LogSeverity.Warning);
         }
 
+        public static void LogWarning(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeScreen, LogSeverity.Warning);
+        }
+
         public static void LogError(string message)
         {
             Log(message, LogType.LogTypeScreenLog, LogSeverity.Error);
         }
 
+        public static void LogErrorCalling([CallerMemberName] string methodName = "")
+        {
+            LogError(LogMessages.ErrorCalling, methodName);
+        }
+
+        public static void LogNullValue([CallerMemberName] string methodName = "")
+        {
+            LogError(LogMessages.NullValue, methodName);
+        }
+
+        public static void LogError(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeScreenLog, LogSeverity.Error);
+        }
+
+
         public static void LogInfo(string message)
         {
             Log(message, LogType.LogTypeScreen, LogSeverity.Info);
+        }
+
+        public static void LogInfo(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeScreen, LogSeverity.Info);
         }
 
         public static void Log(string log,LogType eLogType = LogType.LogTypeScreenLog ,LogSeverity eLogSeverity = LogSeverity.Error)
@@ -46,7 +81,7 @@ namespace EmailProvider.Logging
 
         private  static void LogFile(string log, LogSeverity eLogSeverity)
         {
-            string logFilePath = IniReader.GetFileLogPath();
+            string logFilePath = SettingsProvider.GetLogPath();
             try
             {
                 using (StreamWriter writer = new StreamWriter(logFilePath))
@@ -63,7 +98,7 @@ namespace EmailProvider.Logging
 
         private static void LogScreen(string log, LogSeverity eLogSeverity)
         {
-            string logFilePath = IniReader.GetFileLogPath();
+            string logFilePath = SettingsProvider.GetLogPath();
             try
             {
                 switch (eLogSeverity)

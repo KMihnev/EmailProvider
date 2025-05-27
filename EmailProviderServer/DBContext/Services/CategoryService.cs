@@ -1,23 +1,28 @@
 ﻿//Includes
-
+using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Services.Base;
-using EmailProviderServer.DBContext.Services.Interfaces.Base;
 using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services
 {
-    public class CategoryService : ICategoryService
-    {
-        private readonly IRepositoryS<Category> oCategoryRepositoryS;
+    //------------------------------------------------------
+    //	CategoryService
+    //------------------------------------------------------
 
-        public CategoryService(IRepositoryS<Category> oCategoryRepository)
+    public class CategoryService : IFolderService
+    {
+        private readonly IRepositoryS<Folder> oCategoryRepositoryS;
+
+        //Constructor
+        public CategoryService(IRepositoryS<Folder> oCategoryRepository)
         {
             this.oCategoryRepositoryS = oCategoryRepository;
         }
 
-        public IEnumerable<Category> GetAll(int? nCount = null)
+        //Methods
+        public IEnumerable<Folder> GetAll(int? nCount = null)
         {
-            IQueryable<Category> oQuery = this.oCategoryRepositoryS
+            IQueryable<Folder> oQuery = this.oCategoryRepositoryS
                 .All();
 
             if (nCount.HasValue)
@@ -26,18 +31,7 @@ namespace EmailProviderServer.DBContext.Services
             return oQuery.ToList();
         }
 
-        public IEnumerable<Category> GetAllByUserId(int nId, int? nCount = null)
-        {
-            IQueryable<Category> oQuery = this.oCategoryRepositoryS
-                .All().Where(c => c.UserId == nId);
-
-            if (nCount.HasValue)
-                oQuery = oQuery.Take(nCount.Value);
-
-            return oQuery.ToList();
-        }
-
-        public Category GetById(int nId)
+        public Folder GetById(int nId)
         {
             var oCategory = this.oCategoryRepositoryS
                 .All()
@@ -46,7 +40,7 @@ namespace EmailProviderServer.DBContext.Services
             return oCategory;
         }
 
-        public Category GetByName(string strName)
+        public Folder GetByName(string strName)
         {
             var oCategory = this.oCategoryRepositoryS
                 .All()

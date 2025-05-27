@@ -1,20 +1,29 @@
 ﻿//Includes
 
+
 using EmailServiceIntermediate.Models;
-using System.Collections.Generic;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	IUserService
+    //------------------------------------------------------
     public interface IUserService
     {
-        IEnumerable<User> GetAll(int? nCount = null);
+        Task<IEnumerable<T>> GetAllAsync<T>();
 
-        IEnumerable<User> GetAllByCountryId(int nId, int? count = null);
+        Task<T> GetByEmailAsync<T>(string email);
 
-        User GetById(int nId);
+        Task<T> GetByIdAsync<T>(int id);
 
-        User GetByName(string strName);
+        Task<T> GetByNameAsync<T>(string name);
 
-        User GetByEmail(string strEmail);
+        Task<bool> CheckIfExistsAsync(int id);
+
+        Task<bool> CheckIfExistsEmailAsync(string email);
+
+        Task<T> CreateAsync<T>(User user);
+
+        Task<T> UpdateAsync<T>(User user);
     }
 }

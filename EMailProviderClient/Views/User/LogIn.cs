@@ -1,16 +1,13 @@
-﻿using EmailProvider.Enums;
+﻿//Includes
+using EmailServiceIntermediate.Enums;
+using EMailProviderClient.Dispatches.Users;
 using EMailProviderClient.Validation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace EMailProviderClient.Views.User
 {
+    //------------------------------------------------------
+    //	LogIn
+    //------------------------------------------------------
     public partial class LogIn : Form
     {
         //Members
@@ -24,6 +21,8 @@ namespace EMailProviderClient.Views.User
         public LogIn()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             AddValidation();
         }
 
@@ -52,10 +51,28 @@ namespace EMailProviderClient.Views.User
             this.Close();
         }
 
-        private void BTN_LOGIN_Click(object sender, EventArgs e)
+        private async void BTN_LOGIN_Click(object sender, EventArgs e)
         {
-            if (!FieldValidator.Validate())
+            EmailServiceIntermediate.Models.User user = new EmailServiceIntermediate.Models.User();
+
+            if (FieldValidator.IsEmail(EDC_NAME.Text))
+                user.Email = EDC_NAME.Text;
+            else
+                user.Name = EDC_NAME.Text;
+
+            if (!FieldValidator.Validate(true))
                 return;
+
+            user.Password = EDC_PASSWORD.Text;
+
+            if (!await UserDispatchesC.LogIn(user))
+            {
+                this.Show();
+                return;
+            }
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         //Methods
@@ -64,8 +81,9 @@ namespace EMailProviderClient.Views.User
         private void AddValidation()
         {
             FieldValidator = new LoginFormValidationC();
-            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
+
             FieldValidator.AddValidationField(UserValidationTypes.ValidationTypePassword, EDC_PASSWORD);
+            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
         }
     }
 }

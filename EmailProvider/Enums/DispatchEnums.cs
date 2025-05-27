@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
-namespace EmailProvider.Enums
+namespace EmailServiceIntermediate.Enums
 {
-    public enum DispatchEnums
+    //------------------------------------------------------
+    //	DispatchEnums
+    //------------------------------------------------------
+
+    /// <summary> Кодове за идентифициране на RPC Request-ите </summary>
+    public enum DispatchEnums : short
     {
         Empty = 0,
         Login,
         Register,
         SetUpProfile,
         GetCountries,
-    }
-
-    public enum Tables
-    {
-        Countries = 0,
-        Users,
+        SendEmail,
+        GetEmail,
+        DeleteEmails,
+        ReceiveEmails,
+        LoadIncomingEmails,
+        LoadOutgoingEmails
     }
 }

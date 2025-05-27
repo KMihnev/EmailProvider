@@ -1,30 +1,33 @@
 ﻿//Includes
-
 using Microsoft.Extensions.Hosting;
 using System.Net.Sockets;
-using System.Text.Json;
 using EmailProviderServer.TCP_Server.Dispatches;
-using EmailProviderServer.DBContext;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProvider.Dispatches;
-using System.Text.Json.Serialization;
+using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
 
 namespace EmailProviderServer.TCP_Server
 {
+    //------------------------------------------------------
+    //	TcpServerService
+    //------------------------------------------------------
     public class TcpServerService : BackgroundService
     {
         private readonly TcpListener _listener;
-        private readonly ApplicationDbContext _context;
+        private readonly DispatchMapper _dispatchMapper;
 
-        public TcpServerService(TcpListener listener, ApplicationDbContext context)
+        //Constructor
+        public TcpServerService(TcpListener listener, DispatchMapper dispatchMapper)
         {
             _listener = listener;
-            _context = context;
+            _dispatchMapper = dispatchMapper;
         }
 
+        //Methods
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _listener.Start();
+            _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             Console.WriteLine("TCP Server started.");
 
             try
@@ -32,6 +35,7 @@ namespace EmailProviderServer.TCP_Server
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var client = await _listener.AcceptTcpClientAsync(stoppingToken);
+                    client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                     Console.WriteLine("Client connected.");
                     _ = HandleClientAsync(client, stoppingToken);
                 }
@@ -47,36 +51,43 @@ namespace EmailProviderServer.TCP_Server
             using (client)
             {
                 var stream = client.GetStream();
-                var reader = new StreamReader(stream);
-                var writer = new StreamWriter(stream) { AutoFlush = true };
+
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
 
                 try
                 {
-                    var requestJson = await reader.ReadLineAsync();
-                    var request = JsonSerializer.Deserialize<MethodRequest>(requestJson);
+                    // Зареждаме потока в "умниия масив" ;)
+                    InPackage.LoadFromStream(stream);
 
-                    DispatchMapper dispatchMapper = new DispatchMapper(_context);
-                    IDispatchHandler dispatchHandler = dispatchMapper.MapDispatch(request);
+                    // Десериализираме си кода на диспача
+                    InPackage.Deserialize(out int dispatchCode);
 
-                    bool result = await dispatchHandler.Execute(request.Parameters);
+                    BaseDispatchHandler dispatchHandler = _dispatchMapper.MapDispatch(dispatchCode);
 
-                    var options = new JsonSerializerOptions
+                    if (!await dispatchHandler?.Execute(InPackage, OutPackage))
                     {
-                        ReferenceHandler = ReferenceHandler.IgnoreCycles
-                    };
+                        SetResponseFailed(OutPackage, dispatchHandler.errorMessage);
+                    }
 
-                    var response = JsonSerializer.Serialize(dispatchHandler.response, options ) + "\n";
-                    await writer.WriteLineAsync(response);
+                    // изпращаме отговор
+                    byte[] responseData = OutPackage.ToByte();
+                    await stream.WriteAsync(responseData, 0, responseData.Length, cancellationToken);
+
+                    await stream.FlushAsync();
                 }
                 catch (Exception ex)
                 {
-                    client.Close();
-                    client.GetStream().Close();
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                    var errorResponse = JsonSerializer.Serialize(new { Success = false, Error = ex.Message });
-                    await writer.WriteLineAsync(errorResponse);
+                    Logger.LogError(LogMessages.InteralError);
+                    SetResponseFailed(OutPackage);
                 }
             }
+        }
+
+        private void SetResponseFailed(SmartStreamArray ResponsePackage, string error = "")
+        {
+            ResponsePackage.Serialize(false);
+            ResponsePackage.Serialize(error);
         }
     }
 }

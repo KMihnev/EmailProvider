@@ -1,82 +1,82 @@
-﻿using EmailProvider.Logging;
+﻿//Includes
+using EmailServiceIntermediate.Dispatches;
+using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Models.Serializables;
 using EmailProviderServer.DBContext.Services;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProviderServer.Validation;
-using EmailServiceIntermediate.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using EmailProviderServer.Validation.User;
+using EmailProviderServer.DBContext.Services.Base;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
+    //------------------------------------------------------
+    //	SetUpProfileDispatch
+    //------------------------------------------------------
     public class SetUpProfileDispatch : BaseDispatchHandler
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public SetUpProfileDispatch(UserService userService)
+        //Constructor
+        public SetUpProfileDispatch(IUserService userService)
         {
             _userService = userService;
-            response = new EmailProvider.Reponse.Response();
         }
 
-        public async override Task<bool> Execute(JsonElement parameters)
+        //Methods
+        public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            User user;
+            UserSerializable user;
             try
             {
-                if (!parameters.TryGetProperty("user", out JsonElement userElement))
-                {
-                    return false;
-                }
-
-                user = JsonSerializer.Deserialize<User>(userElement.GetRawText());
+                InPackage.Deserialize(out user);
 
                 if (user == null)
                 {
-                    response.bSuccess = false;
-                    response.msgError = LogMessages.InvalidUserDetails;
-                    Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
                     return false;
                 }
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.InvalidUserDetails;
-                Logger.Log(LogMessages.InvalidUserDetails, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+
                 return false;
             }
 
             SetUpProfileValidationS setUpProfileValidator = new SetUpProfileValidationS();
-            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeName, user.Name);
-            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypePhoneNumber, user.PhoneNumber);
-            setUpProfileValidator.AddValidation(EmailProvider.Enums.UserValidationTypes.ValidationTypeCountry, user.CountryId.ToString());
+            setUpProfileValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeName, user.Name);
+            setUpProfileValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypePhoneNumber, user.PhoneNumber);
+            setUpProfileValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeCountry, user.CountryId.ToString());
 
             if (!setUpProfileValidator.Validate())
-                return false;
-
-            var userExists = _userService.GetById(user.Id) != null;
-            if (!userExists)
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.DispatchErrorUserNotFound;
-                Logger.Log(LogMessages.DispatchErrorUserNotFound, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                errorMessage = LogMessages.InvalidData;
                 return false;
             }
+
+            User CurrentUser = await _userService.GetByIdAsync<User>(user.Id);
+
+            if (CurrentUser == null)
+            {
+                errorMessage = LogMessages.UserNotFound;
+                return false;
+            }
+
+            CurrentUser.PhoneNumber = user.PhoneNumber;
+            CurrentUser.CountryId = user.CountryId;
+            CurrentUser.Name = user.Name;
 
             try
             {
-                await _userService.UpdateAsync(user.Id, user);
-                response.Data = user;
+                UserSerializable userSerializable = await _userService.UpdateAsync<UserSerializable>(CurrentUser);
+                OutPackage.Serialize(true);
+                OutPackage.Serialize(user);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                response.bSuccess = false;
-                response.msgError = LogMessages.DispatchErrorSetUpProfile;
-                Logger.Log(LogMessages.DispatchErrorSetUpProfile, EmailProvider.Enums.LogType.LogTypeLog, EmailProvider.Enums.LogSeverity.Error);
+                Logger.LogError(LogMessages.InteralError);
                 return false;
             }
 
@@ -84,4 +84,3 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         }
     }
 }
-

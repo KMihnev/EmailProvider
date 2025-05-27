@@ -1,0 +1,7 @@
+USE EMAIL_DB
+GO
+INSERT INTO CATEGORIES (NAME)
+VALUES 
+('Sent'),
+('Received'),
+('Draft');

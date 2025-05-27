@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
 
-namespace EmailProvider.Enums
+namespace EmailServiceIntermediate.Enums
 {
+    //------------------------------------------------------
+    //	UserValidationTypes
+    //------------------------------------------------------
+
     //Всички валидационни типове са задължителни, но за 5 - няма друго изискване
     public enum UserValidationTypes
     {
@@ -15,5 +15,16 @@ namespace EmailProvider.Enums
         ValidationTypeEmail,
         ValidationTypePhoneNumber,
         ValidationTypeCountry
+    }
+
+    //------------------------------------------------------
+    //	EmailValidationTypes
+    //------------------------------------------------------
+    public enum EmailValidationTypes
+    {
+        ValidationTypeNone = 0,
+        ValidationTypeSender,
+        ValidationTypeReceiver,
+        ValidationTypeSubject
     }
 }

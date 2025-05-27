@@ -38,7 +38,7 @@
             StartUp_LogIn.Location = new Point(76, 116);
             StartUp_LogIn.Name = "StartUp_LogIn";
             StartUp_LogIn.Size = new Size(75, 23);
-            StartUp_LogIn.TabIndex = 0;
+            StartUp_LogIn.TabIndex = 1;
             StartUp_LogIn.Text = "LogIn";
             StartUp_LogIn.UseVisualStyleBackColor = true;
             StartUp_LogIn.Click += StartUp_LogIn_Click;
@@ -48,7 +48,7 @@
             StartUp_Register.Location = new Point(176, 116);
             StartUp_Register.Name = "StartUp_Register";
             StartUp_Register.Size = new Size(75, 23);
-            StartUp_Register.TabIndex = 1;
+            StartUp_Register.TabIndex = 2;
             StartUp_Register.Text = "Register";
             StartUp_Register.UseVisualStyleBackColor = true;
             StartUp_Register.Click += StartUp_Register_Click;
@@ -60,7 +60,7 @@
             label1.Location = new Point(90, 50);
             label1.Name = "label1";
             label1.Size = new Size(147, 35);
-            label1.TabIndex = 2;
+            label1.TabIndex = 0;
             label1.Text = "Welcome";
             // 
             // StartUp

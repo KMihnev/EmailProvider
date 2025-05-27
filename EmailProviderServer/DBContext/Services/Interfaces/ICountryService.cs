@@ -1,17 +1,16 @@
 ﻿//Includes
 
-using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
+    //------------------------------------------------------
+    //	ICountryService
+    //------------------------------------------------------
     public interface ICountryService
     {
-        IEnumerable<Country> GetAll(int? nCount = null);
-
-        Country GetById(int nId);
-
-        Country GetByName(string strName);
-
-        Country GetByPhoneCode(string strPhoneCode);
+        Task<IEnumerable<T>> GetAllAsync<T>();
+        Task<T> GetByIdAsync<T>(int nId);
+        Task<T> GetByNameAsync<T>(string strName);
+        Task<T> GetByPhoneCodeAsync<T>(string strPhoneCode);
     }
 }

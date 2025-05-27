@@ -1,21 +1,17 @@
-﻿using EmailProvider.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//Includes
+using EmailProviderServer.Settings;
 
 namespace EmailProviderServer.DBContext
 {
+    //------------------------------------------------------
+    //	ConnectionStringCreator
+    //------------------------------------------------------
     public static class ConnectionStringCreator
     {
-        private static string ServerKey = "ServerName";
-        private static string DatabaseKey = "DatabaseName";
-
         public static string CreateConnectionString()
         {
-            string serverName = IniReader.GetServerName();
-            string databaseName = IniReader.GetDatabaseName();
+            string serverName = SettingsProviderS.GetServerName();
+            string databaseName = SettingsProviderS.GetDatabaseName();
 
             if (string.IsNullOrEmpty(serverName) || string.IsNullOrEmpty(databaseName))
             {
