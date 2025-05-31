@@ -7,7 +7,6 @@ using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.DBContext.Services;
-using EmailServiceIntermediate.Models.Serializables;
 using EmailProvider.Models.Serializables;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
@@ -15,12 +14,12 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadOutgoingEmailsDispatchS : BaseDispatchHandler
+    public class LoadFolderEmailsDispatchS : BaseDispatchHandler
     {
         private readonly IUserMessageService _userMessageService;
 
         //Constructor
-        public LoadOutgoingEmailsDispatchS(IUserMessageService userMessageService)
+        public LoadFolderEmailsDispatchS(IUserMessageService userMessageService)
         {
             _userMessageService = userMessageService;
         }
@@ -29,9 +28,11 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
             SearchData searchData = new SearchData();
+            int FolderID = 0;
             try
             {
                 InPackage.Deserialize(out searchData);
+                InPackage.Deserialize(out FolderID);
 
                 if (searchData == null)
                 {
@@ -48,7 +49,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             try
             {
                 List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetOutgoingMessagesAsync<EmailListModel>(searchData, 0, 10);
+                filteredMessages = await _userMessageService.GetMessagesInFolderAsync<EmailListModel>(searchData, FolderID, 0, 10);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }

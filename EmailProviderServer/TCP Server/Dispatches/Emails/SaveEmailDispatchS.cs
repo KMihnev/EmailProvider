@@ -25,7 +25,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            MessageSerializable messageSerializable;
+            EmailViewModel messageSerializable;
             try
             {
                 InPackage.Deserialize(out messageSerializable);

@@ -31,14 +31,16 @@ void AddServices(IServiceCollection services)
     services.AddScoped<IMessageRepository, MessageRepository>();
     services.AddScoped<IFileRepository, FileRepository>();
     services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<IFolderRepository, FolderRepository>();
 
     //Регистриране на сервизи
     services.AddScoped<IBulkIncomingMessageService, BulkIncomingMessageService>();
-    services.AddScoped<IUserMessageService, UserMessageService>();
     services.AddScoped<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
-    services.AddScoped<ICountryService, FolderService>();
+    services.AddScoped<IUserMessageService, UserMessageService>();
+    services.AddScoped<ICountryService, CountryService>();
     services.AddScoped<IMessageService, MessageService>();
     services.AddScoped<IUserService, UserService>();
+    services.AddScoped<IFolderService, FolderService>();
 
     services.AddSingleton<DispatchMapper>();
 }

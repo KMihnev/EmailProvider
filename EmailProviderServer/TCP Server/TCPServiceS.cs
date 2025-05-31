@@ -60,15 +60,7 @@ namespace EmailProviderServer.TCP_Server
                     // Зареждаме потока в "умниия масив" ;)
                     InPackage.LoadFromStream(stream);
 
-                    // Десериализираме си кода на диспача
-                    InPackage.Deserialize(out int dispatchCode);
-
-                    BaseDispatchHandler dispatchHandler = _dispatchMapper.MapDispatch(dispatchCode);
-
-                    if (!await dispatchHandler?.Execute(InPackage, OutPackage))
-                    {
-                        SetResponseFailed(OutPackage, dispatchHandler.errorMessage);
-                    }
+                    await BaseDispatchHandler.HandleRequestAsync(InPackage, OutPackage, _dispatchMapper);
 
                     // изпращаме отговор
                     byte[] responseData = OutPackage.ToByte();
@@ -79,15 +71,22 @@ namespace EmailProviderServer.TCP_Server
                 catch (Exception ex)
                 {
                     Logger.LogError(LogMessages.InteralError);
-                    SetResponseFailed(OutPackage);
                 }
             }
         }
 
-        private void SetResponseFailed(SmartStreamArray ResponsePackage, string error = "")
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            ResponsePackage.Serialize(false);
-            ResponsePackage.Serialize(error);
+            _listener.Stop();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            await base.StopAsync(cancellationToken);
+        }
+
+        public override void Dispose()
+        {
+            _listener?.Server?.Dispose();
+            base.Dispose();
         }
     }
 }

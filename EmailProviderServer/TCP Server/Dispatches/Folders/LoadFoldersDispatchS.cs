@@ -7,7 +7,6 @@ using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.DBContext.Services;
-using EmailServiceIntermediate.Models.Serializables;
 using EmailProvider.Models.Serializables;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
@@ -15,29 +14,23 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadOutgoingEmailsDispatchS : BaseDispatchHandler
+    public class LoadFoldersDispatchS : BaseDispatchHandler
     {
-        private readonly IUserMessageService _userMessageService;
+        private readonly IFolderService _folderService;
 
         //Constructor
-        public LoadOutgoingEmailsDispatchS(IUserMessageService userMessageService)
+        public LoadFoldersDispatchS(IFolderService folderService)
         {
-            _userMessageService = userMessageService;
+            _folderService = folderService;
         }
 
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            SearchData searchData = new SearchData();
+            int UserId = 0;
             try
             {
-                InPackage.Deserialize(out searchData);
-
-                if (searchData == null)
-                {
-                    Logger.LogNullValue();
-                    return false;
-                }
+                InPackage.Deserialize(out UserId);
             }
             catch (Exception ex)
             {
@@ -47,10 +40,10 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetOutgoingMessagesAsync<EmailListModel>(searchData, 0, 10);
+                List<FolderViewModel> folderList = new List<FolderViewModel>();
+                folderList = await _folderService.GetUserFoldersAsync<FolderViewModel>(UserId);
                 OutPackage.Serialize(true);
-                OutPackage.Serialize(filteredMessages);
+                OutPackage.Serialize(folderList);
             }
             catch (Exception ex)
             {

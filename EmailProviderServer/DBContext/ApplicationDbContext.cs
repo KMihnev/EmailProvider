@@ -21,7 +21,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Country> Countries { get; set; }
 
-    public virtual DbSet<EmailServiceIntermediate.Models.File> Files { get; set; }
+    public virtual DbSet<File> Files { get; set; }
 
     public virtual DbSet<Folder> Folders { get; set; }
 
@@ -32,6 +32,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserMessage> UserMessages { get; set; }
+
+    public virtual DbSet<UserMessageFolder> UserMessageFolders { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -96,6 +98,8 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("FILES", tb => tb.HasComment("Table for storing attachments/files linked to messages"));
 
+            entity.HasIndex(e => e.MessageId, "IX_FILES_MESSAGE_ID");
+
             entity.Property(e => e.Id)
                 .HasComment("File ID")
                 .HasColumnName("ID");
@@ -117,35 +121,36 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Folder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__FOLDERS__3214EC27AC17414E");
+            entity.HasKey(e => e.Id).HasName("PK_FOLDERS_ID");
 
             entity.ToTable("FOLDERS", tb => tb.HasComment("Table for user-defined folders"));
 
-            entity.HasIndex(e => new { e.UserId, e.Name, e.FolderDirection }, "UX_FOLDERS_USER_FOLDER").IsUnique();
+            entity.HasIndex(e => e.UserId, "IX_FOLDERS_USER_ID");
+
+            entity.HasIndex(e => new { e.Name, e.UserId, e.FolderDirection }, "UX_FOLDERS_NAME_USER_ID_FOLDER_DIRECTION").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasComment("ID")
                 .HasColumnName("ID");
+            entity.Property(e => e.FolderDirection)
+                .HasComment("Direction of messages inside the folder")
+                .HasColumnName("FOLDER_DIRECTION");
             entity.Property(e => e.Name)
                 .HasMaxLength(64)
                 .HasComment("Name of the folder")
                 .HasColumnName("NAME");
             entity.Property(e => e.UserId)
-                .HasComment("User owning the folder")
+                .HasComment("ID of user who created the folder")
                 .HasColumnName("USER_ID");
-            entity.Property(e => e.FolderDirection)
-                .HasComment("Direction of messages inside the folder")
-                .HasColumnName("FOLDER_DIRECTION");
 
             entity.HasOne(d => d.User).WithMany(p => p.Folders)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_FOLDERS_USERS");
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MESSAGES__3214EC27490A47D7");
+            entity.HasKey(e => e.Id).HasName("PK_MESSAGES_ID");
 
             entity.ToTable("MESSAGES", tb => tb.HasComment("Table for storing message metadata and content"));
 
@@ -173,18 +178,13 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(128)
                 .HasComment("Subject of the message")
                 .HasColumnName("SUBJECT");
-            modelBuilder.Entity<Message>()
-                .Property(m => m.IsInternal)
-                .HasColumnName("IS_INTERNAL")
-                .HasDefaultValue(false)
-                .HasComment("True if message is between users only");
         });
 
         modelBuilder.Entity<MessageRecipient>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MESSAGE___3214EC27AB4FB781");
-
             entity.ToTable("MESSAGE_RECIPIENTS", tb => tb.HasComment("Table for message recipients"));
+
+            entity.HasIndex(e => new { e.MessageId, e.Email }, "UX_MESSAGE_RECIPIENTS_MESSAGE_ID_EMAIL").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasComment("ID")
@@ -200,7 +200,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Message).WithMany(p => p.MessageRecipients)
                 .HasForeignKey(d => d.MessageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MESSAGE_R__MESSA__47E69B3D");
+                .HasConstraintName("FK__MESSAGE_R__MESSA__524F1B17");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -208,6 +208,8 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_USERS_ID");
 
             entity.ToTable("USERS", tb => tb.HasComment("Table for system users"));
+
+            entity.HasIndex(e => e.CountryId, "IX_USERS_COUNTRY_ID");
 
             entity.Property(e => e.Id)
                 .HasComment("User ID")
@@ -239,43 +241,64 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<UserMessage>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.MessageId });
-
             entity.ToTable("USER_MESSAGES", tb => tb.HasComment("Table to store per-user message state"));
 
-            entity.Property(e => e.UserId)
-                .HasComment("User ID")
-                .HasColumnName("USER_ID");
-            entity.Property(e => e.MessageId)
-                .HasComment("Message ID")
-                .HasColumnName("MESSAGE_ID");
-            entity.Property(e => e.FolderId)
-                .HasComment("Folder ID")
-                .HasColumnName("FOLDER_ID");
+            entity.HasIndex(e => new { e.UserId, e.MessageId }, "UX_USER_MESSAGES_USER_ID_MESSAGE_ID").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasComment("Identifier")
+                .HasColumnName("ID");
             entity.Property(e => e.IsDeleted)
                 .HasComment("Whether the user has deleted the message")
                 .HasColumnName("IS_DELETED");
             entity.Property(e => e.IsRead)
                 .HasComment("Whether the message has been read")
                 .HasColumnName("IS_READ");
-            entity.Property(e => e.Pinned)
-                .HasComment("Whether the message is pinned")
-                .HasColumnName("PINNED");
-
-            entity.HasOne(d => d.Folder).WithMany(p => p.UserMessages)
-                .HasForeignKey(d => d.FolderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__USER_MESS__FOLDE__4BB72C21");
+            entity.Property(e => e.MessageId)
+                .HasComment("Message ID")
+                .HasColumnName("MESSAGE_ID");
+            entity.Property(e => e.UserId)
+                .HasComment("User ID")
+                .HasColumnName("USER_ID");
 
             entity.HasOne(d => d.Message).WithMany(p => p.UserMessages)
                 .HasForeignKey(d => d.MessageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__USER_MESS__MESSA__4AC307E8");
+                .HasConstraintName("FK__USER_MESS__MESSA__561FABFB");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserMessages)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_USER_MESSAGES_USERS");
+        });
+
+        modelBuilder.Entity<UserMessageFolder>(entity =>
+        {
+            entity.ToTable("USER_MESSAGE_FOLDERS", tb => tb.HasComment("Table for incoming message to be processed"));
+
+            entity.HasIndex(e => e.FolderId, "IX_USER_MESSAGE_FOLDERS_FOLDER_ID");
+
+            entity.HasIndex(e => e.UserMessageId, "IX_USER_MESSAGE_FOLDERS_MESSAGE_ID");
+
+            entity.Property(e => e.Id)
+                .HasComment("Identifier")
+                .HasColumnName("ID");
+            entity.Property(e => e.FolderId)
+                .HasComment("refrence to message")
+                .HasColumnName("FOLDER_ID");
+            entity.Property(e => e.UserMessageId)
+                .HasComment("Time to be sent")
+                .HasColumnName("USER_MESSAGE_ID");
+
+            entity.HasOne(d => d.Folder).WithMany(p => p.UserMessageFolders)
+                .HasForeignKey(d => d.FolderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_USER_MESSAGE_FOLDERS_FOLDERS");
+
+            entity.HasOne(d => d.UserMessage).WithMany(p => p.UserMessageFolders)
+                .HasForeignKey(d => d.UserMessageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_USER_MESSAGE_FOLDERS_USER_MESSAGE");
         });
 
         OnModelCreatingPartial(modelBuilder);

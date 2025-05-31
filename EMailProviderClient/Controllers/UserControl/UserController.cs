@@ -9,14 +9,14 @@ namespace EMailProviderClient.Controllers.UserControl
 
     public class UserController
     {
-        public static UserSerializable _currentUser { get; set; }
+        public static UserViewModel _currentUser { get; set; }
 
-        public static void SetCurrentUser(UserSerializable user)
+        public static void SetCurrentUser(UserViewModel user)
         {
             _currentUser = user;
         }
 
-        public static UserSerializable GetCurrentUser()
+        public static UserViewModel GetCurrentUser()
         {
             return _currentUser;
         }

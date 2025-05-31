@@ -4,18 +4,23 @@ namespace EmailServiceIntermediate.Models.Serializables
 {
 
     //------------------------------------------------------
-    //	FileSerializable
+    //	UserSerializable
     //------------------------------------------------------
 
     /// <summary> Модел отговарящ на Модела от базата данни - годен на сериализиране </summary>
-    public class FileSerializable
+    public class UserViewModel
     {
+        public UserViewModel()
+        {
+            CountryId = 1;
+            PhoneNumber = string.Empty;
+            Name = string.Empty;
+        }
+
         public int Id { get; set; }
-
         public string Name { get; set; }
-
-        public byte[] Content { get; set; }
-
-        public int MessageId { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public int CountryId { get; set; }
     }
 }

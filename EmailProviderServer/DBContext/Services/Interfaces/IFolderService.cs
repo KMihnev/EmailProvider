@@ -1,6 +1,7 @@
 ﻿//Includes
 
 
+using EmailProvider.Enums;
 using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.DBContext.Services.Base
@@ -10,10 +11,9 @@ namespace EmailProviderServer.DBContext.Services.Base
     //------------------------------------------------------
     public interface IFolderService
     {
-        IEnumerable<Folder> GetAll(int? nCount = null);
-
-        Folder GetById(int nId);
-
-        Folder GetByName(string strName);
+        Task<List<T>> GetUserFoldersAsync<T>(int userId);
+        Task<T?> GetFolderByIdAsync<T>(int folderId);
+        Task CreateFolderAsync<T>(T folder);
+        Task DeleteFolderAsync(int folderId);
     }
 }

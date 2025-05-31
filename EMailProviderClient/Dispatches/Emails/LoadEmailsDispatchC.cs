@@ -6,6 +6,7 @@ using EMailProviderClient.Dispatches.Base;
 using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
+using EmailProvider.Models.Serializables;
 
 namespace EMailProviderClient.Dispatches.Emails
 {
@@ -14,7 +15,7 @@ namespace EMailProviderClient.Dispatches.Emails
     //------------------------------------------------------
     public class LoadEmailsDispatchC
     {
-        public static async Task<bool> LoadIncomingEmails(List<MessageSerializable> outMessageList, SearchData searchData)
+        public static async Task<bool> LoadIncomingEmails(List<EmailListModel> outMessageList, SearchData searchData)
         {
             searchData.UserId = UserController.GetCurrentUserID();
 
@@ -36,7 +37,7 @@ namespace EMailProviderClient.Dispatches.Emails
                     return false;
                 }
 
-                List<MessageSerializable> messageList = null;
+                List<EmailListModel> messageList = null;
                 OutPackage.Deserialize(out messageList);
 
                 outMessageList.Clear();
@@ -51,7 +52,7 @@ namespace EMailProviderClient.Dispatches.Emails
             return true;
         }
 
-        public static async Task<bool> LoadOutgoingEmails(List<MessageSerializable> outMessageList, SearchData searchData)
+        public static async Task<bool> LoadOutgoingEmails(List<EmailListModel> outMessageList, SearchData searchData)
         {
             searchData.UserId = UserController.GetCurrentUserID();
 
@@ -73,7 +74,7 @@ namespace EMailProviderClient.Dispatches.Emails
                     return false;
                 }
 
-                List<MessageSerializable> messageList = null;
+                List<EmailListModel> messageList = null;
                 OutPackage.Deserialize(out messageList);
 
                 outMessageList.Clear();
@@ -88,17 +89,17 @@ namespace EMailProviderClient.Dispatches.Emails
             return true;
         }
 
-        public static async Task<bool> LoadDrafts(List<MessageSerializable> outMessageList, SearchData searchData)
+        public static async Task<bool> LoadDrafts(List<EmailListModel> outMessageList, SearchData searchData)
         {
             searchData.UserId = UserController.GetCurrentUserID();
-
+            outMessageList.Clear();
             try
             {
                 SmartStreamArray InPackage = new SmartStreamArray();
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.LoadIncomingEmails);
+                InPackage.Serialize((int)DispatchEnums.LoadDrafts);
                 InPackage.Serialize(searchData);
 
                 //Изпращаме заявката
@@ -110,10 +111,9 @@ namespace EMailProviderClient.Dispatches.Emails
                     return false;
                 }
 
-                List<MessageSerializable> messageList = null;
+                List<EmailListModel> messageList = null;
                 OutPackage.Deserialize(out messageList);
 
-                outMessageList.Clear();
                 outMessageList.AddRange(messageList);
             }
             catch (Exception ex)
@@ -125,7 +125,7 @@ namespace EMailProviderClient.Dispatches.Emails
             return true;
         }
 
-        public static async Task<bool> LoadEmailsByFolder(List<MessageSerializable> outMessageList, SearchData searchData, int FolderId)
+        public static async Task<bool> LoadEmailsByFolder(List<EmailListModel> outMessageList, SearchData searchData, int FolderId)
         {
             try
             {
@@ -133,9 +133,9 @@ namespace EMailProviderClient.Dispatches.Emails
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.LoadIncomingEmails);
-                InPackage.Serialize(FolderId);
+                InPackage.Serialize((int)DispatchEnums.LoadEmailsByFolder);
                 InPackage.Serialize(searchData);
+                InPackage.Serialize(FolderId);
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
@@ -146,7 +146,7 @@ namespace EMailProviderClient.Dispatches.Emails
                     return false;
                 }
 
-                List<MessageSerializable> messageList = null;
+                List<EmailListModel> messageList = null;
                 OutPackage.Deserialize(out messageList);
 
                 outMessageList.Clear();

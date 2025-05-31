@@ -28,7 +28,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            UserSerializable user;
+            UserViewModel user;
             try
             {
                 InPackage.Deserialize(out user);
@@ -70,7 +70,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                UserSerializable userSerializable = await _userService.UpdateAsync<UserSerializable>(CurrentUser);
+                UserViewModel userSerializable = await _userService.UpdateAsync<UserViewModel>(CurrentUser);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(user);
             }

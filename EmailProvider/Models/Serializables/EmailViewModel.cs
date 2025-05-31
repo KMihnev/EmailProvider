@@ -11,13 +11,13 @@ namespace EmailServiceIntermediate.Models.Serializables
     //------------------------------------------------------
 
     /// <summary> Модел отговарящ на Модела от базата данни - годен на сериализиране </summary>
-    public class MessageSerializable
+    public class EmailViewModel
     {
 
-        public MessageSerializable()
+        public EmailViewModel()
         {
  
-            Files = new List<FileSerializable>();
+            Files = new List<FileViewModel>();
             Status = EmailStatuses.EmailStatusNew;
         }
 
@@ -30,7 +30,7 @@ namespace EmailServiceIntermediate.Models.Serializables
         public EmailDirections Direction { get; set; }
 
         public List<MessageRecipientSerializable> Recipients { get; set; } = new();
-        public List<FileSerializable> Files { get; set; } = new();
+        public List<FileViewModel> Files { get; set; } = new();
 
     }
 }

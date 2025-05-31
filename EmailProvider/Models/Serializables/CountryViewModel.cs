@@ -8,7 +8,7 @@ namespace EmailServiceIntermediate.Models.Serializables
     //------------------------------------------------------
 
     /// <summary> Модел отговарящ на Модела от базата данни - годен на сериализиране </summary>
-    public class CountrySerializable
+    public class CountryViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

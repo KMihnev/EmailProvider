@@ -6,6 +6,7 @@ using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation.User;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
+using EmailProviderServer.TCP_Server.UserSessions;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -14,6 +15,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     public class RegisterDispatch : BaseDispatchHandler
     {
+        protected override bool RequiresSession => false;
+
         private readonly IUserService _userService;
 
         //Constructor
@@ -59,8 +62,13 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                UserSerializable userSerializable = await _userService.CreateAsync<UserSerializable>(user);
+                UserViewModel userSerializable = await _userService.CreateAsync<UserViewModel>(user);
+
+                User newUser = await _userService.GetByIdAsync<User>(userSerializable.Id);
+                var token = SessionManagerS.CreateSession(newUser);
+
                 OutPackage.Serialize(true);
+                OutPackage.Serialize(token);
                 OutPackage.Serialize(userSerializable);
             }
             catch (Exception ex)

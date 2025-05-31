@@ -16,7 +16,7 @@ namespace EMailProviderClient.Views.Emails
     public partial class EMAIL_VIEW : Form
     {
         private DialogMode DialogMode { get; set; }
-        private MessageSerializable emailSerializable { get; set; }
+        private EmailViewModel emailSerializable { get; set; }
 
         //Constructor
         public EMAIL_VIEW(DialogMode mode)
@@ -24,7 +24,7 @@ namespace EMailProviderClient.Views.Emails
             InitializeComponent();
 
             this.DialogMode = mode;
-            emailSerializable = new MessageSerializable();
+            emailSerializable = new EmailViewModel();
             emailSerializable.FromEmail = UserController.GetCurrentUserEmail();
             emailSerializable.Direction = EmailDirections.EmailDirectionOut;
             InitDialog();
@@ -105,7 +105,7 @@ namespace EMailProviderClient.Views.Emails
 
         }
 
-        public void LoadMessage(MessageSerializable message)
+        public void LoadMessage(EmailViewModel message)
         {
             this.emailSerializable = message;
             FillDialogData();
@@ -221,7 +221,7 @@ namespace EMailProviderClient.Views.Emails
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;
 
-            var file = new FileSerializable
+            var file = new FileViewModel
             {
                 Content = System.IO.File.ReadAllBytes(openFileDialog.FileName),
                 Name = System.IO.Path.GetFileName(openFileDialog.FileName)
@@ -243,7 +243,7 @@ namespace EMailProviderClient.Views.Emails
                 return;
 
             var selectedItem = FILES_LIST.SelectedItems[0];
-            var file = selectedItem.Tag as FileSerializable;
+            var file = selectedItem.Tag as FileViewModel;
 
             if (file == null)
                 return;
@@ -274,7 +274,7 @@ namespace EMailProviderClient.Views.Emails
 
             foreach (ListViewItem selectedItem in FILES_LIST.SelectedItems)
             {
-                var fileContent = selectedItem.Tag as FileSerializable;
+                var fileContent = selectedItem.Tag as FileViewModel;
 
                 if (fileContent != null)
                 {

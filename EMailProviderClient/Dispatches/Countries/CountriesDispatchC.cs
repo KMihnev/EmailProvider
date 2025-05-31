@@ -12,7 +12,7 @@ namespace EMailProviderClient.Dispatches.Countries
     //------------------------------------------------------
     public class CountriesDispatchC
     {
-        public static async Task<bool> LoadCountries(List<CountrySerializable> countries)
+        public static async Task<bool> LoadCountries(List<CountryViewModel> countries)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace EMailProviderClient.Dispatches.Countries
                     return false;
                 }
 
-                List<CountrySerializable> deserializedCountries = null;
+                List<CountryViewModel> deserializedCountries = null;
                 OutPackage.Deserialize(out deserializedCountries);
 
                 if (deserializedCountries == null)

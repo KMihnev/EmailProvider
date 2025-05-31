@@ -6,15 +6,13 @@ using EmailProvider.Enums;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
 using EMailProviderClient.Views.Enums;
-using EmailServiceIntermediate.Enums;
-using EmailServiceIntermediate.Models.Serializables;
+using EmailProvider.Models.Serializables;
+using EMailProviderClient.ClientModels;
+using System.Windows.Forms.VisualStyles;
+using EMailProviderClient.Dispatches.Folders;
 
 namespace EMailProviderClient
 {
-    enum SystemFolders
-    {
-        Incoming = 0, Outgoing = 1, Drafts = 2
-    }
 
     //------------------------------------------------------
     //	EmailProvider
@@ -23,9 +21,9 @@ namespace EMailProviderClient
     {
         private bool _bClosing = false;
         private SearchData SearchData = new SearchData();
-        private SystemFolders CurrentFolderType;
+        private FolderListModel CurrentFolder;
 
-        private List<MessageSerializable> messageList;
+        private List<EmailListModel> messageList = new List<EmailListModel>();
 
         //Constructor
         public EmailProvider()
@@ -34,15 +32,7 @@ namespace EMailProviderClient
             this.WindowState = FormWindowState.Maximized;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
-            this.EMAILS_LIST.Resize += (sender, e) => AdjustColumnWidths();
-            AdjustColumnWidths();
-
-            CurrentFolderType = SystemFolders.Outgoing;
-            messageList = new List<MessageSerializable>();
-
             InitializeCategories();
-
-            EMAILS_LIST.ItemActivate += EMAILS_LIST_ItemActivate;
 
             AddEmailListContextMenu();
         }
@@ -50,6 +40,17 @@ namespace EMailProviderClient
         //Methods
         private void EmailProvider_Load(object sender, EventArgs e)
         {
+            EMAILS_LIST.FullRowSelect = true;
+            EMAILS_LIST.GridLines = true;
+            EMAILS_LIST.CheckBoxes = true;
+            EMAILS_LIST.Columns.Add("Date Sent", 100);
+            EMAILS_LIST.Columns.Add("Email Info", 100);
+            EMAILS_LIST.Columns.Add("Subject", 100);
+            EMAILS_LIST.Columns.Add("Content", 100);
+            this.EMAILS_LIST.Resize += (sender, e) => AdjustColumnWidths();
+            AdjustColumnWidths();
+
+            EMAILS_LIST.ItemActivate += EMAILS_LIST_ItemActivate;
         }
 
         private void ON_ADD_EMAIL_Click(object sender, EventArgs e)
@@ -104,10 +105,10 @@ namespace EMailProviderClient
                 var item = new ListViewItem(message.DateOfRegistration.ToString("yyyy-MM-dd HH:mm"));
 
                 string emailInfo;
-                if (CurrentFolderType == SystemFolders.Incoming)
+                if (CurrentFolder.FolderType == SystemFolders.Incoming)
                     emailInfo = message.FromEmail;
                 else
-                    emailInfo = string.Join(";",message.Recipients.Select(e=>e.Email));
+                    emailInfo = string.Join(";",message.Recipients);
 
                 item.SubItems.Add(emailInfo);
 
@@ -134,26 +135,34 @@ namespace EMailProviderClient
         {
             SearchData.UserId = UserController.GetCurrentUserID();
 
-            switch (CurrentFolderType)
+            if (CurrentFolder.FolderID == 0)
             {
-                case SystemFolders.Incoming:
+                switch (CurrentFolder.FolderType)
                 {
-                    if (!await LoadEmailsDispatchC.LoadIncomingEmails(messageList, SearchData))
-                        return;
-                    break;
+                    case SystemFolders.Incoming:
+                    {
+                        if (!await LoadEmailsDispatchC.LoadIncomingEmails(messageList, SearchData))
+                            return;
+                        break;
+                    }
+                    case SystemFolders.Outgoing:
+                    {
+                        if (!await LoadEmailsDispatchC.LoadOutgoingEmails(messageList, SearchData))
+                            return;
+                        break;
+                    }
+                    case SystemFolders.Drafts:
+                    {
+                        if (!await LoadEmailsDispatchC.LoadDrafts(messageList, SearchData))
+                            return;
+                        break;
+                    }
                 }
-                case SystemFolders.Outgoing:
-                {
-                    if (!await LoadEmailsDispatchC.LoadOutgoingEmails(messageList, SearchData))
-                        return;
-                    break;
-                }
-                case SystemFolders.Drafts:
-                {
-                    if (!await LoadEmailsDispatchC.LoadDrafts(messageList, SearchData))
-                        return;
-                    break;
-                }
+            }
+            else
+            {
+                if (!await LoadEmailsDispatchC.LoadEmailsByFolder(messageList, SearchData, CurrentFolder.FolderID))
+                    return;
             }
 
             FillEmailList();
@@ -170,17 +179,25 @@ namespace EMailProviderClient
             EMAILS_LIST.Columns[3].Width = Math.Max(remainingWidth, 100);
         }
 
-        private void InitializeCategories()
+        private async void InitializeCategories()
         {
+            List<FolderViewModel> FoldersList = new List<FolderViewModel>();
+            if(!await LoadFoldersDispatchC.LoadFolders(FoldersList))
+            {
+                return;
+            }
+
             CATEGORIES_LIST.View = View.Details;
             CATEGORIES_LIST.HeaderStyle = ColumnHeaderStyle.Clickable;
             CATEGORIES_LIST.Columns.Clear();
-            CATEGORIES_LIST.Columns.Add("System Folders", CATEGORIES_LIST.Width - 4);
-            CATEGORIES_LIST.Columns[0].TextAlign = HorizontalAlignment.Center;
+            CATEGORIES_LIST.Columns.Add("Folders", CATEGORIES_LIST.Width - 4);
+            CATEGORIES_LIST.Columns[0].TextAlign = HorizontalAlignment.Left;
 
-            AddCategory(SystemFolders.Incoming, "Received");
-            AddCategory(SystemFolders.Outgoing, "Sent");
-            AddCategory(SystemFolders.Drafts, "Drafts");
+            AddCategory(SystemFolders.Incoming);
+            AddSubCategory(SystemFolders.Incoming, FoldersList);
+            AddCategory(SystemFolders.Outgoing);
+            AddSubCategory(SystemFolders.Outgoing, FoldersList);
+            AddCategory(SystemFolders.Drafts);
 
             if (CATEGORIES_LIST.Items.Count > 0)
             {
@@ -190,9 +207,23 @@ namespace EMailProviderClient
             CATEGORIES_LIST.ItemSelectionChanged += CategoriesList_ItemSelectionChanged;
         }
 
-        private void AddCategory(SystemFolders folderType, string displayName)
+        private void AddCategory(SystemFolders folderType)
         {
-            CATEGORIES_LIST.Items.Add(new ListViewItem(displayName) { Tag = folderType });
+            FolderListModel folderListModel = new FolderListModel() { FolderID = 0, Name = folderType.ToString(), FolderType = folderType };
+            CATEGORIES_LIST.Items.Add(new ListViewItem(folderListModel.Name) { Tag = folderListModel });
+        }
+
+        private void AddSubCategory(SystemFolders folderType, List<FolderViewModel> folderList)
+        {
+            EmailDirections emailDirections = EmailDirections.EmailDirectionIn;
+            if (folderType == SystemFolders.Outgoing)
+                emailDirections = EmailDirections.EmailDirectionOut;
+
+            foreach (var folder in folderList.Where(f => f.FolderDirection == emailDirections))
+            {
+                FolderListModel folderListModel = new FolderListModel() { FolderID = folder.Id, Name = "    " + folder.Name, FolderType = folderType };
+                CATEGORIES_LIST.Items.Add(new ListViewItem(folderListModel.Name) { Tag = folderListModel });
+            }
         }
 
         private void CategoriesList_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -200,11 +231,11 @@ namespace EMailProviderClient
             if (!e.IsSelected)
                 return;
 
-            if (e.Item.Tag is SystemFolders selectedFolder)
+            if (e.Item.Tag is FolderListModel selectedFolder)
             {
-                CurrentFolderType = selectedFolder;
+                CurrentFolder = selectedFolder;
 
-                switch (CurrentFolderType)
+                switch (CurrentFolder.FolderType)
                 {
                     case SystemFolders.Incoming:
                         EMAILS_LIST.Columns[1].Text = "Sender Email";

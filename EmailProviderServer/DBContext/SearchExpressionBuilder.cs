@@ -11,13 +11,14 @@ namespace EmailProviderServer.Helpers
 {
     public static class SearchExpressionBuilder
     {
-        public static Expression<Func<Message, bool>> BuildExpression(
+        public static Expression<Func<UserMessage, bool>> BuildExpression(
             List<SearchCondition> conditions,
             bool isIncoming = false,
             bool isOutgoing = false,
             bool isDraft = false)
         {
-            ParameterExpression param = Expression.Parameter(typeof(Message), "m");
+            ParameterExpression param = Expression.Parameter(typeof(UserMessage), "um");
+            var messageProp = Expression.Property(param, nameof(UserMessage.Message));
             Expression? baseExpr = null;
 
             foreach (var condition in conditions)
@@ -29,7 +30,7 @@ namespace EmailProviderServer.Helpers
                     case SearchType.SearchTypeDate:
                         if (DateTime.TryParse(condition.SearchValue, out var date))
                         {
-                            var dateProp = Expression.Property(param, nameof(Message.DateOfRegistration));
+                            var dateProp = Expression.Property(messageProp, nameof(Message.DateOfRegistration));
                             expr = (SearchTypeDate)condition.SearchSubType switch
                             {
                                 SearchTypeDate.SearchTypeDateBefore => Expression.LessThan(dateProp, Expression.Constant(date)),
@@ -42,13 +43,13 @@ namespace EmailProviderServer.Helpers
                     case SearchType.SearchTypeEmail:
                         if (isIncoming)
                         {
-                            var fromProp = Expression.Property(param, nameof(Message.FromEmail));
+                            var fromProp = Expression.Property(messageProp, nameof(Message.FromEmail));
                             expr = Expression.Call(fromProp, nameof(string.Contains), null,
                                 Expression.Constant(condition.SearchValue));
                         }
                         else if (isOutgoing)
                         {
-                            var recipientsProp = Expression.Property(param, nameof(Message.MessageRecipients));
+                            var recipientsProp = Expression.Property(messageProp, nameof(Message.MessageRecipients));
                             var recipientParam = Expression.Parameter(typeof(MessageRecipient), "r");
                             var emailProp = Expression.Property(recipientParam, nameof(MessageRecipient.Email));
                             var containsCall = Expression.Call(emailProp, nameof(string.Contains), null, Expression.Constant(condition.SearchValue));
@@ -63,8 +64,8 @@ namespace EmailProviderServer.Helpers
             }
 
             return baseExpr != null
-                ? Expression.Lambda<Func<Message, bool>>(baseExpr, param)
-                : m => true;
+                ? Expression.Lambda<Func<UserMessage, bool>>(baseExpr, param)
+                : um => true;
         }
     }
 }

@@ -45,8 +45,6 @@ public partial class Message : IEntity
     /// </summary>
     public EmailStatuses Status { get; set; }
 
-    public bool IsInternal { get; set; }
-
     public virtual ICollection<File> Files { get; set; } = new List<File>();
 
     public virtual ICollection<MessageRecipient> MessageRecipients { get; set; } = new List<MessageRecipient>();

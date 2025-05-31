@@ -20,7 +20,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
         {
             try
             {
-                MessageSerializable message;
+                EmailViewModel message;
                 InPackage.Deserialize(out message);
 
                 if (message == null || string.IsNullOrWhiteSpace(message.Subject))

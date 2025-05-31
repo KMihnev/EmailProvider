@@ -12,7 +12,7 @@ namespace EMailProviderClient.Dispatches.Emails
     //------------------------------------------------------
     public class GetEmailDispatchC
     {
-        public static async Task<(bool, MessageSerializable)> LoadEmail(int nMessageId)
+        public static async Task<(bool, EmailViewModel)> LoadEmail(int nMessageId)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace EMailProviderClient.Dispatches.Emails
                     return (false, null);
                 }
 
-                MessageSerializable outMessage;
+                EmailViewModel outMessage;
                 OutPackage.Deserialize(out outMessage);
 
                 return (true, outMessage);

@@ -33,7 +33,9 @@ namespace EMailProviderClient.Dispatches.Users
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                     return false;
 
-                UserSerializable newUser = null;
+                string token = "";
+                UserViewModel newUser = null;
+                OutPackage.Serialize(user);
                 OutPackage.Deserialize(out newUser);
 
                 if (newUser == null)
@@ -42,6 +44,13 @@ namespace EMailProviderClient.Dispatches.Users
                     return false;
                 }
 
+                if (token == null || token.Count() <= 0)
+                {
+                    Logger.LogErrorCalling();
+                    return false;
+                }
+
+                SessionControllerC.Set(token);
                 UserController.SetCurrentUser(newUser);
                 return true;
             }
@@ -53,7 +62,7 @@ namespace EMailProviderClient.Dispatches.Users
         }
 
         /// <summary> RPC за popylwane na данни за профила </summary>
-        public static async Task<bool> SetUpProfile(UserSerializable user)
+        public static async Task<bool> SetUpProfile(UserViewModel user)
         {
             try
             {
@@ -73,7 +82,7 @@ namespace EMailProviderClient.Dispatches.Users
                     return false;
                 }
 
-                UserSerializable updatedUser = null;
+                UserViewModel updatedUser = null;
                 OutPackage.Deserialize(out updatedUser);
 
                 if (updatedUser == null)
@@ -111,8 +120,17 @@ namespace EMailProviderClient.Dispatches.Users
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                     return false;
 
-                UserSerializable newUser = null;
+                string token = "";
+                UserViewModel newUser = null;
+
+                OutPackage.Deserialize(out token);
                 OutPackage.Deserialize(out newUser);
+
+                if (token == null || token.Count() <= 0)
+                {
+                    Logger.LogErrorCalling();
+                    return false;
+                }
 
                 if (newUser == null)
                 {
@@ -120,6 +138,7 @@ namespace EMailProviderClient.Dispatches.Users
                     return false;
                 }
 
+                SessionControllerC.Set(token);
                 UserController.SetCurrentUser(newUser);
                 return true;
             }

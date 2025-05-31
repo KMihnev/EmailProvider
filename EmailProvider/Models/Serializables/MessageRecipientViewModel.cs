@@ -8,6 +8,11 @@ namespace EmailProvider.Models.Serializables
 {
     public class MessageRecipientSerializable
     {
-        public string Email { get; set; } = null!;
+        public MessageRecipientSerializable()
+        {
+            
+        }
+
+        public string Email { get; set; } = string.Empty!;
     }
 }

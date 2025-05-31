@@ -36,8 +36,6 @@
             DATE_FROM = new DateTimePicker();
             BY_DATE_CHB = new CheckBox();
             BY_RECEIVER_GRP = new GroupBox();
-            SENDER_LABEL = new Label();
-            SENDER_EMAIL = new TextBox();
             EMAIL_LABEL = new Label();
             RECEIVER_EMAIL = new TextBox();
             BY_RECEIVER_CHB = new CheckBox();
@@ -116,41 +114,23 @@
             // 
             // BY_RECEIVER_GRP
             // 
-            BY_RECEIVER_GRP.Controls.Add(SENDER_LABEL);
-            BY_RECEIVER_GRP.Controls.Add(SENDER_EMAIL);
             BY_RECEIVER_GRP.Controls.Add(EMAIL_LABEL);
             BY_RECEIVER_GRP.Controls.Add(RECEIVER_EMAIL);
             BY_RECEIVER_GRP.Location = new Point(33, 173);
             BY_RECEIVER_GRP.Name = "BY_RECEIVER_GRP";
-            BY_RECEIVER_GRP.Size = new Size(283, 94);
+            BY_RECEIVER_GRP.Size = new Size(283, 60);
             BY_RECEIVER_GRP.TabIndex = 4;
             BY_RECEIVER_GRP.TabStop = false;
             BY_RECEIVER_GRP.Text = "By Email";
-            // 
-            // SENDER_LABEL
-            // 
-            SENDER_LABEL.AutoSize = true;
-            SENDER_LABEL.Location = new Point(12, 58);
-            SENDER_LABEL.Name = "SENDER_LABEL";
-            SENDER_LABEL.Size = new Size(43, 15);
-            SENDER_LABEL.TabIndex = 2;
-            SENDER_LABEL.Text = "Sender";
-            // 
-            // SENDER_EMAIL
-            // 
-            SENDER_EMAIL.Location = new Point(71, 55);
-            SENDER_EMAIL.Name = "SENDER_EMAIL";
-            SENDER_EMAIL.Size = new Size(200, 23);
-            SENDER_EMAIL.TabIndex = 3;
             // 
             // EMAIL_LABEL
             // 
             EMAIL_LABEL.AutoSize = true;
             EMAIL_LABEL.Location = new Point(11, 25);
             EMAIL_LABEL.Name = "EMAIL_LABEL";
-            EMAIL_LABEL.Size = new Size(51, 15);
+            EMAIL_LABEL.Size = new Size(36, 15);
             EMAIL_LABEL.TabIndex = 0;
-            EMAIL_LABEL.Text = "Receiver";
+            EMAIL_LABEL.Text = "Email";
             // 
             // RECEIVER_EMAIL
             // 
@@ -171,7 +151,7 @@
             // 
             // CANCEL
             // 
-            CANCEL.Location = new Point(241, 273);
+            CANCEL.Location = new Point(242, 239);
             CANCEL.Name = "CANCEL";
             CANCEL.Size = new Size(75, 23);
             CANCEL.TabIndex = 7;
@@ -181,7 +161,7 @@
             // 
             // APPLY
             // 
-            APPLY.Location = new Point(160, 273);
+            APPLY.Location = new Point(156, 239);
             APPLY.Name = "APPLY";
             APPLY.Size = new Size(75, 23);
             APPLY.TabIndex = 6;
@@ -191,7 +171,7 @@
             // 
             // CLEAR_BTN
             // 
-            CLEAR_BTN.Location = new Point(12, 273);
+            CLEAR_BTN.Location = new Point(8, 239);
             CLEAR_BTN.Name = "CLEAR_BTN";
             CLEAR_BTN.Size = new Size(75, 23);
             CLEAR_BTN.TabIndex = 5;
@@ -203,7 +183,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(328, 304);
+            ClientSize = new Size(328, 271);
             Controls.Add(CLEAR_BTN);
             Controls.Add(APPLY);
             Controls.Add(CANCEL);
@@ -237,8 +217,6 @@
         private Label BEGIN_DATE_LABEL;
         private DateTimePicker DATE_TO;
         private DateTimePicker DATE_FROM;
-        private Label SENDER_LABEL;
-        private TextBox SENDER_EMAIL;
         private Button CLEAR_BTN;
     }
 }

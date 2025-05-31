@@ -100,7 +100,6 @@ namespace EMailProviderClient.Views.Emails
         {
             SearchData.Clear();
 
-            SENDER_EMAIL.Clear();
             RECEIVER_EMAIL.Clear();
             DATE_FROM.ResetText();
             DATE_FROM.Checked = false;

@@ -7,6 +7,7 @@ using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.DBContext.Services;
+using EmailProvider.Models.Serializables;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -45,8 +46,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                List<Message> filteredMessages = new List<Message>();
-                filteredMessages = await _userMessageService.GetIncomingMessagesAsync<Message>(searchData, 0, 10);
+                List<EmailListModel> filteredMessages = new List<EmailListModel>();
+                filteredMessages = await _userMessageService.GetIncomingMessagesAsync<EmailListModel>(searchData, 0, 10);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }

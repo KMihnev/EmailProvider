@@ -43,8 +43,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
     
             try
             {
-                MessageSerializable messageSerializable = new MessageSerializable();
-                messageSerializable = await _messageService.GetByIDIncludingAll<MessageSerializable>(nMessageId);
+                EmailViewModel messageSerializable = new EmailViewModel();
+                messageSerializable = await _messageService.GetByIDIncludingAll<EmailViewModel>(nMessageId);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(messageSerializable);
             }
