@@ -137,5 +137,14 @@ namespace EmailServiceIntermediate.Dispatches
             // Зареждаме си само същинските данни
             ToArray(payload);
         }
+
+        public void Append(SmartStreamArray other)
+        {
+            _stream.Position = _stream.Length;
+
+            byte[] otherBytes = other._stream.ToArray();
+
+            _writer.Write(otherBytes);
+        }
     }
 }

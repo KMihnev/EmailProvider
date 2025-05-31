@@ -1,16 +1,13 @@
-﻿//Includes
+﻿using EMailProviderClient.Controllers.UserControl;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using System.Net.Sockets;
 
 namespace EMailProviderClient.Dispatches.Base
 {
-    //------------------------------------------------------
-    //	DispatchHandlerC
-    //------------------------------------------------------
     public class DispatchHandlerC
     {
-        public async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
+        public async Task<bool> Execute(SmartStreamArray inPackage, SmartStreamArray outPackage)
         {
             try
             {
@@ -21,32 +18,34 @@ namespace EMailProviderClient.Dispatches.Base
                 using var stream = client.GetStream();
                 stream.Flush();
 
-                byte[] requestData = InPackage.ToByte();
+                SmartStreamArray finalPackage = new();
+                finalPackage.Serialize(SessionControllerC.Token ?? "");
+
+                finalPackage.Append(inPackage);
+
+                byte[] requestData = finalPackage.ToByte();
                 await stream.WriteAsync(requestData, 0, requestData.Length);
 
-                OutPackage.LoadFromStream(stream);
+                outPackage.LoadFromStream(stream);
 
-                bool bResult = false;
-                OutPackage.Deserialize(out bResult);
+                bool result = false;
+                outPackage.Deserialize(out result);
 
-                if (!bResult)
+                if (!result)
                 {
-                    string Error = "";
-                    OutPackage.Deserialize(out Error);
-                    if (Error?.Length > 0)
-                        Logger.LogError(Error);
-                    else
-                        Logger.LogError(LogMessages.InteralError);
+                    string error = "";
+                    outPackage.Deserialize(out error);
+                    Logger.LogError(!string.IsNullOrWhiteSpace(error) ? error : LogMessages.InteralError);
                     return false;
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
                 Logger.LogError(LogMessages.InteralError);
                 return false;
             }
-
-            return true;
         }
     }
 }
