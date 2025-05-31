@@ -99,7 +99,7 @@ namespace EmailService
             var inPackage = new SmartStreamArray();
             var outPackage = new SmartStreamArray();
 
-            var message = new MessageSerializable
+            var message = new EmailViewModel
             {
                 FromEmail = from,
                 Subject = "SMTP Message",

@@ -4,15 +4,17 @@ using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Base;
+using EmailProvider.Models.Serializables;
+using EMailProviderClient.Controllers.UserControl;
 
-namespace EMailProviderClient.Dispatches.Emails
+namespace EMailProviderClient.Dispatches.Folders
 {
     //------------------------------------------------------
     //	SendEmailDispatchC
     //------------------------------------------------------
-    public class SendEmailDispatchC
+    public class AddFolderDispatchC
     {
-        public static async Task<bool> SendEmail(EmailViewModel messageSerializable)
+        public static async Task<bool> AddFolder(FolderViewModel folder)
         {
             try
             {
@@ -20,8 +22,8 @@ namespace EMailProviderClient.Dispatches.Emails
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.SendEmail);
-                InPackage.Serialize(messageSerializable);
+                InPackage.Serialize((int)DispatchEnums.AddFolder);
+                InPackage.Serialize(folder);
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
@@ -31,6 +33,11 @@ namespace EMailProviderClient.Dispatches.Emails
                     Logger.LogErrorCalling();
                     return false;
                 }
+
+                FolderViewModel newfolder = null;
+                OutPackage.Deserialize(out newfolder);
+
+                folder = newfolder;
 
                 return true;
             }

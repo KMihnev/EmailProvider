@@ -10,12 +10,12 @@ namespace EmailProviderServer.DBContext.Services.Base
     //------------------------------------------------------
     public interface IMessageService
     {
-        Task ProcessMessageAsync(MessageSerializable messageDTO);
+        Task ProcessMessageAsync(EmailViewModel messageDTO);
 
         Task<T> GetByIDIncludingAll<T>(int id);
 
         Task<bool> CheckIfExists(int id);
 
-        Task<bool> UpdateMessageAsync(int messageId, MessageSerializable updatedMessage);
+        Task<bool> UpdateMessageAsync(int messageId, EmailViewModel updatedMessage);
     }
 }

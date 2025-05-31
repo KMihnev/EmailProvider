@@ -10,9 +10,9 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {
     public interface IUserMessageRepository
     {
-        Task<List<Message>> GetIncomingMessagesAsync(int userId, Expression<Func<Message, bool>>? filter, int skip, int take);
-        Task<List<Message>> GetOutgoingMessagesAsync(int userId, Expression<Func<Message, bool>>? filter, int skip, int take);
-        Task<List<Message>> GetDraftMessagesAsync(int userId, Expression<Func<Message, bool>>? filter, int skip, int take);
-        Task<List<Message>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<Message, bool>>? filter, int skip, int take);
+        Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take);
+        Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take);
+        Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take);
+        Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take);
     }
 }

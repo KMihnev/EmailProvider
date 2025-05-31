@@ -63,7 +63,7 @@ namespace EmailProviderServer.TCP_Server
                     // Десериализираме си кода на диспача
                     InPackage.Deserialize(out int dispatchCode);
 
-                    BaseDispatchHandler dispatchHandler = _dispatchMapper.MapDispatch(dispatchCode);
+                     BaseDispatchHandler dispatchHandler = _dispatchMapper.MapDispatch(dispatchCode);
 
                     if (!await dispatchHandler?.Execute(InPackage, OutPackage))
                     {
@@ -88,6 +88,20 @@ namespace EmailProviderServer.TCP_Server
         {
             ResponsePackage.Serialize(false);
             ResponsePackage.Serialize(error);
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _listener.Stop();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            await base.StopAsync(cancellationToken);
+        }
+
+        public override void Dispose()
+        {
+            _listener?.Server?.Dispose();
+            base.Dispose();
         }
     }
 }

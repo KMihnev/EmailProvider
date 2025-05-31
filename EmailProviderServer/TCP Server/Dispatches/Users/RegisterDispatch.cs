@@ -59,7 +59,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                UserSerializable userSerializable = await _userService.CreateAsync<UserSerializable>(user);
+                UserViewModel userSerializable = await _userService.CreateAsync<UserViewModel>(user);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(userSerializable);
             }

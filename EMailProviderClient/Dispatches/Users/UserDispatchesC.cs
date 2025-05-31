@@ -33,7 +33,7 @@ namespace EMailProviderClient.Dispatches.Users
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                     return false;
 
-                UserSerializable newUser = null;
+                UserViewModel newUser = null;
                 OutPackage.Deserialize(out newUser);
 
                 if (newUser == null)
@@ -53,7 +53,7 @@ namespace EMailProviderClient.Dispatches.Users
         }
 
         /// <summary> RPC за popylwane na данни за профила </summary>
-        public static async Task<bool> SetUpProfile(UserSerializable user)
+        public static async Task<bool> SetUpProfile(UserViewModel user)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace EMailProviderClient.Dispatches.Users
                     return false;
                 }
 
-                UserSerializable updatedUser = null;
+                UserViewModel updatedUser = null;
                 OutPackage.Deserialize(out updatedUser);
 
                 if (updatedUser == null)
@@ -111,7 +111,7 @@ namespace EMailProviderClient.Dispatches.Users
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                     return false;
 
-                UserSerializable newUser = null;
+                UserViewModel newUser = null;
                 OutPackage.Deserialize(out newUser);
 
                 if (newUser == null)

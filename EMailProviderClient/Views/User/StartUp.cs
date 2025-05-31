@@ -77,5 +77,11 @@ namespace EMailProviderClient.Views.User
                 e.Cancel = true;
             }
         }
+
+        public void Shutdown()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
     }
 }

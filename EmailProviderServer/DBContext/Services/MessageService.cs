@@ -35,7 +35,7 @@ namespace EmailProviderServer.DBContext.Services
         }
 
         // Create and save a new message
-        public async Task ProcessMessageAsync(MessageSerializable dto)
+        public async Task ProcessMessageAsync(EmailViewModel dto)
         {
             var message = new Message
             {
@@ -63,7 +63,6 @@ namespace EmailProviderServer.DBContext.Services
                 UserId = sender.Id,
                 IsRead = true,
                 IsDeleted = false,
-                Pinned = false
             });
 
             // Add user messages (internal recipients)
@@ -77,7 +76,6 @@ namespace EmailProviderServer.DBContext.Services
                         UserId = internalUser.Id,
                         IsRead = false,
                         IsDeleted = false,
-                        Pinned = false
                     });
                 }
             }
@@ -107,7 +105,7 @@ namespace EmailProviderServer.DBContext.Services
             return await _messageRepository.CheckIfExists(id);
         }
 
-        public async Task<bool> UpdateMessageAsync(int messageId, MessageSerializable updatedMessageDTO)
+        public async Task<bool> UpdateMessageAsync(int messageId, EmailViewModel updatedMessageDTO)
         {
             var message = await _messageRepository.GetByIDIncludingAll(messageId);
             if (message == null) return false;

@@ -62,7 +62,7 @@ namespace EMailProviderClient.Views.User
                 return;
             }
 
-            var selectedCountry = (CountrySerializable)CMB_COUNTRY.SelectedItem;
+            var selectedCountry = (CountryViewModel)CMB_COUNTRY.SelectedItem;
             user.CountryId = selectedCountry.Id;
 
             if (!await UserDispatchesC.SetUpProfile(user))
@@ -83,7 +83,7 @@ namespace EMailProviderClient.Views.User
 
         private async void LoadCountries()
         {
-            List<CountrySerializable> listCountries = new List<CountrySerializable>();
+            List<CountryViewModel> listCountries = new List<CountryViewModel>();
             if (!await CountriesDispatchC.LoadCountries(listCountries))
                 return;
 
@@ -98,7 +98,7 @@ namespace EMailProviderClient.Views.User
 
                 if (listCountries.Count > 0)
                 {
-                    CountrySerializable currentCountry = listCountries.FirstOrDefault(c => c.Name == "Unknown");
+                    CountryViewModel currentCountry = listCountries.FirstOrDefault(c => c.Name == "Unknown");
                     if (currentCountry == null)
                         return;
 
@@ -110,7 +110,7 @@ namespace EMailProviderClient.Views.User
 
         private void ON_COUNTRIES_CHANGE(object sender, EventArgs e)
         {
-            var selectedCountry = CMB_COUNTRY.SelectedItem as CountrySerializable;
+            var selectedCountry = CMB_COUNTRY.SelectedItem as CountryViewModel;
             if (selectedCountry != null)
             {
                 EDC_PHONE_NUMBER.Text = selectedCountry.PhoneNumberCode;

@@ -6,17 +6,21 @@ namespace EMailProviderClient
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+        static StartUp? _mainForm;
+
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-
             ApplicationConfiguration.Initialize();
-            Application.Run(new StartUp());
+
+            // Attach application-wide shutdown
+            Application.ApplicationExit += (s, e) =>
+            {
+                _mainForm?.Shutdown();
+            };
+
+            _mainForm = new StartUp();
+            Application.Run(_mainForm);
         }
     }
 }

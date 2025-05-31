@@ -15,12 +15,12 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadOutgoingEmailsDispatchS : BaseDispatchHandler
+    public class LoadDraftEmailsDispatchS : BaseDispatchHandler
     {
         private readonly IUserMessageService _userMessageService;
 
         //Constructor
-        public LoadOutgoingEmailsDispatchS(IUserMessageService userMessageService)
+        public LoadDraftEmailsDispatchS(IUserMessageService userMessageService)
         {
             _userMessageService = userMessageService;
         }
@@ -48,7 +48,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             try
             {
                 List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetOutgoingMessagesAsync<EmailListModel>(searchData, 0, 10);
+                filteredMessages = await _userMessageService.GetDraftMessagesAsync<EmailListModel>(searchData, 0, 10);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }

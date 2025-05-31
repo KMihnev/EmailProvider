@@ -1,8 +1,10 @@
 ﻿//Includes
 using AutoMapper;
+using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmailProviderServer.DBContext.Services
@@ -10,62 +12,42 @@ namespace EmailProviderServer.DBContext.Services
     //------------------------------------------------------
     //	CountryService
     //------------------------------------------------------
-    public class FolderService : ICountryService
+    public class FolderService : IFolderService
     {
-        private readonly ICountryRepository _countryRepository;
+        private readonly IFolderRepository _folderRepository;
         private readonly IMapper _mapper;
 
-        //Constructor
-        public FolderService(ICountryRepository countryRepository, IMapper mapper)
+        public FolderService(IFolderRepository folderRepository, IMapper mapper)
         {
-            _countryRepository = countryRepository;
+            _folderRepository = folderRepository;
             _mapper = mapper;
         }
 
-        //Methods
-        public async Task<IEnumerable<T>> GetAllAsync<T>()
+        public async Task<List<T>> GetUserFoldersAsync<T>(int userId)
         {
-            var query = _countryRepository.AllAsNoTracking().OrderBy(c => c.Name);
-
-            var countries = await query.ToListAsync();
-
-            return _mapper.Map<IEnumerable<T>>(countries);
+            var folders = await _folderRepository.GetFoldersForUserAsync(userId);
+            return _mapper.Map<List<T>>(folders);
         }
 
-        public async Task<T> GetByIdAsync<T>(int nId)
+        public async Task<T?> GetFolderByIdAsync<T>(int folderId)
         {
-            var country = await _countryRepository.GetByID(nId);
-
-            if (country == null)
-            {
-                Logger.LogError(LogMessages.RecordNotFound, this.GetType().Name, nId);
-            }
-
-            return _mapper.Map<T>(country);
+            var folder = await _folderRepository.GetByIdAsync(folderId);
+            return folder == null ? default : _mapper.Map<T>(folder);
         }
 
-        public async Task<T> GetByNameAsync<T>(string strName)
+        public async Task CreateFolderAsync<T>(T folderDto)
         {
-            var country = await _countryRepository.GetByName(strName);
-
-            if (country == null)
-            {
-                Logger.LogError(LogMessages.RecordNotFound, this.GetType().Name, strName);
-            }
-
-            return _mapper.Map<T>(country);
+            var entity = _mapper.Map<Folder>(folderDto);
+            await _folderRepository.AddAsync(entity);
         }
 
-        public async Task<T> GetByPhoneCodeAsync<T>(string strPhoneCode)
+        public async Task DeleteFolderAsync(int folderId)
         {
-            var country = await _countryRepository.GetByPhoneCode(strPhoneCode);
-
-            if (country == null)
+            var folder = await _folderRepository.GetByIdAsync(folderId);
+            if (folder != null)
             {
-                Logger.LogError(LogMessages.RecordNotFound, this.GetType().Name, strPhoneCode);
+                await _folderRepository.DeleteAsync(folder);
             }
-
-            return _mapper.Map<T>(country);
         }
     }
 }

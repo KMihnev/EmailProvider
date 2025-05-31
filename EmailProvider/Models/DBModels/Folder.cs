@@ -15,18 +15,19 @@ public partial class Folder : IEntity
     public int Id { get; set; }
 
     /// <summary>
-    /// User owning the folder
-    /// </summary>
-    public int UserId { get; set; }
-
-    /// <summary>
     /// Name of the folder
     /// </summary>
     public string Name { get; set; } = null!;
+
+
+    /// <summary>
+    /// User owning the folder
+    /// </summary>
+    public int UserId { get; set; }
 
     public EmailDirections FolderDirection { get; set; }
 
     public virtual User User { get; set; } = null!;
 
-    public virtual ICollection<UserMessage> UserMessages { get; set; } = new List<UserMessage>();
+    public virtual ICollection<UserMessageFolder> UserMessageFolders { get; set; } = new List<UserMessageFolder>();
 }

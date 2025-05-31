@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using EmailProvider.Enums;
 using EmailProvider.SearchData;
+using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.Helpers;
@@ -13,11 +15,13 @@ namespace EmailProviderServer.DBContext.Services
 {
     public class UserMessageService : IUserMessageService
     {
+        private readonly IFolderRepository _folderRepository;
         private readonly IUserMessageRepository _repository;
         private readonly IMapper _mapper;
 
-        public UserMessageService(IUserMessageRepository repository, IMapper mapper)
+        public UserMessageService(IUserMessageRepository repository, IMapper mapper, IFolderRepository folderRepository)
         {
+            _folderRepository = folderRepository;
             _repository = repository;
             _mapper = mapper;
         }
@@ -45,7 +49,11 @@ namespace EmailProviderServer.DBContext.Services
 
         public async Task<List<T>> GetMessagesInFolderAsync<T>(SearchData searchData, int folderId, int skip, int take)
         {
-            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions);
+            var Folder = await _folderRepository.GetByIdAsync(folderId);
+
+            bool bIsIncoming = Folder.FolderDirection == EmailDirections.EmailDirectionIn;
+
+            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: bIsIncoming);
             var messages = await _repository.GetMessagesInFolderAsync(searchData.UserId, folderId, filter, skip, take);
             return _mapper.Map<List<T>>(messages);
         }

@@ -4,24 +4,27 @@ using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Base;
+using EmailProvider.Models.Serializables;
+using EMailProviderClient.Controllers.UserControl;
 
-namespace EMailProviderClient.Dispatches.Emails
+namespace EMailProviderClient.Dispatches.Folders
 {
     //------------------------------------------------------
     //	SendEmailDispatchC
     //------------------------------------------------------
-    public class SendEmailDispatchC
+    public class LoadFoldersDispatchC
     {
-        public static async Task<bool> SendEmail(EmailViewModel messageSerializable)
+        public static async Task<bool> LoadFolders(List<FolderViewModel> folders)
         {
+            folders.Clear();
             try
             {
                 SmartStreamArray InPackage = new SmartStreamArray();
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.SendEmail);
-                InPackage.Serialize(messageSerializable);
+                InPackage.Serialize((int)DispatchEnums.LoadFolders);
+                InPackage.Serialize(UserController.GetCurrentUserID());
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
@@ -31,6 +34,11 @@ namespace EMailProviderClient.Dispatches.Emails
                     Logger.LogErrorCalling();
                     return false;
                 }
+
+                List<FolderViewModel> foldersList = null;
+                OutPackage.Deserialize(out foldersList);
+
+                folders.AddRange(foldersList);
 
                 return true;
             }

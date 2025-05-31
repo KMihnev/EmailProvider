@@ -19,6 +19,10 @@ namespace EmailServiceIntermediate.Enums
         DeleteEmails,
         ReceiveEmails,
         LoadIncomingEmails,
-        LoadOutgoingEmails
+        LoadOutgoingEmails,
+        LoadDrafts,
+        LoadEmailsByFolder,
+        LoadFolders,
+        AddFolder,
     }
 }
