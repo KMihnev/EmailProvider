@@ -7,7 +7,6 @@ using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.DBContext.Services;
-using EmailServiceIntermediate.Models.Serializables;
 using EmailProvider.Models.Serializables;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
@@ -15,29 +14,23 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadDraftEmailsDispatchS : BaseDispatchHandler
+    public class AddFolderDispatchS : BaseDispatchHandler
     {
-        private readonly IUserMessageService _userMessageService;
+        private readonly IFolderService _folderService;
 
         //Constructor
-        public LoadDraftEmailsDispatchS(IUserMessageService userMessageService)
+        public AddFolderDispatchS(IFolderService folderService)
         {
-            _userMessageService = userMessageService;
+            _folderService = folderService;
         }
 
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            SearchData searchData = new SearchData();
+            FolderViewModel folder = null;
             try
             {
-                InPackage.Deserialize(out searchData);
-
-                if (searchData == null)
-                {
-                    Logger.LogNullValue();
-                    return false;
-                }
+                InPackage.Deserialize(out folder);
             }
             catch (Exception ex)
             {
@@ -45,12 +38,20 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
+            if (folder == null)
+            {
+                Logger.LogNullValue();
+                return false;
+            }
+
             try
             {
-                List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetDraftMessagesAsync<EmailListModel>(searchData, SessionUser.Id, 0, 10);
+                folder = await _folderService.CreateFolderAsync<FolderViewModel>(folder, SessionUser.Id);
+                if (folder == null)
+                    return false;
+
                 OutPackage.Serialize(true);
-                OutPackage.Serialize(filteredMessages);
+                OutPackage.Serialize(folder);
             }
             catch (Exception ex)
             {

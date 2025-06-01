@@ -1,6 +1,6 @@
 ﻿namespace EMailProviderClient
 {
-    partial class EmailProvider
+    partial class EmailListDialog
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,15 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             CATEGORIES_LIST = new ListView();
-            SYSTEM_FOLDERS_HEADER = new ColumnHeader();
-            menuStrip1 = new MenuStrip();
-            изходToolStripMenuItem = new ToolStripMenuItem();
-            minimizeToolStripMenuItem = new ToolStripMenuItem();
-            затовриИИзлезToolStripMenuItem = new ToolStripMenuItem();
-            затвориToolStripMenuItem = new ToolStripMenuItem();
-            contextMenuStrip1 = new ContextMenuStrip(components);
             SEARCH_BOX = new TextBox();
             CMB_SORT = new ComboBox();
             ON_ADD_EMAIL = new Button();
@@ -45,68 +37,20 @@
             pictureBox1 = new PictureBox();
             FILTER_BTN = new Button();
             EMAILS_LIST = new ListView();
-            contextMenuStrip2 = new ContextMenuStrip(components);
-            deleteToolStripMenuItem = new ToolStripMenuItem();
             DATE_HEADER = new ColumnHeader();
             SUBJECT_HEADER = new ColumnHeader();
             CONTENT_HEADER = new ColumnHeader();
-            menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            contextMenuStrip2.SuspendLayout();
             SuspendLayout();
             // 
             // CATEGORIES_LIST
             // 
-            CATEGORIES_LIST.Columns.AddRange(new ColumnHeader[] { SYSTEM_FOLDERS_HEADER });
             CATEGORIES_LIST.Location = new Point(12, 139);
             CATEGORIES_LIST.Name = "CATEGORIES_LIST";
             CATEGORIES_LIST.Size = new Size(167, 814);
             CATEGORIES_LIST.TabIndex = 0;
             CATEGORIES_LIST.UseCompatibleStateImageBehavior = false;
             CATEGORIES_LIST.View = View.Details;
-            // 
-            // SYSTEM_FOLDERS_HEADER
-            // 
-            SYSTEM_FOLDERS_HEADER.Text = "Folders";
-            // 
-            // menuStrip1
-            // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { изходToolStripMenuItem });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(2560, 24);
-            menuStrip1.TabIndex = 1;
-            menuStrip1.Text = "menuStrip1";
-            // 
-            // изходToolStripMenuItem
-            // 
-            изходToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { minimizeToolStripMenuItem, затовриИИзлезToolStripMenuItem, затвориToolStripMenuItem });
-            изходToolStripMenuItem.Name = "изходToolStripMenuItem";
-            изходToolStripMenuItem.Size = new Size(37, 20);
-            изходToolStripMenuItem.Text = "Exit";
-            // 
-            // minimizeToolStripMenuItem
-            // 
-            minimizeToolStripMenuItem.Name = "minimizeToolStripMenuItem";
-            minimizeToolStripMenuItem.Size = new Size(147, 22);
-            minimizeToolStripMenuItem.Text = "Minimize";
-            // 
-            // затовриИИзлезToolStripMenuItem
-            // 
-            затовриИИзлезToolStripMenuItem.Name = "затовриИИзлезToolStripMenuItem";
-            затовриИИзлезToolStripMenuItem.Size = new Size(147, 22);
-            затовриИИзлезToolStripMenuItem.Text = "Close";
-            // 
-            // затвориToolStripMenuItem
-            // 
-            затвориToolStripMenuItem.Name = "затвориToolStripMenuItem";
-            затвориToolStripMenuItem.Size = new Size(147, 22);
-            затвориToolStripMenuItem.Text = "Close and exit";
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(61, 4);
             // 
             // SEARCH_BOX
             // 
@@ -175,7 +119,6 @@
             // EMAILS_LIST
             // 
             EMAILS_LIST.CheckBoxes = true;
-            EMAILS_LIST.ContextMenuStrip = contextMenuStrip2;
             EMAILS_LIST.FullRowSelect = true;
             EMAILS_LIST.GridLines = true;
             EMAILS_LIST.Location = new Point(196, 139);
@@ -184,18 +127,6 @@
             EMAILS_LIST.TabIndex = 17;
             EMAILS_LIST.UseCompatibleStateImageBehavior = false;
             EMAILS_LIST.View = View.Details;
-            // 
-            // contextMenuStrip2
-            // 
-            contextMenuStrip2.Items.AddRange(new ToolStripItem[] { deleteToolStripMenuItem });
-            contextMenuStrip2.Name = "contextMenuStrip2";
-            contextMenuStrip2.Size = new Size(108, 26);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new Size(107, 22);
-            deleteToolStripMenuItem.Text = "Delete";
             // 
             // DATE_HEADER
             // 
@@ -212,7 +143,7 @@
             CONTENT_HEADER.Text = "Content";
             CONTENT_HEADER.Width = 300;
             // 
-            // EmailProvider
+            // EmailListDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -226,16 +157,20 @@
             Controls.Add(CMB_SORT);
             Controls.Add(SEARCH_BOX);
             Controls.Add(CATEGORIES_LIST);
-            Controls.Add(menuStrip1);
-            MainMenuStrip = menuStrip1;
-            Name = "EmailProvider";
+            Name = "EmailListDialog";
             Text = "Form1";
             WindowState = FormWindowState.Maximized;
             Load += EmailProvider_Load;
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
+            Controls.SetChildIndex(CATEGORIES_LIST, 0);
+            Controls.SetChildIndex(SEARCH_BOX, 0);
+            Controls.SetChildIndex(CMB_SORT, 0);
+            Controls.SetChildIndex(ON_ADD_EMAIL, 0);
+            Controls.SetChildIndex(checkBox1, 0);
+            Controls.SetChildIndex(ON_ACCOUNT, 0);
+            Controls.SetChildIndex(pictureBox1, 0);
+            Controls.SetChildIndex(FILTER_BTN, 0);
+            Controls.SetChildIndex(EMAILS_LIST, 0);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            contextMenuStrip2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -243,12 +178,6 @@
         #endregion
 
         private ListView CATEGORIES_LIST;
-        private MenuStrip menuStrip1;
-        private ToolStripMenuItem изходToolStripMenuItem;
-        private ToolStripMenuItem затовриИИзлезToolStripMenuItem;
-        private ToolStripMenuItem затвориToolStripMenuItem;
-        private ToolStripMenuItem minimizeToolStripMenuItem;
-        private ContextMenuStrip contextMenuStrip1;
         private TextBox SEARCH_BOX;
         private ComboBox CMB_SORT;
         private Button ON_ADD_EMAIL;
@@ -260,8 +189,5 @@
         private ColumnHeader DATE_HEADER;
         private ColumnHeader SUBJECT_HEADER;
         private ColumnHeader CONTENT_HEADER;
-        private ColumnHeader SYSTEM_FOLDERS_HEADER;
-        private ContextMenuStrip contextMenuStrip2;
-        private ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

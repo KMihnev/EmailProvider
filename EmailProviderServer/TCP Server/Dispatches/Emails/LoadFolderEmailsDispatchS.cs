@@ -49,7 +49,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             try
             {
                 List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetMessagesInFolderAsync<EmailListModel>(searchData, FolderID, 0, 10);
+                filteredMessages = await _userMessageService.GetMessagesInFolderAsync<EmailListModel>(searchData, SessionUser.Id, FolderID, 0, 10);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }

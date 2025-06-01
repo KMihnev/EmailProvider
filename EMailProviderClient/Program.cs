@@ -1,26 +1,33 @@
-using EmailServiceIntermediate.Settings;
-using EMailProviderClient.Settings;
 using EMailProviderClient.Views.User;
 
 namespace EMailProviderClient
 {
     internal static class Program
     {
-        static StartUp? _mainForm;
-
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
 
-            // Attach application-wide shutdown
-            Application.ApplicationExit += (s, e) =>
-            {
-                _mainForm?.Shutdown();
-            };
+            Application.ApplicationExit += (_, _) => Cleanup();
 
-            _mainForm = new StartUp();
-            Application.Run(_mainForm);
+            using var startUp = new StartUp();
+            var result = startUp.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                Application.Run(new Container());
+            }
+            else
+            {
+                Application.Exit(); 
+            }
+        }
+
+        private static void Cleanup()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

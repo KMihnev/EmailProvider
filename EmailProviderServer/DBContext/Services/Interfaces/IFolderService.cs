@@ -13,7 +13,7 @@ namespace EmailProviderServer.DBContext.Services.Base
     {
         Task<List<T>> GetUserFoldersAsync<T>(int userId);
         Task<T?> GetFolderByIdAsync<T>(int folderId);
-        Task CreateFolderAsync<T>(T folder);
+        Task<T> CreateFolderAsync<T>(T folder, int UserId);
         Task DeleteFolderAsync(int folderId);
     }
 }

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EmailProvider\EmailProvider.csproj" />
+    <ProjectReference Include="..\WindowsFormsCore\WindowsFormsCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

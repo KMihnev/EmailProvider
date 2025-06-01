@@ -27,21 +27,10 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            int UserId = 0;
-            try
-            {
-                InPackage.Deserialize(out UserId);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(LogMessages.InteralError);
-                return false;
-            }
-
             try
             {
                 List<FolderViewModel> folderList = new List<FolderViewModel>();
-                folderList = await _folderService.GetUserFoldersAsync<FolderViewModel>(UserId);
+                folderList = await _folderService.GetUserFoldersAsync<FolderViewModel>(SessionUser.Id);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(folderList);
             }

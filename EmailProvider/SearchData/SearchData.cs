@@ -10,9 +10,6 @@ namespace EmailProvider.SearchData
         {
 
         }
-
-        public int UserId { get; set; }
-
         public List<SearchCondition> Conditions { get; set; } = new();
 
         public void Clear()

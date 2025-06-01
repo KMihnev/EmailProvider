@@ -1,22 +1,23 @@
-﻿//Includes
+﻿// File: EMailProviderClient/Views/Emails/FilterEmails.cs
 using EmailProvider.Enums;
 using EmailProvider.SearchData;
+using System;
+using System.Linq;
+using System.Windows.Forms;
+using WindowsFormsCore;
 
 namespace EMailProviderClient.Views.Emails
 {
-    //------------------------------------------------------
-    //	FilterEmails
-    //------------------------------------------------------
-    public partial class FilterEmails : Form
+    public partial class FilterEmails : SmartDialog
     {
         public SearchData SearchData;
 
-        //Constructor
-        public FilterEmails(SearchData SearchData)
+        public FilterEmails() : base(DialogMode.Add) { }
+
+        public FilterEmails(SearchData searchData) : base(DialogMode.Edit, showStandardButtons: false)
         {
             InitializeComponent();
-
-            this.SearchData = SearchData;
+            this.SearchData = searchData;
 
             DATE_TO.Checked = false;
             DATE_FROM.Checked = false;
@@ -30,7 +31,6 @@ namespace EMailProviderClient.Views.Emails
             FillData();
         }
 
-        //Methods
         private void APPLY_Click(object sender, EventArgs e)
         {
             FillConditions();
@@ -68,32 +68,30 @@ namespace EMailProviderClient.Views.Emails
 
             if (BY_RECEIVER_CHB.Checked)
                 FillEmailSearchCondition();
-
         }
 
         private void FillDateSearchCondition()
         {
             if (DATE_FROM.Checked)
             {
-                SearchConditionDate searchConditionDate = new SearchConditionDate(SearchTypeDate.SearchTypeDateAfter, DATE_FROM.Value.ToString("yyyy-MM-dd"));
-                SearchData.AddCondition(searchConditionDate);
+                var condition = new SearchConditionDate(SearchTypeDate.SearchTypeDateAfter, DATE_FROM.Value.ToString("yyyy-MM-dd"));
+                SearchData.AddCondition(condition);
             }
 
             if (DATE_TO.Checked)
             {
-                SearchConditionDate searchConditionDate = new SearchConditionDate(SearchTypeDate.SearchTypeDateBefore, DATE_TO.Value.ToString("yyyy-MM-dd"));
-                SearchData.AddCondition(searchConditionDate);
+                var condition = new SearchConditionDate(SearchTypeDate.SearchTypeDateBefore, DATE_TO.Value.ToString("yyyy-MM-dd"));
+                SearchData.AddCondition(condition);
             }
         }
 
         private void FillEmailSearchCondition()
         {
-            if (RECEIVER_EMAIL.Text.Length <= 0)
-                return;
-
-            SearchConditionEmail searchConditionReceiver = new SearchConditionEmail(RECEIVER_EMAIL.Text);
-            SearchData.AddCondition(searchConditionReceiver);
-
+            if (!string.IsNullOrWhiteSpace(RECEIVER_EMAIL.Text))
+            {
+                var condition = new SearchConditionEmail(RECEIVER_EMAIL.Text);
+                SearchData.AddCondition(condition);
+            }
         }
 
         private void CLEAR_BTN_Click(object sender, EventArgs e)
@@ -101,10 +99,8 @@ namespace EMailProviderClient.Views.Emails
             SearchData.Clear();
 
             RECEIVER_EMAIL.Clear();
-            DATE_FROM.ResetText();
-            DATE_FROM.Checked = false;
-            DATE_TO.ResetText();
-            DATE_TO.Checked = false;
+            DATE_FROM.ResetText(); DATE_FROM.Checked = false;
+            DATE_TO.ResetText(); DATE_TO.Checked = false;
 
             BY_DATE_CHB.Checked = false;
             BY_RECEIVER_CHB.Checked = false;
@@ -112,8 +108,7 @@ namespace EMailProviderClient.Views.Emails
 
         private void FillData()
         {
-            if (SearchData == null || SearchData.Conditions == null)
-                return;
+            if (SearchData?.Conditions == null) return;
 
             foreach (var condition in SearchData.Conditions)
             {
@@ -132,8 +127,7 @@ namespace EMailProviderClient.Views.Emails
 
         private void FillDateFields(SearchConditionDate condition)
         {
-            if (condition == null)
-                return;
+            if (condition == null) return;
 
             switch ((SearchTypeDate)condition.SearchSubType)
             {
@@ -153,8 +147,7 @@ namespace EMailProviderClient.Views.Emails
 
         private void FillEmailFields(SearchConditionEmail condition)
         {
-            if (condition == null)
-                return;
+            if (condition == null) return;
 
             RECEIVER_EMAIL.Text = condition.SearchValue;
             BY_RECEIVER_CHB.Checked = true;

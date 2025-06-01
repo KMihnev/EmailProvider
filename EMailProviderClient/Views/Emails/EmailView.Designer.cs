@@ -150,14 +150,7 @@
             UPLOAD_BTN.TabIndex = 9;
             UPLOAD_BTN.Text = "Upload";
             UPLOAD_BTN.UseVisualStyleBackColor = true;
-            UPLOAD_BTN.Click += UPLOAD_BTN_Click;
-            // 
-            // FILES_CONTEXT
-            // 
-            FILES_CONTEXT.Items.AddRange(new ToolStripItem[] { downloadToolStripMenuItem, removeToolStripMenuItem });
-            FILES_CONTEXT.Name = "FILES_CONTEXT";
-            FILES_CONTEXT.Size = new Size(181, 70);
-            FILES_CONTEXT.Opening += FILES_CONTEXT_Opening;
+           // UPLOAD_BTN.Click += UPLOAD_BTN_Click;
             // 
             // downloadToolStripMenuItem
             // 
