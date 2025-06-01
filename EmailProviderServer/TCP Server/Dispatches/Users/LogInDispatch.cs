@@ -91,7 +91,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             {
                 UserViewModel userSerializable = await _userService.GetByIdAsync<UserViewModel>(recUser.Id);
 
-                var token = SessionManagerS.CreateSession(user);
+                var token = SessionManagerS.CreateSession(recUser);
 
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(token);

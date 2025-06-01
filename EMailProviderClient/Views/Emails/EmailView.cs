@@ -1,119 +1,53 @@
-﻿//Includes
+﻿// File: EMailProviderClient/Views/Emails/EMAIL_VIEW.cs
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Emails;
 using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Enums;
-using EMailProviderClient.Views.Enums;
 using EmailProvider.Models.Serializables;
 using EmailProvider.Enums;
+using WindowsFormsCore;
+using WindowsFormsCore.Controls;
 
 namespace EMailProviderClient.Views.Emails
 {
-    //------------------------------------------------------
-    //	AddEmail
-    //------------------------------------------------------
-    public partial class EMAIL_VIEW : Form
+    public partial class EMAIL_VIEW : SmartDialog
     {
-        private DialogMode DialogMode { get; set; }
-        private EmailViewModel emailSerializable { get; set; }
+        private EmailViewModel emailSerializable;
+        private AttachedFileList attachedFileList;
 
-        //Constructor
-        public EMAIL_VIEW(DialogMode mode)
+        public EMAIL_VIEW() : this(DialogMode.Add) { }
+
+        public EMAIL_VIEW(DialogMode mode) : base(mode, false, false)
         {
             InitializeComponent();
 
-            this.DialogMode = mode;
-            emailSerializable = new EmailViewModel();
-            emailSerializable.FromEmail = UserController.GetCurrentUserEmail();
-            emailSerializable.Direction = EmailDirections.EmailDirectionOut;
-            InitDialog();
-            AddFileContextMenu();
-        }
-
-        //Methods
-        private void InitDialog()
-        {
-            switch (DialogMode)
+            emailSerializable = new EmailViewModel
             {
-                case DialogMode.DialogModePreview:
-                    DialogModePreview();
-                    break;
-                case DialogMode.DialogModeAdd:
-                    DialogModeAdd();
-                    break;
-                case DialogMode.DialogModeEdit:
-                    DialogModeEdit();
-                    break;
-                default:
-                    break;
-            }
+                FromEmail = UserController.GetCurrentUserEmail(),
+                Direction = EmailDirections.EmailDirectionOut,
+                Files = new List<FileViewModel>()
+            };
 
-            if (DialogMode == DialogMode.DialogModePreview)
-                DialogModePreview();
+            attachedFileList = new AttachedFileList(FILES_LIST, FILES_CONTEXT, downloadToolStripMenuItem, removeToolStripMenuItem, mode == DialogMode.Preview);
         }
 
-        private void AddFileContextMenu()
+        protected override void FillData()
         {
-            FILES_LIST.ContextMenuStrip = FILES_CONTEXT;
-
-            this.downloadToolStripMenuItem.Click += DownloadFileMenuItem_Click;
-            this.removeToolStripMenuItem.Click += RemoveFileMenuItem_Click;
-        }
-
-        private void DialogModePreview()
-        {
-            SEND_BTN.Hide();
-
-            foreach (Control ctrl in this.Controls)
-            {
-                ctrl.Enabled = false;
-            }
-
-            FILES_LIST.Enabled = true;
-            CLOSE_BTN.Enabled = true;
-
-        }
-
-        private void DialogModeEdit()
-        {
-        }
-
-        private void FillDialogData()
-        {
-            var toRecipients = emailSerializable.Recipients.Select(r => r.Email);
-
-            RECEIVER_EDIT.Text = string.Join(";", toRecipients);
+            if(emailSerializable?.Recipients != null) 
+                RECEIVER_EDIT.Text = string.Join(";", emailSerializable.Recipients.Select(r => r.Email));
 
             SUBJECT_EDIT.Text = emailSerializable.Subject ?? string.Empty;
+
             CONTENT_BOX.Text = emailSerializable.Body ?? string.Empty;
 
-            FILES_LIST.Items.Clear();
-
-            if (emailSerializable.Files == null)
-                return;
-
-            foreach (var file in emailSerializable.Files)
-            {
-                ListViewItem item = new ListViewItem(file.Name)
-                {
-                    Tag = file,
-                };
-
-                FILES_LIST.Items.Add(item);
-            }
-
+            if (emailSerializable.Files != null)
+                attachedFileList.LoadFiles(emailSerializable.Files);
         }
 
         public void LoadMessage(EmailViewModel message)
         {
-            this.emailSerializable = message;
-            FillDialogData();
-        }
-
-        private void DialogModeAdd()
-        {
-            return;
+            emailSerializable = message;
+            FillData();
         }
 
         private async void SEND_BTN_Click(object sender, EventArgs e)
@@ -124,25 +58,22 @@ namespace EMailProviderClient.Views.Emails
                 return;
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
-        private async Task<bool> SaveEmail(bool bIsDraft = false)
+        private async Task<bool> SaveEmail(bool isDraft = false)
         {
             emailSerializable.Recipients = RECEIVER_EDIT.Text
-            .Split(";", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(email => new MessageRecipientSerializable { Email = email} )
-            .ToList();
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(email => new MessageRecipientSerializable { Email = email })
+                .ToList();
 
-            emailSerializable.Body = CONTENT_BOX.Text;
             emailSerializable.Subject = SUBJECT_EDIT.Text;
+            emailSerializable.Body = CONTENT_BOX.Text;
             emailSerializable.DateOfRegistration = DateTime.Now;
-
-            if (bIsDraft)
-                emailSerializable.Status = EmailStatuses.EmailStatusDraft;
-            else
-                emailSerializable.Status = EmailStatuses.EmailStatusNew;
+            emailSerializable.Status = isDraft ? EmailStatuses.EmailStatusDraft : EmailStatuses.EmailStatusNew;
+            emailSerializable.Files = attachedFileList.GetFiles();
 
             if (!await SendEmailDispatchC.SendEmail(emailSerializable))
             {
@@ -153,142 +84,58 @@ namespace EMailProviderClient.Views.Emails
             return true;
         }
 
-        protected override async void OnFormClosing(FormClosingEventArgs e)
+        private bool IsEmailEmpty()
         {
-            base.OnFormClosing(e);
+            return string.IsNullOrWhiteSpace(RECEIVER_EDIT.Text)
+                && string.IsNullOrWhiteSpace(SUBJECT_EDIT.Text)
+                && string.IsNullOrWhiteSpace(CONTENT_BOX.Text);
+        }
 
-            bool bIsExistingDraft = DialogMode == DialogMode.DialogModeEdit && emailSerializable.Status == EmailStatuses.EmailStatusDraft;
-            bool bIsNewMessage = DialogMode == DialogMode.DialogModeAdd && emailSerializable.Status == EmailStatuses.EmailStatusNew;
+        private void CLOSE_BTN_Click(object sender, EventArgs e) => Close();
 
-            if (DialogMode == DialogMode.DialogModePreview)
-                return;
+        private void UPLOAD_BTN_Click(object sender, EventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            if (dialog.ShowDialog() != DialogResult.OK) return;
 
-            if (e.CloseReason != CloseReason.UserClosing)
-                return;
-
-            if (this.DialogResult == DialogResult.OK)
-                return;
-
-            if (bIsNewMessage)
+            var file = new FileViewModel
             {
-                if (IsEmailEmpty())
-                    return;
+                Content = File.ReadAllBytes(dialog.FileName),
+                Name = Path.GetFileName(dialog.FileName)
+            };
 
-                var result = MessageBox.Show(
-                    LogMessages.DoYouWishToSaveDraft,
-                    LogMessages.SaveAsDraft,
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Question
-                );
+            attachedFileList.AddFile(file);
+        }
 
+        protected override async Task<bool> OnBeforeClose()
+        {
+            bool isDraft = Mode == DialogMode.Edit && emailSerializable.Status == EmailStatuses.EmailStatusDraft;
+            bool isNew = Mode == DialogMode.Add && emailSerializable.Status == EmailStatuses.EmailStatusNew;
+
+            if (Mode == DialogMode.Preview || DialogResult == DialogResult.OK)
+                return true;
+
+            if (isNew && !IsEmailEmpty())
+            {
+                var result = MessageBox.Show(LogMessages.DoYouWishToSaveDraft, LogMessages.SaveAsDraft,
+                                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    if (!await SaveEmail(true))
-                        return;
+                    return await SaveEmail(true);
                 }
                 else if (result == DialogResult.Cancel)
                 {
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                    return false;
                 }
             }
 
-            if (bIsExistingDraft)
+            if (isDraft)
             {
-                if (!await SaveEmail(true))
-                    return;
+                return await SaveEmail(true);
             }
-        }
-
-        private void CLOSE_BTN_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private bool IsEmailEmpty()
-        {
-            if (RECEIVER_EDIT.Text.Count() > 0
-             || SUBJECT_EDIT.Text.Count() > 0
-             || CONTENT_BOX.Text.Count() > 0)
-                return false;
 
             return true;
         }
 
-        private void UPLOAD_BTN_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
-                return;
-
-            var file = new FileViewModel
-            {
-                Content = System.IO.File.ReadAllBytes(openFileDialog.FileName),
-                Name = System.IO.Path.GetFileName(openFileDialog.FileName)
-            };
-
-            emailSerializable.Files.Add(file);
-
-            ListViewItem item = new ListViewItem(file.Name)
-            {
-                Tag = file
-            };
-
-            FILES_LIST.Items.Add(item);
-        }
-
-        private void DownloadFileMenuItem_Click(object sender, EventArgs e)
-        {
-            if(FILES_LIST.SelectedItems.Count <= 0)
-                return;
-
-            var selectedItem = FILES_LIST.SelectedItems[0];
-            var file = selectedItem.Tag as FileViewModel;
-
-            if (file == null)
-                return;
-             
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                FileName = file.Name
-            };
-
-            if (saveFileDialog.ShowDialog() != DialogResult.OK)
-                return;
-
-            try
-            {
-                System.IO.File.WriteAllBytes(saveFileDialog.FileName, file.Content);
-                MessageBox.Show("File downloaded successfully.", "Download File", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Download File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void RemoveFileMenuItem_Click(object sender, EventArgs e)
-        {
-            if (FILES_LIST.SelectedItems.Count <= 0)
-                return;
-
-            foreach (ListViewItem selectedItem in FILES_LIST.SelectedItems)
-            {
-                var fileContent = selectedItem.Tag as FileViewModel;
-
-                if (fileContent != null)
-                {
-                    emailSerializable.Files.Remove(fileContent);
-                }
-
-                FILES_LIST.Items.Remove(selectedItem);
-            }
-        }
-
-        private void FILES_CONTEXT_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if(DialogMode == DialogMode.DialogModePreview)
-             removeToolStripMenuItem.Enabled = false;
-        }
     }
 }

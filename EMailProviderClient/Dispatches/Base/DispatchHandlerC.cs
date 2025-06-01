@@ -14,7 +14,8 @@ namespace EMailProviderClient.Dispatches.Base
                 using TcpClient client = new TcpClient();
                 client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
 
-                await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort());
+                using var cts = new CancellationTokenSource(5000);
+                await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort(), cts.Token);
                 using var stream = client.GetStream();
                 stream.Flush();
 
@@ -38,6 +39,8 @@ namespace EMailProviderClient.Dispatches.Base
                     Logger.LogError(!string.IsNullOrWhiteSpace(error) ? error : LogMessages.InteralError);
                     return false;
                 }
+
+                stream.Flush();
 
                 return true;
             }

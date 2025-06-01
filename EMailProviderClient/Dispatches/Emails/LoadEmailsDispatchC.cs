@@ -17,8 +17,7 @@ namespace EMailProviderClient.Dispatches.Emails
     {
         public static async Task<bool> LoadIncomingEmails(List<EmailListModel> outMessageList, SearchData searchData)
         {
-            searchData.UserId = UserController.GetCurrentUserID();
-
+            outMessageList.Clear();
             try
             {
                 SmartStreamArray InPackage = new SmartStreamArray();
@@ -54,8 +53,7 @@ namespace EMailProviderClient.Dispatches.Emails
 
         public static async Task<bool> LoadOutgoingEmails(List<EmailListModel> outMessageList, SearchData searchData)
         {
-            searchData.UserId = UserController.GetCurrentUserID();
-
+            outMessageList.Clear();
             try
             {
                 SmartStreamArray InPackage = new SmartStreamArray();
@@ -91,7 +89,6 @@ namespace EMailProviderClient.Dispatches.Emails
 
         public static async Task<bool> LoadDrafts(List<EmailListModel> outMessageList, SearchData searchData)
         {
-            searchData.UserId = UserController.GetCurrentUserID();
             outMessageList.Clear();
             try
             {
@@ -127,6 +124,7 @@ namespace EMailProviderClient.Dispatches.Emails
 
         public static async Task<bool> LoadEmailsByFolder(List<EmailListModel> outMessageList, SearchData searchData, int FolderId)
         {
+            outMessageList.Clear();
             try
             {
                 SmartStreamArray InPackage = new SmartStreamArray();

@@ -24,7 +24,6 @@ namespace EMailProviderClient.Dispatches.Folders
 
                 //Сериализираме Данните
                 InPackage.Serialize((int)DispatchEnums.LoadFolders);
-                InPackage.Serialize(UserController.GetCurrentUserID());
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();

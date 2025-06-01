@@ -35,10 +35,13 @@ namespace EmailProviderServer.DBContext.Services
             return folder == null ? default : _mapper.Map<T>(folder);
         }
 
-        public async Task CreateFolderAsync<T>(T folderDto)
+        public async Task<T> CreateFolderAsync<T>(T folderDto, int UserId)
         {
             var entity = _mapper.Map<Folder>(folderDto);
+            entity.UserId = UserId;
             await _folderRepository.AddAsync(entity);
+
+            return _mapper.Map<T>(entity);
         }
 
         public async Task DeleteFolderAsync(int folderId)
