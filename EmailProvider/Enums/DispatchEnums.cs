@@ -24,5 +24,6 @@ namespace EmailServiceIntermediate.Enums
         LoadEmailsByFolder,
         LoadFolders,
         AddFolder,
+        DeleteFolder,
     }
 }

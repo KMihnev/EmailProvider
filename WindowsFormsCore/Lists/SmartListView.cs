@@ -34,23 +34,24 @@ namespace WindowsFormsCore.Lists
         protected abstract Task<bool> DeleteItemsAsync(List<TModel> selectedItems);
         protected virtual void OnItemActivate() { }
 
-        private void SetupContextMenu()
+        protected virtual void InitilizeContextMenu(ContextMenuStrip contextMenu)
         {
-            var contextMenu = new ContextMenuStrip();
 
             var deleteItem = new ToolStripMenuItem("Delete");
             deleteItem.Click += async (s, e) => await DeleteSelectedItemsAsync();
 
-            var refreshItem = new ToolStripMenuItem("Refresh");
-            refreshItem.Click += async (s, e) => await RefreshAsync();
-
             contextMenu.Items.Add(deleteItem);
-            contextMenu.Items.Add(refreshItem);
 
             contextMenu.Opening += (s, e) =>
             {
                 deleteItem.Enabled = listView.CheckedItems.Count > 0 || listView.SelectedItems.Count > 0;
             };
+        }
+
+        private void SetupContextMenu()
+        {
+            var contextMenu = new ContextMenuStrip();
+            InitilizeContextMenu(contextMenu);
 
             listView.ContextMenuStrip = contextMenu;
         }
@@ -65,7 +66,7 @@ namespace WindowsFormsCore.Lists
             }
         }
 
-        private async Task DeleteSelectedItemsAsync()
+        protected virtual async Task DeleteSelectedItemsAsync()
         {
             var selectedItems = GetSelectedModels();
             if (selectedItems.Count == 0) return;
@@ -82,13 +83,28 @@ namespace WindowsFormsCore.Lists
         protected List<TModel> GetSelectedModels()
         {
             var selected = new List<TModel>();
+            var indexes = new HashSet<int>();
+
             foreach (ListViewItem item in listView.CheckedItems)
             {
                 if (item.Index >= 0 && item.Index < items.Count)
-                    selected.Add(items[item.Index]);
+                    indexes.Add(item.Index);
             }
+
+            foreach (ListViewItem item in listView.SelectedItems)
+            {
+                if (item.Index >= 0 && item.Index < items.Count)
+                    indexes.Add(item.Index);
+            }
+
+            foreach (int index in indexes)
+            {
+                selected.Add(items[index]);
+            }
+
             return selected;
         }
+
 
         private void AdjustColumnWidths()
         {

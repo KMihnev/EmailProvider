@@ -130,6 +130,16 @@ namespace EMailProviderClient.Views.Emails
                     : "Receiver Email";
             }
         }
+
+        protected override void InitilizeContextMenu(ContextMenuStrip contextMenu)
+        {
+            base.InitilizeContextMenu(contextMenu);
+
+            var deleteItem = new ToolStripMenuItem("Refresh");
+            deleteItem.Click += async (s, e) => await RefreshAsync();
+
+            contextMenu.Items.Add(deleteItem);
+        }
     }
 
 }

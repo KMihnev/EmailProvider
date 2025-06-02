@@ -38,6 +38,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 case    DispatchEnums.LoadDrafts:          return ActivatorUtilities.CreateInstance<LoadDraftEmailsDispatchS>      (_serviceProvider);
                 case    DispatchEnums.LoadFolders:         return ActivatorUtilities.CreateInstance<LoadFoldersDispatchS>          (_serviceProvider);
                 case    DispatchEnums.LoadEmailsByFolder:  return ActivatorUtilities.CreateInstance<LoadFolderEmailsDispatchS>     (_serviceProvider);
+                case    DispatchEnums.AddFolder:           return ActivatorUtilities.CreateInstance<AddFolderDispatchS>            (_serviceProvider);
+                case    DispatchEnums.DeleteFolder:        return ActivatorUtilities.CreateInstance<DeleteFolderDispatchS>         (_serviceProvider);
                 default:
                     throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }

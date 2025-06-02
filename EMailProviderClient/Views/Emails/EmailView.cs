@@ -17,7 +17,7 @@ namespace EMailProviderClient.Views.Emails
 
         public EMAIL_VIEW() : this(DialogMode.Add) { }
 
-        public EMAIL_VIEW(DialogMode mode) : base(mode, false, false)
+        public EMAIL_VIEW(DialogMode mode) : base(mode, false, true)
         {
             InitializeComponent();
 
@@ -29,11 +29,17 @@ namespace EMailProviderClient.Views.Emails
             };
 
             attachedFileList = new AttachedFileList(FILES_LIST, FILES_CONTEXT, downloadToolStripMenuItem, removeToolStripMenuItem, mode == DialogMode.Preview);
+
+            if (mode == DialogMode.Preview)
+            {
+                UPLOAD_BTN.Hide();
+                SEND_BTN.Hide();
+            }
         }
 
         protected override void FillData()
         {
-            if(emailSerializable?.Recipients != null) 
+            if (emailSerializable?.Recipients != null)
                 RECEIVER_EDIT.Text = string.Join(";", emailSerializable.Recipients.Select(r => r.Email));
 
             SUBJECT_EDIT.Text = emailSerializable.Subject ?? string.Empty;
@@ -131,11 +137,14 @@ namespace EMailProviderClient.Views.Emails
 
             if (isDraft)
             {
-                return await SaveEmail(true);
+                var result = MessageBox.Show(LogMessages.SaveChanges, LogMessages.SaveAsDraft,
+                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                    return await SaveEmail(true);
             }
 
             return true;
         }
-
     }
 }

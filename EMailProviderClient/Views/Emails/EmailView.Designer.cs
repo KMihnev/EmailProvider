@@ -44,7 +44,6 @@
             FILES_CONTEXT = new ContextMenuStrip(components);
             downloadToolStripMenuItem = new ToolStripMenuItem();
             removeToolStripMenuItem = new ToolStripMenuItem();
-            FILES_CONTEXT.SuspendLayout();
             SuspendLayout();
             // 
             // SEND_BTN
@@ -150,7 +149,11 @@
             UPLOAD_BTN.TabIndex = 9;
             UPLOAD_BTN.Text = "Upload";
             UPLOAD_BTN.UseVisualStyleBackColor = true;
-           // UPLOAD_BTN.Click += UPLOAD_BTN_Click;
+            // 
+            // FILES_CONTEXT
+            // 
+            FILES_CONTEXT.Name = "FILES_CONTEXT";
+            FILES_CONTEXT.Size = new Size(61, 4);
             // 
             // downloadToolStripMenuItem
             // 
@@ -183,7 +186,6 @@
             Controls.Add(SEND_BTN);
             Name = "EMAIL_VIEW";
             Text = "AddEmail";
-            FILES_CONTEXT.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
