@@ -14,7 +14,7 @@ namespace EMailProviderClient.Dispatches.Folders
     //------------------------------------------------------
     public class AddFolderDispatchC
     {
-        public static async Task<bool> AddFolder(FolderViewModel folder)
+        public static async Task<FolderViewModel> AddFolder(FolderViewModel folder)
         {
             try
             {
@@ -31,20 +31,18 @@ namespace EMailProviderClient.Dispatches.Folders
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                 {
                     Logger.LogErrorCalling();
-                    return false;
+                    return null;
                 }
 
                 FolderViewModel newfolder = null;
                 OutPackage.Deserialize(out newfolder);
 
-                folder = newfolder;
-
-                return true;
+                return newfolder;
             }
             catch (Exception ex)
             {
                 Logger.LogErrorCalling();
-                return false;
+                return null;
             }
         }
     }

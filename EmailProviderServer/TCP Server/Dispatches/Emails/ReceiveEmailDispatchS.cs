@@ -9,6 +9,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
 {
     public class ReceiveEmailDispatchS : BaseDispatchHandler
     {
+        protected override bool RequiresSession => false;
+
         private readonly IMessageService _messageService;
 
         public ReceiveEmailDispatchS(IMessageService messageService)

@@ -25,7 +25,11 @@ namespace EMailProviderClient
         {
             var emailList = new EmailListDialog
             {
-                MdiParent = this
+                MdiParent = this,
+                FormBorderStyle = FormBorderStyle.None,
+                ControlBox = false,
+                Text = "",
+                Dock = DockStyle.Fill
             };
 
             emailList.Show();

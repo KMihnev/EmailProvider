@@ -290,14 +290,15 @@ public partial class ApplicationDbContext : DbContext
                 .HasComment("Time to be sent")
                 .HasColumnName("USER_MESSAGE_ID");
 
-            entity.HasOne(d => d.Folder).WithMany(p => p.UserMessageFolders)
+            entity.HasOne(d => d.Folder)
+                .WithMany(p => p.UserMessageFolders)
                 .HasForeignKey(d => d.FolderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_MESSAGE_FOLDERS_FOLDERS");
 
             entity.HasOne(d => d.UserMessage).WithMany(p => p.UserMessageFolders)
                 .HasForeignKey(d => d.UserMessageId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_MESSAGE_FOLDERS_USER_MESSAGE");
         });
 

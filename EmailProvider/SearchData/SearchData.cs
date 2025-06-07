@@ -8,8 +8,12 @@ namespace EmailProvider.SearchData
     {
         public SearchData()
         {
-
+            Take = 10;
         }
+
+        public int Skip { get; set; }
+
+        public int Take { get; set; }
         public List<SearchCondition> Conditions { get; set; } = new();
 
         public void Clear()
@@ -20,6 +24,11 @@ namespace EmailProvider.SearchData
         public void AddCondition(SearchCondition searchCondition)
         {
             Conditions.Add(searchCondition);
+        }
+
+        public void RemoveCondition(SearchType eSearchType)
+        {
+            Conditions.RemoveAll(x => x.SearchType == eSearchType);
         }
     }
 }

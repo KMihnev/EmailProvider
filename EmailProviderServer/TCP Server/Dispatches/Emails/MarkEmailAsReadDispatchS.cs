@@ -4,22 +4,20 @@ using EmailServiceIntermediate.Logging;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProvider.SearchData;
-using EmailServiceIntermediate.Models;
-using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.DBContext.Services;
-using EmailProvider.Models.Serializables;
+using EmailProviderServer.DBContext.Services.Interfaces;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadIncomingEmailsDispatchS : BaseDispatchHandler
+    public class MarkEmailAsReadDispatchS : BaseDispatchHandler
     {
         private readonly IUserMessageService _userMessageService;
 
         //Constructor
-        public LoadIncomingEmailsDispatchS(IUserMessageService userMessageService)
+        public MarkEmailAsReadDispatchS(IUserMessageService userMessageService)
         {
             _userMessageService = userMessageService;
         }
@@ -27,12 +25,12 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            SearchData searchData = new SearchData();
+            List<int> messagesToRead = new List<int>();
             try
             {
-                InPackage.Deserialize(out searchData);
+                InPackage.Deserialize(out messagesToRead);
 
-                if (searchData == null)
+                if (messagesToRead == null)
                 {
                     Logger.LogNullValue();
                     return false;
@@ -46,10 +44,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetIncomingMessagesAsync<EmailListModel>(searchData, SessionUser.Id);
+                await _userMessageService.MarkAsReadAsync(SessionUser.Id, messagesToRead);
                 OutPackage.Serialize(true);
-                OutPackage.Serialize(filteredMessages);
             }
             catch (Exception ex)
             {

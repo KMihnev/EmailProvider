@@ -24,10 +24,6 @@ namespace WindowsFormsCore
         public bool IsMdiEmbedded { get; private set; }
 
         public DialogMode Mode { get; private set; }
-        public bool ShowStandardButtons { get; private set; } = true;
-
-        public string OkButtonText { get; set; } = "OK";
-        public string CancelButtonText { get; set; } = "Cancel";
 
         public SmartDialog() : this(DialogMode.Edit, showStandardButtons: true, isMdiEmbedded: false) { }
 
@@ -37,49 +33,18 @@ namespace WindowsFormsCore
                 return;
 
             Mode = mode;
-            ShowStandardButtons = showStandardButtons;
 
             StartPosition = FormStartPosition.CenterScreen;
             WindowState = FormWindowState.Normal;
             FormBorderStyle = FormBorderStyle.FixedDialog;
-            Size = new Size(600, 400);
             ControlBox = true;
 
             if (isMdiEmbedded)
             {
                 IsMdiEmbedded = true;
-                FormBorderStyle = FormBorderStyle.None;
                 MaximizeBox = false;
-                MinimizeBox = false;
-                ControlBox = false;
-                ShowIcon = false;
                 ShowInTaskbar = false;
-                Dock = DockStyle.Fill;
             }
-
-
-            if (showStandardButtons)
-                CreateStandardButtons();
-        }
-
-        private void CreateStandardButtons()
-        {
-            okButton = new Button { Text = OkButtonText, DialogResult = DialogResult.OK, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            cancelButton = new Button { Text = CancelButtonText, DialogResult = DialogResult.Cancel, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            closeButton = new Button { Text = "Close", Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            closeButton.Click += (s, e) => this.Close();
-
-            okButton.SetBounds(ClientSize.Width - 180, ClientSize.Height - 40, 75, 30);
-            cancelButton.SetBounds(ClientSize.Width - 90, ClientSize.Height - 40, 75, 30);
-            closeButton.SetBounds(ClientSize.Width - 90, ClientSize.Height - 40, 75, 30);
-
-            Controls.Add(okButton);
-            Controls.Add(cancelButton);
-            Controls.Add(closeButton);
-
-            okButton.BringToFront();
-            cancelButton.BringToFront();
-            closeButton.BringToFront();
         }
 
         private void ApplyDialogMode()
@@ -89,28 +54,12 @@ namespace WindowsFormsCore
                 case DialogMode.Preview:
                 {
                     SetAllControlsEnabled(false);
-                    if (ShowStandardButtons)
-                    {
-                        okButton.Visible = false;
-                        cancelButton.Visible = false;
-                        closeButton.Visible = true;
-                    }
-                    else
-                    {
-                        closeButton?.Hide();
-                    }
                     break;
                 }
                 case DialogMode.Add:
                 case DialogMode.Edit:
                 {
                     SetAllControlsEnabled(true);
-                    if (ShowStandardButtons)
-                    {
-                        okButton.Visible = true;
-                        cancelButton.Visible = true;
-                        closeButton.Visible = false;
-                    }
                     break;
                 }
             }

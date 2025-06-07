@@ -37,6 +37,8 @@ namespace EmailProviderServer.DBContext.Services
         // Create and save a new message
         public async Task ProcessMessageAsync(EmailViewModel dto)
         {
+            bool bIsForUs = false;
+
             var message = new Message
             {
                 FromEmail = dto.FromEmail,
@@ -58,12 +60,16 @@ namespace EmailProviderServer.DBContext.Services
 
             // Add user messages (sender)
             var sender = await _userRepository.GetUserByEmail(dto.FromEmail);
-            message.UserMessages.Add(new UserMessage
+            if (sender != null)
             {
-                UserId = sender.Id,
-                IsRead = true,
-                IsDeleted = false,
-            });
+                bIsForUs = true;
+                message.UserMessages.Add(new UserMessage
+                {
+                    UserId = sender.Id,
+                    IsRead = true,
+                    IsDeleted = false,
+                });
+            }
 
             // Add user messages (internal recipients)
             foreach (var recipientDto in dto.Recipients)
@@ -71,6 +77,7 @@ namespace EmailProviderServer.DBContext.Services
                 var internalUser = await _userRepository.GetUserByEmail(recipientDto.Email);
                 if (internalUser != null)
                 {
+                    bIsForUs = true;
                     message.UserMessages.Add(new UserMessage
                     {
                         UserId = internalUser.Id,
@@ -90,8 +97,12 @@ namespace EmailProviderServer.DBContext.Services
                 });
             }
 
-            await _messageRepository.AddAsync(message);
-            await _messageRepository.SaveChangesAsync();
+            if(bIsForUs)
+            {
+                await _messageRepository.AddAsync(message);
+                await _messageRepository.SaveChangesAsync();
+            }
+
         }
 
         public async Task<T> GetByIDIncludingAll<T>(int id)

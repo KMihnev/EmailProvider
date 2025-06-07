@@ -2,19 +2,17 @@
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Base;
-using EmailProvider.Models.Serializables;
-using EMailProviderClient.Controllers.UserControl;
+using EmailProvider.SearchData;
 
-namespace EMailProviderClient.Dispatches.Folders
+namespace EMailProviderClient.Dispatches.Emails
 {
     //------------------------------------------------------
-    //	SendEmailDispatchC
+    //	LoadEmailsDispatchC
     //------------------------------------------------------
-    public class DeleteFolderDispatchC
+    public class MarkEmailAsReadDispatchC
     {
-        public static async Task<bool> DeleteFolder(int folderID)
+        public static async Task<bool> MarkEmailsAsRead(List<int> messagesToRead)
         {
             try
             {
@@ -22,8 +20,8 @@ namespace EMailProviderClient.Dispatches.Folders
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.DeleteFolder);
-                InPackage.Serialize(folderID);
+                InPackage.Serialize((int)DispatchEnums.MarkEmailsAsRead);
+                InPackage.Serialize(messagesToRead);
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();

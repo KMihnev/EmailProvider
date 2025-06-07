@@ -1,23 +1,21 @@
-﻿//Includes
+﻿using EmailProviderServer.DBContext.Services.Interfaces;
+using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
-using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
-using EmailProviderServer.DBContext.Services.Base;
-using EmailProvider.SearchData;
-using EmailProviderServer.DBContext.Services;
-using EmailProviderServer.DBContext.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EmailProviderServer.TCP_Server.Dispatches
+namespace EmailProviderServer.TCP_Server.Dispatches.Emails
 {
-    //------------------------------------------------------
-    //	LoadEmailsDispatchS
-    //------------------------------------------------------
-    public class DeleteEmailDispatchS : BaseDispatchHandler
+    public class RemoveEmailFromFolder : BaseDispatchHandler
     {
         private readonly IUserMessageService _userMessageService;
 
         //Constructor
-        public DeleteEmailDispatchS(IUserMessageService userMessageService)
+        public RemoveEmailFromFolder(IUserMessageService userMessageService)
         {
             _userMessageService = userMessageService;
         }
@@ -25,12 +23,13 @@ namespace EmailProviderServer.TCP_Server.Dispatches
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            List<int> messagesToDelete = new List<int>();
+            List<int> messagesToMove = new List<int>();
+            int FolderId = 0;
             try
             {
-                InPackage.Deserialize(out messagesToDelete);
+                InPackage.Deserialize(out messagesToMove);
 
-                if (messagesToDelete == null)
+                if (messagesToMove == null)
                 {
                     Logger.LogNullValue();
                     return false;
@@ -44,7 +43,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             try
             {
-                await _userMessageService.MarkAsDeletedAsync(SessionUser.Id, messagesToDelete);
+                await _userMessageService.RemoveMessagesFromFolderAsync(SessionUser.Id, messagesToMove);
                 OutPackage.Serialize(true);
             }
             catch (Exception ex)

@@ -14,29 +14,23 @@ namespace EmailProviderServer.TCP_Server.Dispatches
     //------------------------------------------------------
     //	LoadEmailsDispatchS
     //------------------------------------------------------
-    public class LoadIncomingEmailsDispatchS : BaseDispatchHandler
+    public class DeleteFolderDispatchS : BaseDispatchHandler
     {
-        private readonly IUserMessageService _userMessageService;
+        private readonly IFolderService _folderService;
 
         //Constructor
-        public LoadIncomingEmailsDispatchS(IUserMessageService userMessageService)
+        public DeleteFolderDispatchS(IFolderService folderService)
         {
-            _userMessageService = userMessageService;
+            _folderService = folderService;
         }
 
         //Methods
         public override async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
         {
-            SearchData searchData = new SearchData();
+            int folderID = 0;
             try
             {
-                InPackage.Deserialize(out searchData);
-
-                if (searchData == null)
-                {
-                    Logger.LogNullValue();
-                    return false;
-                }
+                InPackage.Deserialize(out folderID);
             }
             catch (Exception ex)
             {
@@ -44,12 +38,24 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
+            if (folderID == 0)
+            {
+                Logger.LogNullValue();
+                return false;
+            }
+
+            Folder? folder = await _folderService.GetFolderByIdAsync<Folder>(folderID);
+            if (folder == null)
+                return false;
+
+            if (folder.UserId != SessionUser.Id)
+                return false;
+
+            await _folderService.DeleteFolderAsync(folderID);
+
             try
             {
-                List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetIncomingMessagesAsync<EmailListModel>(searchData, SessionUser.Id);
                 OutPackage.Serialize(true);
-                OutPackage.Serialize(filteredMessages);
             }
             catch (Exception ex)
             {

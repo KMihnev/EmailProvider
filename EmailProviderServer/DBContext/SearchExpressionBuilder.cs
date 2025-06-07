@@ -28,6 +28,7 @@ namespace EmailProviderServer.Helpers
                 switch (condition.SearchType)
                 {
                     case SearchType.SearchTypeDate:
+                    {
                         if (DateTime.TryParse(condition.SearchValue, out var date))
                         {
                             var dateProp = Expression.Property(messageProp, nameof(Message.DateOfRegistration));
@@ -39,8 +40,9 @@ namespace EmailProviderServer.Helpers
                             };
                         }
                         break;
-
+                    }
                     case SearchType.SearchTypeEmail:
+                    {
                         if (isIncoming)
                         {
                             var fromProp = Expression.Property(messageProp, nameof(Message.FromEmail));
@@ -57,10 +59,38 @@ namespace EmailProviderServer.Helpers
                             expr = Expression.Call(typeof(Enumerable), nameof(Enumerable.Any), new[] { typeof(MessageRecipient) }, recipientsProp, anyLambda);
                         }
                         break;
+                    }
+                    case SearchType.SearchTypeDeleted:
+                    {
+                        var isDeletedProp = Expression.Property(param, nameof(UserMessage.IsDeleted));
+                        expr = Expression.Equal(isDeletedProp, Expression.Constant(true));
+                        break;
+                    }
+                    case SearchType.SearchTypeRead:
+                    {
+                        var isReadProp = Expression.Property(param, nameof(UserMessage.IsRead));
+                        expr = Expression.Equal(isReadProp, Expression.Constant(true));
+                        break;
+                    }
+                    case SearchType.SearchTypeUnread:
+                    {
+                        var isReadProp = Expression.Property(param, nameof(UserMessage.IsRead));
+                        expr = Expression.Equal(isReadProp, Expression.Constant(false));
+                        break;
+                    }
                 }
 
                 if (expr != null)
                     baseExpr = baseExpr == null ? expr : Expression.AndAlso(baseExpr, expr);
+            }
+
+            bool hasDeletedCondition = conditions.Any(c => c.SearchType == SearchType.SearchTypeDeleted);
+
+            if (!hasDeletedCondition)
+            {
+                var isDeletedProp = Expression.Property(param, nameof(UserMessage.IsDeleted));
+                var notDeletedExpr = Expression.Equal(isDeletedProp, Expression.Constant(false));
+                baseExpr = baseExpr == null ? notDeletedExpr : Expression.AndAlso(baseExpr, notDeletedExpr);
             }
 
             return baseExpr != null
