@@ -29,6 +29,6 @@ namespace EmailServiceIntermediate.Enums
         MarkEmailsAsUnread,
         LoadDeletedEmails,
         MoveEmailsToFolder,
-        RemoveEmailsFromFolder
+        RemoveEmailsFromFolder,
     }
 }

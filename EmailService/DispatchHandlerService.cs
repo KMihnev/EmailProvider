@@ -10,43 +10,48 @@ namespace EMailProviderClient.Dispatches.Base
     //------------------------------------------------------
     public class DispatchHandlerService
     {
-        public async Task<bool> Execute(SmartStreamArray InPackage, SmartStreamArray OutPackage)
+        public async Task<bool> Execute(SmartStreamArray inPackage, SmartStreamArray outPackage)
         {
             try
             {
                 using TcpClient client = new TcpClient();
                 client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
 
-                await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort());
+                using var cts = new CancellationTokenSource(5000);
+                await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort(), cts.Token);
                 using var stream = client.GetStream();
                 stream.Flush();
 
-                byte[] requestData = InPackage.ToByte();
+                SmartStreamArray finalPackage = new();
+                finalPackage.Serialize("");
+
+                finalPackage.Append(inPackage);
+
+                byte[] requestData = finalPackage.ToByte();
                 await stream.WriteAsync(requestData, 0, requestData.Length);
 
-                OutPackage.LoadFromStream(stream);
+                outPackage.LoadFromStream(stream);
 
-                bool bResult = false;
-                OutPackage.Deserialize(out bResult);
+                bool result = false;
+                outPackage.Deserialize(out result);
 
-                if (!bResult)
+                if (!result)
                 {
-                    string Error = "";
-                    OutPackage.Deserialize(out Error);
-                    if (Error?.Length > 0)
-                        Logger.LogError(Error);
-                    else
-                        Logger.LogError(LogMessages.InteralError);
+                    string error = "";
+                    outPackage.Deserialize(out error);
+                    Logger.LogError(!string.IsNullOrWhiteSpace(error) ? error : LogMessages.InteralError);
                     return false;
                 }
+
+                stream.Flush();
+
+                return true;
             }
             catch (Exception ex)
             {
                 Logger.LogError(LogMessages.InteralError);
                 return false;
             }
-
-            return true;
         }
     }
 }
