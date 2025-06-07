@@ -2,19 +2,17 @@
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
-using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Dispatches.Base;
-using EmailProvider.Models.Serializables;
-using EMailProviderClient.Controllers.UserControl;
+using EmailProvider.SearchData;
 
-namespace EMailProviderClient.Dispatches.Folders
+namespace EMailProviderClient.Dispatches.Emails
 {
     //------------------------------------------------------
-    //	SendEmailDispatchC
+    //	LoadEmailsDispatchC
     //------------------------------------------------------
-    public class AddFolderDispatchC
+    public class MarkEmailAsReadDispatchC
     {
-        public static async Task<FolderViewModel> AddFolder(FolderViewModel folder)
+        public static async Task<bool> MarkEmailsAsRead(List<int> messagesToRead)
         {
             try
             {
@@ -22,8 +20,8 @@ namespace EMailProviderClient.Dispatches.Folders
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 //Сериализираме Данните
-                InPackage.Serialize((int)DispatchEnums.AddFolder);
-                InPackage.Serialize(folder);
+                InPackage.Serialize((int)DispatchEnums.MarkEmailsAsRead);
+                InPackage.Serialize(messagesToRead);
 
                 //Изпращаме заявката
                 DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
@@ -31,18 +29,15 @@ namespace EMailProviderClient.Dispatches.Folders
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                 {
                     Logger.LogErrorCalling();
-                    return null;
+                    return false;
                 }
 
-                FolderViewModel newfolder = null;
-                OutPackage.Deserialize(out newfolder);
-
-                return newfolder;
+                return true;
             }
             catch (Exception ex)
             {
                 Logger.LogErrorCalling();
-                return null;
+                return false;
             }
         }
     }

@@ -8,7 +8,10 @@ namespace EmailProvider.Enums
     public enum SearchType
     {
         SearchTypeDate,
-        SearchTypeEmail
+        SearchTypeEmail,
+        SearchTypeDeleted,
+        SearchTypeRead,
+        SearchTypeUnread
     }
 
     //------------------------------------------------------

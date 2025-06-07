@@ -3,6 +3,7 @@ using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.ClientModels;
 using EMailProviderClient.Dispatches.Emails;
+using System.Collections.ObjectModel;
 using WindowsFormsCore;
 using WindowsFormsCore.Lists;
 
@@ -13,6 +14,8 @@ namespace EMailProviderClient.Views.Emails
         private readonly SearchData searchData;
 
         private FolderListModel? currentFolder;
+
+        private ObservableCollection<FolderListModel> allUserFolders = new();
 
         public EmailsList(ListView listView, SearchData searchData) : base(listView)
         {
@@ -35,6 +38,7 @@ namespace EMailProviderClient.Views.Emails
             item.SubItems.Add(currentFolder.FolderType == SystemFolders.Incoming ? email.FromEmail : string.Join(";", email.Recipients.Select(r => r.Email)));
             item.SubItems.Add(subject);
             item.SubItems.Add(body);
+            item.Tag = email;
             return item;
         }
 
@@ -47,6 +51,11 @@ namespace EMailProviderClient.Views.Emails
 
             if (currentFolder.FolderID == 0)
             {
+                if (currentFolder.OnlyDeleted)
+                    searchData.AddCondition(new SearchCondition() { SearchType = SearchType.SearchTypeDeleted });
+                else
+                    searchData.RemoveCondition(SearchType.SearchTypeDeleted);
+
                 switch (currentFolder.FolderType)
                 {
                     case SystemFolders.Incoming:
@@ -70,6 +79,11 @@ namespace EMailProviderClient.Views.Emails
             return list;
         }
 
+        public void SetAvailableFolders(ObservableCollection<FolderListModel> folders)
+        {
+            allUserFolders = folders;
+        }
+
         protected override async Task<bool> DeleteItemsAsync(List<EmailListModel> selectedItems)
         {
             var ids = selectedItems.Select(x => x.Id).ToList();
@@ -81,11 +95,10 @@ namespace EMailProviderClient.Views.Emails
             if (listView.SelectedItems.Count == 0)
                 return;
 
-            int index = listView.SelectedItems[0].Index;
-            if (index < 0 || index >= items.Count)
+            var selectedMessage = GetSelectedItemTag();
+            if (selectedMessage == null)
                 return;
 
-            var selectedMessage = items[index];
             var (result, message) = await GetEmailDispatchC.LoadEmail(selectedMessage.Id);
 
             if (!result || message == null) return;
@@ -122,24 +135,85 @@ namespace EMailProviderClient.Views.Emails
         {
             currentFolder = folder;
 
-            // Update column header for email direction
             if (listView.Columns.Count > 1)
             {
                 listView.Columns[1].Text = folder.FolderType == SystemFolders.Incoming
                     ? "Sender Email"
                     : "Receiver Email";
             }
+
+            _ = RefreshAsync();
         }
 
         protected override void InitilizeContextMenu(ContextMenuStrip contextMenu)
         {
             base.InitilizeContextMenu(contextMenu);
 
-            var deleteItem = new ToolStripMenuItem("Refresh");
-            deleteItem.Click += async (s, e) => await RefreshAsync();
+            var refreshItem = new ToolStripMenuItem("Refresh");
+            refreshItem.Click += async (s, e) => await RefreshAsync();
 
-            contextMenu.Items.Add(deleteItem);
+            var removeFromFolderItem = new ToolStripMenuItem("Remove from Folder");
+            removeFromFolderItem.Click += async (s, e) =>
+            {
+                if (currentFolder == null || currentFolder.FolderID == 0)
+                {
+                    MessageBox.Show("This action is only available in custom folders.", "Invalid Operation",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var selectedIds = GetSelectedModels().Select(x => x.Id).ToList();
+
+                if (!selectedIds.Any()) return;
+
+                var success = await MoveEmailToFolderDispatchC.RemoveFromFolder(selectedIds);
+                if (success)
+                    await RefreshAsync();
+                else
+                    MessageBox.Show("Failed to remove email(s) from folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            };
+
+            var moveToItem = new ToolStripMenuItem("Move to Folder");
+
+            moveToItem.DropDownOpening += (s, e) =>
+            {
+                moveToItem.DropDownItems.Clear();
+
+                if (currentFolder == null) return;
+
+                var sameDirectionFolders = allUserFolders
+                    .Where(f => f.FolderType == currentFolder.FolderType && !f.OnlyDeleted && f.FolderID != 0)
+                    .ToList();
+
+                foreach (var folder in sameDirectionFolders)
+                {
+                    var subItem = new ToolStripMenuItem(folder.Name.Trim());
+                    subItem.Tag = folder;
+                    subItem.Click += async (sender, args) =>
+                    {
+                        if (listView.SelectedItems.Count == 0) return;
+
+                        var selectedIds = GetSelectedModels().Select(x => x.Id).ToList();
+
+                        var targetFolder = (FolderListModel)((ToolStripMenuItem)sender).Tag;
+
+                        bool moved = await MoveEmailToFolderDispatchC.MoveEmailToFolder(selectedIds, targetFolder.FolderID);
+                         
+                        if (moved)
+                            await RefreshAsync();
+                        else
+                            MessageBox.Show("Failed to move email(s).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    };
+                    moveToItem.DropDownItems.Add(subItem);
+                }
+            };
+
+            contextMenu.Items.Add(refreshItem);
+            contextMenu.Items.Add(moveToItem);
+            if(currentFolder?.FolderID !=0 )
+                contextMenu.Items.Add(removeFromFolderItem);
         }
+
     }
 
 }

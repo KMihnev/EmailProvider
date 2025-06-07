@@ -17,8 +17,8 @@ public class UserMessageRepository : IUserMessageRepository
     {
         return await _context.UserMessages
             .Where(um => um.UserId == userId &&
-                         !um.IsDeleted &&
-                         um.Message.Direction == EmailDirections.EmailDirectionIn)
+                         um.Message.Direction == EmailDirections.EmailDirectionIn &&
+                         !um.UserMessageFolders.Any())
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
@@ -33,9 +33,9 @@ public class UserMessageRepository : IUserMessageRepository
     {
         return await _context.UserMessages
             .Where(um => um.UserId == userId &&
-                         !um.IsDeleted &&
                          um.Message.Direction == EmailDirections.EmailDirectionOut &&
-                         um.Message.Status != EmailStatuses.EmailStatusDraft)
+                         um.Message.Status != EmailStatuses.EmailStatusDraft &&
+                        !um.UserMessageFolders.Any())
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
@@ -78,4 +78,87 @@ public class UserMessageRepository : IUserMessageRepository
             .Take(take)
             .ToListAsync();
     }
+
+    public async Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    {
+        return await _context.UserMessages
+            .Where(um => um.UserId == userId &&
+                         um.IsDeleted)
+            .Include(um => um.Message)
+                .ThenInclude(m => m.MessageRecipients)
+            .Where(filter ?? (_ => true))
+            .OrderByDescending(um => um.Message.DateOfRegistration)
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+    }
+
+    public async Task<UserMessage> GetByUserAndMessageIdAsync(int userId, int messageId)
+    {
+        return await _context.UserMessages
+            .FirstOrDefaultAsync(um => um.UserId == userId && um.MessageId == messageId);
+    }
+
+    public async Task SetIsDeletedAsync(int userId, int messageId, bool isDeleted)
+    {
+        var entry = await GetByUserAndMessageIdAsync(userId, messageId);
+        if (entry != null)
+        {
+            entry.IsDeleted = isDeleted;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task SetIsReadAsync(int userId, int messageId, bool isRead)
+    {
+        var entry = await GetByUserAndMessageIdAsync(userId, messageId);
+        if (entry != null)
+        {
+            entry.IsRead = isRead;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId)
+    {
+        var messages = await _context.UserMessages
+            .Include(m => m.UserMessageFolders)
+            .Where(m => messageIds.Contains(m.Id))
+            .ToListAsync();
+
+        if (!messages.Any()) return false;
+
+        foreach (var msg in messages)
+        {
+            msg.UserMessageFolders.Clear();
+
+            msg.UserMessageFolders.Add(new UserMessageFolder
+            {
+                FolderId = folderId,
+                UserMessageId = msg.Id
+            });
+        }
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RemoveFromFolderAsync(int userId, List<int> messageIds)
+    {
+        var userMessages = await _context.UserMessages
+            .Include(um => um.UserMessageFolders)
+            .Where(um => um.UserId == userId && messageIds.Contains(um.Id))
+            .ToListAsync();
+
+        if (!userMessages.Any()) return false;
+
+        foreach (var um in userMessages)
+        {
+            um.UserMessageFolders.Clear();
+        }
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 }

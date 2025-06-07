@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,9 @@ namespace WindowsFormsCore.Lists
     public abstract class SmartList<TModel> where TModel : class
     {
         protected readonly ListView listView;
-        protected List<TModel> items = new();
+
+        protected readonly ObservableCollection<TModel> items = new();
+        public ObservableCollection<TModel> Items => items;
 
         protected SmartList(ListView listView)
         {
@@ -58,14 +61,18 @@ namespace WindowsFormsCore.Lists
 
         public async Task RefreshAsync()
         {
-            items = await LoadDataAsync();
-            listView.Items.Clear();
+            var loaded = await LoadDataAsync();
+
+            items.Clear();
+            foreach (var item in loaded)
+                items.Add(item);  
+
+            listView.Items.Clear(); 
             foreach (var item in items)
             {
                 listView.Items.Add(RenderItem(item));
             }
         }
-
         protected virtual async Task DeleteSelectedItemsAsync()
         {
             var selectedItems = GetSelectedModels();

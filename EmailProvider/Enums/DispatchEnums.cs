@@ -25,5 +25,10 @@ namespace EmailServiceIntermediate.Enums
         LoadFolders,
         AddFolder,
         DeleteFolder,
+        MarkEmailsAsRead,
+        MarkEmailsAsUnread,
+        LoadDeletedEmails,
+        MoveEmailsToFolder,
+        RemoveEmailsFromFolder
     }
 }

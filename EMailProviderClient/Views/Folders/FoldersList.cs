@@ -2,6 +2,8 @@
 using EmailProvider.Models.Serializables;
 using EMailProviderClient.ClientModels;
 using EMailProviderClient.Dispatches.Folders;
+using EmailServiceIntermediate.Models;
+using System.Collections.ObjectModel;
 using WindowsFormsCore.Lists;
 
 namespace EMailProviderClient.Views.Folders
@@ -9,6 +11,8 @@ namespace EMailProviderClient.Views.Folders
     public class FoldersList : SmartList<FolderListModel>
     {
         public event Action<FolderListModel> FolderSelected;
+
+        public ObservableCollection<FolderListModel> AllFolders => Items;
 
         public FoldersList(ListView listView) : base(listView)
         {
@@ -29,35 +33,68 @@ namespace EMailProviderClient.Views.Folders
 
             var result = new List<FolderListModel>();
 
-            void AddSystemAndUserFolders(SystemFolders type, EmailDirections? direction)
-            {
-                // Add system folder
-                result.Add(new FolderListModel
-                {
-                    FolderID = 0,
-                    Name = type.ToString(),
-                    FolderType = type
-                });
+            AddSystemAndUserFolders(SystemFolders.Incoming, EmailDirections.EmailDirectionIn, result, folders);
+            AddSystemAndUserFolders(SystemFolders.Outgoing, EmailDirections.EmailDirectionOut, result, folders);
+            AddSystemAndUserFolders(SystemFolders.Drafts, null, result, folders);
+            AddDeletedMessageFolders(result);
 
-                if (direction.HasValue)
+            items.Clear();
+            foreach (var folder in result)
+                items.Add(folder);
+
+            return items.ToList();
+        }
+
+        public void AddSystemAndUserFolders(SystemFolders type, EmailDirections? direction, List<FolderListModel> oFoldersList, List<FolderViewModel> oDatabaseFoldersList)
+        {
+            oFoldersList.Add(new FolderListModel
+            {
+                FolderID = 0,
+                Name = type.ToString(),
+                FolderType = type,
+                IsMainFolder = true,
+            });
+
+            if (direction.HasValue)
+            {
+                foreach (var userFolder in oDatabaseFoldersList.Where(f => f.FolderDirection == direction))
                 {
-                    foreach (var userFolder in folders.Where(f => f.FolderDirection == direction))
+                    oFoldersList.Add(new FolderListModel
                     {
-                        result.Add(new FolderListModel
-                        {
-                            FolderID = userFolder.Id,
-                            Name = "    " + userFolder.Name, // indented
-                            FolderType = type
-                        });
-                    }
+                        FolderID = userFolder.Id,
+                        Name = "    " + userFolder.Name,
+                        FolderType = type
+                    });
                 }
             }
+        }
 
-            AddSystemAndUserFolders(SystemFolders.Incoming, EmailDirections.EmailDirectionIn);
-            AddSystemAndUserFolders(SystemFolders.Outgoing, EmailDirections.EmailDirectionOut);
-            AddSystemAndUserFolders(SystemFolders.Drafts, null);
+        public void AddDeletedMessageFolders(List<FolderListModel> oFoldersList)
+        {
+            oFoldersList.Add(new FolderListModel
+            {
+                FolderID = -1,
+                Name = "Deleted",
+                FolderType = SystemFolders.Deleted,
+                OnlyDeleted = true,
+                IsMainFolder = true,
+            });
 
-            return result;
+            oFoldersList.Add(new FolderListModel
+            {
+                FolderID = 0,
+                Name = "    Incoming",
+                FolderType = SystemFolders.Incoming,
+                OnlyDeleted = true
+            });
+
+            oFoldersList.Add(new FolderListModel
+            {
+                FolderID = 0,
+                Name = "    Outgoing",
+                FolderType = SystemFolders.Outgoing,
+                OnlyDeleted = true
+            });
         }
 
         protected override ListViewItem RenderItem(FolderListModel folder)
@@ -67,9 +104,14 @@ namespace EMailProviderClient.Views.Folders
                 Tag = folder
             };
 
-            if (folder.FolderID == 0)
+            if (folder.IsMainFolder)
             {
                 item.Font = new System.Drawing.Font(listView.Font, System.Drawing.FontStyle.Bold);
+            }
+
+            if (folder.FolderID == -1)
+            {
+                item.ForeColor = System.Drawing.Color.Gray;
             }
 
             return item;
@@ -79,6 +121,12 @@ namespace EMailProviderClient.Views.Folders
         {
             if (e.IsSelected && e.Item.Tag is FolderListModel selected)
             {
+                if (selected.FolderID == -1)
+                {
+                    e.Item.Selected = false;
+                    return;
+                }
+
                 FolderSelected?.Invoke(selected);
             }
         }
@@ -103,12 +151,16 @@ namespace EMailProviderClient.Views.Folders
 
             int insertIndex = listView.Items.IndexOf(
                 listView.Items.Cast<ListViewItem>().FirstOrDefault(i => i.Tag == parentFolder)
-            ) + 1;
+            );
+            if (insertIndex < 0) insertIndex = listView.Items.Count;
+
+            insertIndex += 1;
 
             listView.Items.Insert(insertIndex, newItem);
             newItem.Selected = true;
             newItem.EnsureVisible();
 
+            listView.Update();
             var bounds = newItem.Bounds;
 
             var textBox = new TextBox
@@ -120,21 +172,26 @@ namespace EMailProviderClient.Views.Folders
             };
 
             listView.Controls.Add(textBox);
+            textBox.BringToFront();
+            textBox.Focus();
+            await Task.Delay(50);
             textBox.Focus();
 
             bool finished = false;
+            bool keyHandled = false;
 
             async void FinishEditing(bool save)
             {
                 if (finished) return;
                 finished = true;
 
+                string Text = textBox.Text;
                 listView.Controls.Remove(textBox);
                 textBox.Dispose();
 
-                if (save && !string.IsNullOrWhiteSpace(textBox.Text))
+                if (save && !string.IsNullOrWhiteSpace(Text))
                 {
-                    var folderName = textBox.Text.Trim();
+                    var folderName = Text.Trim();
 
                     var folderModel = new FolderViewModel
                     {
@@ -147,9 +204,9 @@ namespace EMailProviderClient.Views.Folders
                         }
                     };
 
-                    bool success = await AddFolderDispatchC.AddFolder(folderModel);
+                    folderModel= await AddFolderDispatchC.AddFolder(folderModel);
 
-                    if (success)
+                    if (folderModel != null)
                     {
                         listView.Items.Remove(newItem);
 
@@ -182,25 +239,38 @@ namespace EMailProviderClient.Views.Folders
                 }
             }
 
-            textBox.KeyDown += (s, e) =>
+            textBox.PreviewKeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+                    e.IsInputKey = true;
+            };
+
+            textBox.KeyDown += async (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter)
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
+                    keyHandled = true;
+                    await Task.Delay(1);
                     FinishEditing(true);
                 }
                 else if (e.KeyCode == Keys.Escape)
                 {
+                    keyHandled = true;
+                    await Task.Delay(1);
                     FinishEditing(false);
                 }
             };
 
-            textBox.LostFocus += (s, e) => FinishEditing(true);
+            textBox.LostFocus += (s, e) =>
+            {
+                if (!keyHandled)
+                {
+                    FinishEditing(true);
+                }
+            };
         }
-
-
-
 
 
         protected override void InitilizeContextMenu(ContextMenuStrip contextMenu)

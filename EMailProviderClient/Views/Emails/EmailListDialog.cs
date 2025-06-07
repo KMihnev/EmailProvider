@@ -33,6 +33,7 @@ namespace EMailProviderClient
             };
 
             await foldersList.RefreshAsync();
+            emailsList.SetAvailableFolders(foldersList.AllFolders);
         }
 
         private void ON_ADD_EMAIL_Click(object sender, EventArgs e)
@@ -49,7 +50,7 @@ namespace EMailProviderClient
                 BackColor = Color.White
             };
 
-            this.Controls.Add(addEmailForm); // Or floatingPanel.Controls.Add(...) if you still use it
+            this.Controls.Add(addEmailForm);
             addEmailForm.BringToFront();
             addEmailForm.Show();
         }

@@ -48,7 +48,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             try
             {
                 List<EmailListModel> filteredMessages = new List<EmailListModel>();
-                filteredMessages = await _userMessageService.GetOutgoingMessagesAsync<EmailListModel>(searchData, SessionUser.Id, 0, 10);
+                filteredMessages = await _userMessageService.GetOutgoingMessagesAsync<EmailListModel>(searchData, SessionUser.Id);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(filteredMessages);
             }
