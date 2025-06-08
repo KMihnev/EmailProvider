@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailService
+namespace EmailService.Parsers
 {
     public class SmtpCommandProcessor
     {
@@ -17,6 +17,12 @@ namespace EmailService
 
         public Task<string> ProcessAsync(string command)
         {
+            if (command.StartsWith("STARTTLS"))
+            {
+                session.MarkStartTlsRequested();
+                return Task.FromResult("220 Ready to start TLS");
+            }
+
             if (command.StartsWith("EHLO") || command.StartsWith("HELO"))
                 return Task.FromResult("250-tyron.mail\n250-STARTTLS\n250-SIZE 35882577\n250-8BITMIME\n250-ENHANCEDSTATUSCODES\n250 PIPELINING");
 
@@ -28,7 +34,7 @@ namespace EmailService
 
             if (command.StartsWith("RCPT TO:"))
             {
-                session.SetRecipient(command[8..].Trim('<', '>'));
+                session.AddRecipient(command[8..].Trim('<', '>'));
                 return Task.FromResult("250 OK");
             }
 

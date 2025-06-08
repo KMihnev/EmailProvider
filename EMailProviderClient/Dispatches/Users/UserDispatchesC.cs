@@ -35,7 +35,8 @@ namespace EMailProviderClient.Dispatches.Users
 
                 string token = "";
                 UserViewModel newUser = null;
-                OutPackage.Serialize(user);
+
+                OutPackage.Deserialize(out token);
                 OutPackage.Deserialize(out newUser);
 
                 if (newUser == null)
