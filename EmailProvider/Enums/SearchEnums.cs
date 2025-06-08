@@ -11,7 +11,7 @@ namespace EmailProvider.Enums
         SearchTypeEmail,
         SearchTypeDeleted,
         SearchTypeRead,
-        SearchTypeUnread
+        SearchTypeUnread,
     }
 
     //------------------------------------------------------

@@ -63,7 +63,7 @@ namespace EmailService
                 Body = selectedBody,
                 Subject = subject,
                 Direction = EmailDirections.EmailDirectionIn,
-                Status = EmailStatuses.EmailStatusNew
+                Status = EmailStatuses.EmailStatusComplete
             };
 
             var request = new SmartStreamArray();

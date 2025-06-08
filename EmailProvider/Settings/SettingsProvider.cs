@@ -25,6 +25,20 @@ namespace EmailServiceIntermediate.Settings
             return GlSettingsIni.IniFile.Read(SettingsNames._paramLogFilePath, SectionNames._sectionShared);
         }
 
+        public static string GetSMTPServiceIP()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPServiceIP, SectionNames._sectionShared);
+        }
+
+        public static string GetSMTPServicePublicPort()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPublicServicePort, SectionNames._sectionShared);
+        }
+
+        public static string GetSMTPServicePrivatePort()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPrivateServicePort, SectionNames._sectionShared);
+        }
     }
 
 }

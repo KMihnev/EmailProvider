@@ -149,5 +149,12 @@ namespace EmailProviderServer.DBContext.Services
             await _messageRepository.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<EmailServiceModel>> GetMessagesForSending(int take)
+        {
+            var messages = await _messageRepository.GetMessagesForSend(take);
+
+            return _mapper.Map<List<EmailServiceModel>>(messages);
+        }
     }
 }

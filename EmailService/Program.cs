@@ -1,4 +1,8 @@
 ﻿using EmailService;
+using EmailService.PrivateService;
+using EmailService.PublicService;
 
-var smtpServer = new SmtpServer(2525); // Use 2525 for local testing
-await smtpServer.StartAsync();
+var publicTask = new SmtpPublicServer().StartAsync();
+var privateTask = new SmtpPrivateServer().StartAsync();
+
+await Task.WhenAll(publicTask, privateTask);

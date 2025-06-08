@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EmailService.Parsers;
 
-namespace EmailService
+namespace EmailService.PublicService
 {
     public class SmtpSession
     {
@@ -29,7 +29,7 @@ namespace EmailService
         }
 
         public async Task RunAsync()
-        { 
+        {
             await writer.WriteLineAsync("220 tyron.mail SMTP Service Ready");
 
             while (true)
@@ -37,7 +37,7 @@ namespace EmailService
                 var line = await reader.ReadLineAsync();
                 if (line == null) break;
 
-                if (readingData) 
+                if (readingData)
                 {
                     if (line == ".")
                     {
