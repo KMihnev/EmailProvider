@@ -14,12 +14,19 @@ namespace EmailService
 {
     public class EmailMessageHandler
     {
-        public async Task HandleAsync(string from, string to, string body)
+        public async Task HandleAsync(string from, List<string> toList, string body)
         {
-            Console.WriteLine($"Received email from {from} to {to}.");
+            Console.WriteLine($"Received email from {from} to:");
+            foreach (var to in toList)
+                Console.WriteLine($"- {to}");
+
             Console.WriteLine($"Body:\n{body}");
 
-            var recipients = new List<MessageRecipientSerializable> { new MessageRecipientSerializable { Email = to } };
+            var recipients = new List<MessageRecipientSerializable>();
+            foreach (var to in toList)
+            {
+                recipients.Add(new MessageRecipientSerializable { Email = to });
+            }
 
             var message = new EmailViewModel
             {
@@ -40,4 +47,5 @@ namespace EmailService
             await dispatcher.Execute(request, response);
         }
     }
+
 }
