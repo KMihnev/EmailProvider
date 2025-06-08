@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
+using EmailService.Parsers;
 
 namespace EmailService
 {
@@ -28,7 +29,7 @@ namespace EmailService
         }
 
         public async Task RunAsync()
-        {
+        { 
             await writer.WriteLineAsync("220 tyron.mail SMTP Service Ready");
 
             while (true)
@@ -36,10 +37,7 @@ namespace EmailService
                 var line = await reader.ReadLineAsync();
                 if (line == null) break;
 
-                line = line.Trim();
-                if (string.IsNullOrWhiteSpace(line)) continue;
-
-                if (readingData)
+                if (readingData) 
                 {
                     if (line == ".")
                     {
@@ -52,7 +50,7 @@ namespace EmailService
                     }
                     else
                     {
-                        dataBuffer.AppendLine(line);
+                        dataBuffer.Append(line).Append("\r\n");
                     }
                     continue;
                 }
