@@ -14,6 +14,7 @@ using EmailProviderServer.DBContext.Repositories.Base;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Interfaces;
+using EmailProviderServer.TCP_Server.ScheduledTasks;
 
 void AddServices(IServiceCollection services)
 {
@@ -42,6 +43,8 @@ void AddServices(IServiceCollection services)
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<IFolderService, FolderService>();
 
+    services.AddSingleton<EmailDispatchScheduler>();
+    services.AddHostedService<EmailSchedulerHostedService>();
     services.AddSingleton<DispatchMapper>();
 }
 

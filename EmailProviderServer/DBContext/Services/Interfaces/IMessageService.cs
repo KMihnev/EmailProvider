@@ -17,5 +17,7 @@ namespace EmailProviderServer.DBContext.Services.Base
         Task<bool> CheckIfExists(int id);
 
         Task<bool> UpdateMessageAsync(int messageId, EmailViewModel updatedMessage);
+
+        Task<List<EmailServiceModel>> GetMessagesForSending(int take);
     }
 }

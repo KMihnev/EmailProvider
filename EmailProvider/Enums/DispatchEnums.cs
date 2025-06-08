@@ -9,6 +9,7 @@ namespace EmailServiceIntermediate.Enums
     /// <summary> Кодове за идентифициране на RPC Request-ите </summary>
     public enum DispatchEnums : short
     {
+        //Client - Server
         Empty = 0,
         Login,
         Register,
@@ -30,5 +31,8 @@ namespace EmailServiceIntermediate.Enums
         LoadDeletedEmails,
         MoveEmailsToFolder,
         RemoveEmailsFromFolder,
+
+        //Server - Service
+        SendEmailToService,
     }
 }

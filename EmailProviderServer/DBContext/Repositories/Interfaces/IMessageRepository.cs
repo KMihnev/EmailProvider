@@ -13,5 +13,7 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
         Task<Message> GetByIDIncludingAll(int nId);
 
         Task<List<Message>> GetByIDsIncludingAll(IEnumerable<int> ids);
+
+        Task<List<Message>> GetMessagesForSend(int take);
     }
 }

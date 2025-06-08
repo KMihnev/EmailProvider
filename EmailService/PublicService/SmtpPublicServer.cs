@@ -14,22 +14,21 @@ using EmailProvider.Enums;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
-namespace EmailService
+namespace EmailService.PublicService
 {
-    public class SmtpServer
+    public class SmtpPublicServer
     {
-        private readonly int _port;
 
-        public SmtpServer(int port = 25)
+        public SmtpPublicServer()
         {
-            _port = port;
         }
 
         public async Task StartAsync()
         {
-            var listener = new TcpListener(IPAddress.Any, _port);
+            int Port = AddressHelper.GetSMTPPublicPort();
+            var listener = new TcpListener(AddressHelper.GetSMTPIpAddress(), Port);
             listener.Start();
-            Console.WriteLine($"SMTP Server started on port {_port}.");
+            Console.WriteLine($"SMTP Public Server started on port {Port}.");
 
             while (true)
             {

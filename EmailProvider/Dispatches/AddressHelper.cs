@@ -29,5 +29,20 @@ namespace EmailServiceIntermediate.Dispatches
         {
             return int.Parse(SettingsProvider.GetServerPort());
         }
+
+        public static IPAddress GetSMTPIpAddress()
+        {
+            return IPAddress.Parse(SettingsProvider.GetSMTPServiceIP());
+        }
+
+        public static int GetSMTPPublicPort()
+        {
+            return int.Parse(SettingsProvider.GetSMTPServicePublicPort());
+        }
+
+        public static int GetSMTPPrivatePort()
+        {
+            return int.Parse(SettingsProvider.GetSMTPServicePrivatePort());
+        }
     }
 }

@@ -26,5 +26,8 @@ namespace EmailServiceIntermediate.Settings
         public const string _paramDatabaseName = "DataBaseName";
         public const string _paramServerIP = "ServerIP";
         public const string _paramServerPort = "ServerPort";
+        public const string _paramSMTPServiceIP = "SMTPServiceIP";
+        public const string _paramSMTPPrivateServicePort = "SMTPPrivateServicePort";
+        public const string _paramSMTPPublicServicePort = "SMTPPublicServicePort";
     }
 }

@@ -33,6 +33,17 @@ namespace EmailServiceIntermediate.Logging
             LogError(LogMessages.ErrorCalling, methodName);
         }
 
+        public static void LogErrorCallingSilent([CallerMemberName] string methodName = "")
+        {
+            LogSilent(LogMessages.ErrorCalling, methodName);
+        }
+
+        public static void LogSilent(string message, params object[] args)
+        {
+            string formattedMessage = string.Format(message, args);
+            Log(formattedMessage, LogType.LogTypeLog, LogSeverity.Error);
+        }
+
         public static void LogNullValue([CallerMemberName] string methodName = "")
         {
             LogError(LogMessages.NullValue, methodName);

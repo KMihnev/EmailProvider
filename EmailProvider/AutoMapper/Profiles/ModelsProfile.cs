@@ -41,6 +41,13 @@ namespace EmailServiceIntermediate.AutoMapper.Profiles
                 .ForMember(dest => dest.Direction, opt => opt.MapFrom(src => src.Message.Direction))
                 .ForMember(dest => dest.Recipients, opt => opt.MapFrom(src => src.Message.MessageRecipients))
                 .ForMember(dest => dest.FolderId, opt => opt.MapFrom(src => src.UserMessageFolders.FirstOrDefault() != null ? src.UserMessageFolders.First().FolderId : 0));
+
+            CreateMap<Message, EmailServiceModel>()
+            .ForMember(dest => dest.Recipient,opt => opt.MapFrom(src => src.MessageRecipients.FirstOrDefault().Email))
+            .ForMember(dest => dest.Subject,opt => opt.MapFrom(src => src.Subject ?? string.Empty))
+            .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.Body ?? string.Empty))
+            .ForMember(dest => dest.DateOfRegistration,opt => opt.MapFrom(src => src.DateOfRegistration ?? DateTime.UtcNow))
+            .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files));
         }
     }
 }
