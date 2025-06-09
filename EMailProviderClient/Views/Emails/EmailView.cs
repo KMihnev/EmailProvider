@@ -12,6 +12,8 @@ namespace EMailProviderClient.Views.Emails
 {
     public partial class EMAIL_VIEW : SmartDialog
     {
+        public event EventHandler EmailSaved;
+
         private EmailViewModel emailSerializable;
         private AttachedFileList attachedFileList;
 
@@ -64,6 +66,7 @@ namespace EMailProviderClient.Views.Emails
                 return;
             }
 
+            EmailSaved?.Invoke(this, EventArgs.Empty);
             DialogResult = DialogResult.OK;
             Close();
         }

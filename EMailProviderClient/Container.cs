@@ -18,6 +18,7 @@ namespace EMailProviderClient
             IsMdiContainer = true;
             WindowState = FormWindowState.Maximized;
 
+            ConfigureVisuals();
             ShowEmailList();
         }
 
@@ -36,6 +37,13 @@ namespace EMailProviderClient
         }
         private void CascadeWindows() => this.LayoutMdi(MdiLayout.Cascade);
         private void TileWindows() => this.LayoutMdi(MdiLayout.TileVertical);
+
+        public void ConfigureVisuals()
+        {
+            Font = new Font("Segoe UI", 10);
+            BackColor = Color.WhiteSmoke;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+        }
     }
 
 }

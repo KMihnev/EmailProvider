@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.Emails
+﻿using WindowsFormsCore;
+
+namespace EMailProviderClient.Views.Emails
 {
     partial class EMAIL_VIEW
     {
@@ -29,8 +31,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            SEND_BTN = new Button();
-            CLOSE_BTN = new Button();
+            SEND_BTN = new SmartButton();
+            CLOSE_BTN = new SmartButton();
             CONTENT_BOX = new RichTextBox();
             SUBJECT_EDIT = new TextBox();
             CONTENT_LABEL = new Label();
@@ -40,7 +42,7 @@
             RECEIVER_LABEL = new Label();
             FILES_LIST = new ListView();
             FILES_LABEL = new Label();
-            UPLOAD_BTN = new Button();
+            UPLOAD_BTN = new SmartButton();
             FILES_CONTEXT = new ContextMenuStrip(components);
             downloadToolStripMenuItem = new ToolStripMenuItem();
             removeToolStripMenuItem = new ToolStripMenuItem();
@@ -192,8 +194,8 @@
 
         #endregion
 
-        private Button SEND_BTN;
-        private Button CLOSE_BTN;
+        private SmartButton SEND_BTN;
+        private SmartButton CLOSE_BTN;
         private RichTextBox CONTENT_BOX;
         private TextBox SUBJECT_EDIT;
         private Label CONTENT_LABEL;
@@ -203,7 +205,7 @@
         private Label RECEIVER_LABEL;
         private ListView FILES_LIST;
         private Label FILES_LABEL;
-        private Button UPLOAD_BTN;
+        private SmartButton UPLOAD_BTN;
         private ContextMenuStrip FILES_CONTEXT;
         private ToolStripMenuItem downloadToolStripMenuItem;
         private ToolStripMenuItem removeToolStripMenuItem;

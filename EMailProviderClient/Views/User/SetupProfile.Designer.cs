@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.User
+﻿using WindowsFormsCore;
+
+namespace EMailProviderClient.Views.User
 {
     partial class SetupProfile
     {
@@ -33,9 +35,9 @@
             CMB_COUNTRY = new ComboBox();
             STT_SETUP_PROFILE = new Label();
             PB_PROFILE = new PictureBox();
-            BTN_UPLOAD_PICTURE = new Button();
-            BTN_CONTINUE = new Button();
-            BTN_SKIP = new Button();
+            BTN_UPLOAD_PICTURE = new SmartButton();
+            BTN_CONTINUE = new SmartButton();
+            BTN_SKIP = new SmartButton();
             ((System.ComponentModel.ISupportInitialize)PB_PROFILE).BeginInit();
             SuspendLayout();
             // 
@@ -141,8 +143,8 @@
         private ComboBox CMB_COUNTRY;
         private Label STT_SETUP_PROFILE;
         private PictureBox PB_PROFILE;
-        private Button BTN_UPLOAD_PICTURE;
-        private Button BTN_CONTINUE;
-        private Button BTN_SKIP;
+        private SmartButton BTN_UPLOAD_PICTURE;
+        private SmartButton BTN_CONTINUE;
+        private SmartButton BTN_SKIP;
     }
 }
