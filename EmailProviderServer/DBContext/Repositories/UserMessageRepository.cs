@@ -105,6 +105,15 @@ public class UserMessageRepository : IUserMessageRepository
         if (entry != null)
         {
             entry.IsDeleted = isDeleted;
+
+            if (isDeleted)
+            {
+                var foldersToRemove = _context.UserMessageFolders
+                    .Where(umf => umf.UserMessageId == entry.Id);
+
+                _context.UserMessageFolders.RemoveRange(foldersToRemove);
+            }
+
             await _context.SaveChangesAsync();
         }
     }

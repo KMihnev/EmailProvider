@@ -8,6 +8,7 @@ using EmailProviderServer.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using EmailServiceIntermediate.Models;
+using EmailProviderServer.DBContext.Repositories;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -17,24 +18,26 @@ namespace EmailProviderServer.DBContext.Services
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly IFileRepository _fileRepository;
+        private readonly IBulkIncomingMessagesRepositoryS _bulkIncomingMessagesRepository;
+        private readonly IBulkOutgoingMessagesRepositoryS _bulkOutgoingMessagesRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
         //Constructor
         public MessageService(
             IMessageRepository messageRepository,
-            IFileRepository fileRepository,
+            IBulkIncomingMessagesRepositoryS bulkIncomingMessagesRepository,
+            IBulkOutgoingMessagesRepositoryS bulkOutgoingMessagesRepository,
             IUserRepository userRepository,
             IMapper mapper)
         {
             _messageRepository = messageRepository;
-            _fileRepository = fileRepository;
+            _bulkIncomingMessagesRepository = bulkIncomingMessagesRepository;
+            _bulkOutgoingMessagesRepository = bulkOutgoingMessagesRepository;
             _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        // Create and save a new message
         public async Task ProcessMessageAsync(EmailViewModel dto)
         {
             bool bIsForUs = false;
@@ -49,16 +52,28 @@ namespace EmailProviderServer.DBContext.Services
                 Status = dto.Status,
             };
 
-            // Add recipients
             foreach (var recipientDto in dto.Recipients)
             {
-                message.MessageRecipients.Add(new MessageRecipient
+                var internalUser = await _userRepository.GetUserByEmail(recipientDto.Email);
+
+                var messageRecipient = new MessageRecipient();
+                messageRecipient.Email = recipientDto.Email;
+
+                if (internalUser != null)
                 {
-                    Email = recipientDto.Email
-                });
+                    bIsForUs = true;
+                    messageRecipient.IsOurUser = true;
+                    message.UserMessages.Add(new UserMessage
+                    {
+                        UserId = internalUser.Id,
+                        IsRead = false,
+                        IsDeleted = false,
+                    });
+                }
+
+                message.MessageRecipients.Add(messageRecipient);
             }
 
-            // Add user messages (sender)
             var sender = await _userRepository.GetUserByEmail(dto.FromEmail);
             if (sender != null)
             {
@@ -69,22 +84,6 @@ namespace EmailProviderServer.DBContext.Services
                     IsRead = true,
                     IsDeleted = false,
                 });
-            }
-
-            // Add user messages (internal recipients)
-            foreach (var recipientDto in dto.Recipients)
-            {
-                var internalUser = await _userRepository.GetUserByEmail(recipientDto.Email);
-                if (internalUser != null)
-                {
-                    bIsForUs = true;
-                    message.UserMessages.Add(new UserMessage
-                    {
-                        UserId = internalUser.Id,
-                        IsRead = false,
-                        IsDeleted = false,
-                    });
-                }
             }
 
             // Add files
@@ -101,6 +100,7 @@ namespace EmailProviderServer.DBContext.Services
             {
                 await _messageRepository.AddAsync(message);
                 await _messageRepository.SaveChangesAsync();
+                dto.Id = message.Id;
             }
 
         }
@@ -108,6 +108,12 @@ namespace EmailProviderServer.DBContext.Services
         public async Task<T> GetByIDIncludingAll<T>(int id)
         {
             var message = await _messageRepository.GetByIDIncludingAll(id);
+            return _mapper.Map<T>(message);
+        }
+
+        public async Task<T> GetByID<T>(int id)
+        {
+            var message = await _messageRepository.GetByID(id);
             return _mapper.Map<T>(message);
         }
 
@@ -128,14 +134,12 @@ namespace EmailProviderServer.DBContext.Services
             var updatedEmails = updatedMessageDTO.Recipients.Select(r => r.Email).ToHashSet();
             var currentEmails = message.MessageRecipients.Select(r => r.Email).ToHashSet();
 
-            // Remove recipients no longer present
             var toRemove = message.MessageRecipients.Where(r => !updatedEmails.Contains(r.Email)).ToList();
             foreach (var r in toRemove)
             {
                 message.MessageRecipients.Remove(r);
             }
 
-            // Add new recipients
             foreach (var recipient in updatedEmails.Except(currentEmails))
             {
                 message.MessageRecipients.Add(new MessageRecipient
@@ -150,11 +154,31 @@ namespace EmailProviderServer.DBContext.Services
             return true;
         }
 
-        public async Task<List<EmailServiceModel>> GetMessagesForSending(int take)
+        public async Task<List<EmailViewModel>> GetMessagesForSending(int take)
         {
             var messages = await _messageRepository.GetMessagesForSend(take);
 
-            return _mapper.Map<List<EmailServiceModel>>(messages);
+            return _mapper.Map<List<EmailViewModel>>(messages);
+        }
+
+        public async Task AddBulkIncomingMessagesAsyncm<T>(T bulkIncomingMessageModel)
+        {
+            BulkIncomingMessage message = _mapper.Map<BulkIncomingMessage>(bulkIncomingMessageModel);
+            await _bulkIncomingMessagesRepository.AddBulkIncomingMessageAsync(message);
+        }
+
+        public async Task AddBulkOutgoingMessagesAsyncm<T>(T bulkIncomingMessageModel)
+        {
+            BulkOutgoingMessage message = _mapper.Map<BulkOutgoingMessage>(bulkIncomingMessageModel);
+            await _bulkOutgoingMessagesRepository.AddBulkOutgoingMessageAsync(message);
+        }
+
+        public async Task UpdateSentStatusAsync(int messageId)
+        {
+            var message = await _messageRepository.GetByID(messageId);
+            message.Status = EmailProvider.Enums.EmailStatuses.EmailStatusComplete;
+            _messageRepository.Update(message);
+            await _messageRepository.SaveChangesAsync();
         }
     }
 }

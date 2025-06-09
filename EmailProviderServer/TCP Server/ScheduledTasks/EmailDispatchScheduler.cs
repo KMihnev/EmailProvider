@@ -26,11 +26,12 @@ namespace EmailProviderServer.TCP_Server.ScheduledTasks
             using var scope = _serviceProvider.CreateScope();
             var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
 
-            List<EmailServiceModel> messages = await messageService.GetMessagesForSending(100);
+            List<EmailViewModel> messages = await messageService.GetMessagesForSending(100);
 
             foreach (var message in messages)
             {
-                bool sent = await SendEmailServiceDispatchS.SendEmail(message);
+                var EmailServiceDispatch = new SendEmailServiceDispatchS(messageService);
+                bool sent = await EmailServiceDispatch.SendEmail(message);
                 if (sent)
                 {
                     Console.WriteLine("Sending Complete");

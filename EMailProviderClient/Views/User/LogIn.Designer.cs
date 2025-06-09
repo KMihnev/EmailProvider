@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.User
+﻿using WindowsFormsCore;
+
+namespace EMailProviderClient.Views.User
 {
     partial class LogIn
     {
@@ -31,8 +33,8 @@
             EDC_NAME = new TextBox();
             EDC_PASSWORD = new TextBox();
             STT_SUGGESTION = new Label();
-            BTN_LOGIN = new Button();
-            BTN_CANCEL = new Button();
+            BTN_LOGIN = new SmartButton();
+            BTN_CANCEL = new SmartButton();
             SuspendLayout();
             // 
             // STT_Login
@@ -125,7 +127,7 @@
         private TextBox EDC_NAME;
         private TextBox EDC_PASSWORD;
         private Label STT_SUGGESTION;
-        private Button BTN_LOGIN;
-        private Button BTN_CANCEL;
+        private SmartButton BTN_LOGIN;
+        private SmartButton BTN_CANCEL;
     }
 }

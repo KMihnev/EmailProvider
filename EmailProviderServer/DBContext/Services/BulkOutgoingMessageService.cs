@@ -1,5 +1,6 @@
 ﻿//Includes
 using EmailProviderServer.DBContext.Repositories.Base;
+using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
 namespace EmailProviderServer.DBContext.Services
@@ -9,10 +10,10 @@ namespace EmailProviderServer.DBContext.Services
     //------------------------------------------------------
     public class BulkOutgoingMessageService : IBulkOutgoingMessageService
     {
-        private readonly IRepositoryS<BulkOutgoingMessage> oBulkOutgoingMessagesRepositoryS;
+        private readonly IBulkOutgoingMessagesRepositoryS oBulkOutgoingMessagesRepositoryS;
 
         //Constructor
-        public BulkOutgoingMessageService(IRepositoryS<BulkOutgoingMessage> oBulkOutgoingMessagesRepository)
+        public BulkOutgoingMessageService(IBulkOutgoingMessagesRepositoryS oBulkOutgoingMessagesRepository)
         {
             this.oBulkOutgoingMessagesRepositoryS = oBulkOutgoingMessagesRepository;
         }

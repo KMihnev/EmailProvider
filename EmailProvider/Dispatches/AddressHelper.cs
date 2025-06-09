@@ -32,7 +32,7 @@ namespace EmailServiceIntermediate.Dispatches
 
         public static IPAddress GetSMTPIpAddress()
         {
-            return IPAddress.Parse(SettingsProvider.GetSMTPServiceIP());
+            return IPAddress.Parse(SettingsProvider.GetSMTPServiceIP() ?? SettingsProvider.GetServerIP());
         }
 
         public static int GetSMTPPublicPort()

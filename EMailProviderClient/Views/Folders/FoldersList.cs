@@ -290,25 +290,18 @@ namespace EMailProviderClient.Views.Folders
 
             deleteItem.Click += async (s, e) => await DeleteSelectedItemsAsync();
 
-            contextMenu.Opening += (s, e) =>
+            FolderListModel folder = null;
+            var selectedItem = listView.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
+            if (selectedItem?.Tag is FolderListModel selectedFolder)
             {
-                bool showAdd = listView.SelectedItems.Count > 0 &&
-                               listView.SelectedItems[0].Tag is FolderListModel selected &&
-                               selected.FolderID == 0 &&
-                               selected.FolderType != SystemFolders.Drafts;
+                folder = selectedFolder;
+            }
 
-                addItem.Visible = showAdd;
+            if (folder?.OnlyDeleted == false && folder?.FolderID == 0 && folder?.FolderType != SystemFolders.Drafts)
+                contextMenu.Items.Add(addItem);
 
-                bool userSelected =
-                    listView.SelectedItems.Cast<ListViewItem>().Any(i => i.Tag is FolderListModel f && f.FolderID != 0) ||
-                    listView.CheckedItems.Cast<ListViewItem>().Any(i => i.Tag is FolderListModel f && f.FolderID != 0);
-
-                deleteItem.Visible = userSelected;
-                deleteItem.Enabled = userSelected;
-            };
-
-            contextMenu.Items.Add(deleteItem);
-            contextMenu.Items.Add(addItem);
+            if(folder?.FolderID != 0 && folder != null)
+                contextMenu.Items.Add(deleteItem);
         }
 
 

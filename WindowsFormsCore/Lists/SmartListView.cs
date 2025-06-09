@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WindowsFormsCore.Lists
 {
@@ -18,11 +20,50 @@ namespace WindowsFormsCore.Lists
         protected SmartList(ListView listView)
         {
             this.listView = listView;
+
             listView.View = View.Details;
             listView.FullRowSelect = true;
-            listView.CheckBoxes = true;
-            listView.GridLines = true;
+            listView.CheckBoxes = false;
             listView.MultiSelect = false;
+
+            listView.BorderStyle = BorderStyle.None;
+            listView.BackColor = Color.White;
+            listView.ForeColor = Color.Black;
+            listView.Font = new Font("Segoe UI", 10);
+            listView.GridLines = false;
+            listView.OwnerDraw = true;
+
+            typeof(ListView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.SetProperty |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic,
+                null, listView, new object[] { true });
+
+            listView.DrawColumnHeader += (s, e) =>
+            {
+                using var headerBrush = new SolidBrush(Color.Gainsboro);
+                e.Graphics.FillRectangle(headerBrush, e.Bounds);
+                TextRenderer.DrawText(e.Graphics, e.Header.Text, listView.Font, e.Bounds, Color.Black);
+            };
+
+            listView.DrawItem += (s, e) =>{};
+
+            listView.DrawSubItem += (s, e) =>
+            {
+                bool isSelected = e.Item.Selected && listView.Focused;
+
+                using var backgroundBrush = new SolidBrush(isSelected ? Color.LightSkyBlue : Color.White);
+                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    e.SubItem.Text,
+                    e.Item.Font,
+                    e.Bounds,
+                    Color.Black,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter
+                );
+            };
 
             SetupColumns();
             SetupContextMenu();
@@ -54,7 +95,12 @@ namespace WindowsFormsCore.Lists
         private void SetupContextMenu()
         {
             var contextMenu = new ContextMenuStrip();
-            InitilizeContextMenu(contextMenu);
+
+            contextMenu.Opening += (s, e) =>
+            {
+                contextMenu.Items.Clear();
+                InitilizeContextMenu(contextMenu);
+            };
 
             listView.ContextMenuStrip = contextMenu;
         }

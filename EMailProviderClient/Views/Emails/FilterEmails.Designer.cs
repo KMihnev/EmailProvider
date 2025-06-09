@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.Emails
+﻿using WindowsFormsCore;
+
+namespace EMailProviderClient.Views.Emails
 {
     partial class FilterEmails
     {
@@ -39,9 +41,9 @@
             EMAIL_LABEL = new Label();
             RECEIVER_EMAIL = new TextBox();
             BY_RECEIVER_CHB = new CheckBox();
-            CANCEL = new Button();
-            APPLY = new Button();
-            CLEAR_BTN = new Button();
+            CANCEL = new SmartButton();
+            APPLY = new SmartButton();
+            CLEAR_BTN = new SmartButton();
             BY_DATE_GRP.SuspendLayout();
             BY_RECEIVER_GRP.SuspendLayout();
             SuspendLayout();
@@ -211,12 +213,12 @@
         private Label EMAIL_LABEL;
         private TextBox RECEIVER_EMAIL;
         private CheckBox BY_RECEIVER_CHB;
-        private Button CANCEL;
-        private Button APPLY;
+        private SmartButton CANCEL;
+        private SmartButton APPLY;
         private Label END_DATE_LABEL;
         private Label BEGIN_DATE_LABEL;
         private DateTimePicker DATE_TO;
         private DateTimePicker DATE_FROM;
-        private Button CLEAR_BTN;
+        private SmartButton CLEAR_BTN;
     }
 }

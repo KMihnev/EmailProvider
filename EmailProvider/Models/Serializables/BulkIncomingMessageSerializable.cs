@@ -12,5 +12,8 @@ namespace EmailServiceIntermediate.Models.Serializables
     {
         public int Id { get; set; }
         public string RawData { get; set; }
+
+        public DateTime? ReceivedDate { get; set; }
+        public int IncomingMessageId { get; set; }
     }
 }

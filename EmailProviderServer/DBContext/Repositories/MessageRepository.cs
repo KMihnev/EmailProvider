@@ -46,38 +46,13 @@ namespace EmailProviderServer.DBContext.Repositories
         public async Task<List<Message>> GetMessagesForSend(int take)
         {
             var newMessages = await _dbSet
-                .Where(m => m.Status == EmailStatuses.EmailStatusNew &&
-                            m.Direction == EmailDirections.EmailDirectionOut)
-                .Include(m => m.MessageRecipients)
+                .Where(m => m.Status == EmailStatuses.EmailStatusNew && m.Direction == EmailDirections.EmailDirectionOut)
+                .Include(m => m.MessageRecipients.Where(x=>x.IsOurUser == false))
                 .Include(m => m.Files)
-                .Include(m => m.UserMessages)
                 .Take(take)
                 .ToListAsync();
 
-            var result = new List<Message>();
-
-            foreach (var message in newMessages)
-            {
-                foreach (var recipient in message.MessageRecipients)
-                {
-                    var messageCopy = new Message
-                    {
-                        Id = message.Id,
-                        Subject = message.Subject,
-                        Body = message.Body,
-                        Status = message.Status,
-                        Direction = message.Direction,
-                        DateOfRegistration = message.DateOfRegistration,
-                        Files = message.Files?.ToList(), // Shallow copy is fine if you won't mutate
-                        UserMessages = message.UserMessages?.ToList(),
-                        MessageRecipients = new List<MessageRecipient> { recipient }
-                    };
-
-                    result.Add(messageCopy);
-                }
-            }
-
-            return result;
+            return newMessages;
         }
 
     }

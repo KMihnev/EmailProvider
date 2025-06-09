@@ -3,7 +3,7 @@ using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using System.Net.Sockets;
 
-namespace EMailProviderClient.Dispatches.Base
+namespace EmailService.PublicService
 {
     //------------------------------------------------------
     //	DispatchHandlerC

@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.User
+﻿using WindowsFormsCore;
+
+namespace EMailProviderClient.Views.User
 {
     partial class StartUp
     {
@@ -28,8 +30,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            StartUp_LogIn = new Button();
-            StartUp_Register = new Button();
+            StartUp_LogIn = new SmartButton();
+            StartUp_Register = new SmartButton();
             label1 = new Label();
             SuspendLayout();
             // 
@@ -80,8 +82,8 @@
 
         #endregion
 
-        private Button StartUp_LogIn;
-        private Button StartUp_Register;
+        private SmartButton StartUp_LogIn;
+        private SmartButton StartUp_Register;
         private Label label1;
         private Register register1;
     }

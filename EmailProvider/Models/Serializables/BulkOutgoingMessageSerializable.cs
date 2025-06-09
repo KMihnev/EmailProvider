@@ -12,7 +12,7 @@ namespace EmailServiceIntermediate.Models.Serializables
     {
         public int Id { get; set; }
         public string RawData { get; set; }
-        public int? ScheduledDate { get; set; }
+        public DateTime? SentDate { get; set; }
         public int OutgoingMessageId { get; set; }
     }
 }

@@ -50,6 +50,11 @@ namespace EMailProviderClient
                 BackColor = Color.White
             };
 
+            addEmailForm.EmailSaved += async (_, _) =>
+            {
+                await emailsList.RefreshAsync();
+            };
+
             this.Controls.Add(addEmailForm);
             addEmailForm.BringToFront();
             addEmailForm.Show();

@@ -1,18 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using EmailServiceIntermediate.Models.Serializables;
+﻿using System.Net.Sockets;
 using EmailServiceIntermediate.Dispatches;
-using EmailServiceIntermediate.Enums;
-using EMailProviderClient.Dispatches.Base;
-using EmailProvider.Models.Serializables;
-using EmailProvider.Enums;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
 
 namespace EmailService.PublicService
 {

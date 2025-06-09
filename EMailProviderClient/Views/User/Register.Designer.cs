@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.User
+﻿using WindowsFormsCore;
+
+namespace EMailProviderClient.Views.User
 {
     partial class Register
     {
@@ -32,8 +34,8 @@
             EDC_PASSWORD = new TextBox();
             EDC_RE_PASSWORD = new TextBox();
             StaticRegister = new Label();
-            BTN_REGISTER = new Button();
-            BTN_CANCEL = new Button();
+            BTN_REGISTER = new SmartButton();
+            BTN_CANCEL = new SmartButton();
             STT_GO_TO_LOGIN = new Label();
             SuspendLayout();
             // 
@@ -129,8 +131,8 @@
         private TextBox EDC_PASSWORD;
         private TextBox EDC_RE_PASSWORD;
         private Label StaticRegister;
-        private Button BTN_REGISTER;
-        private Button BTN_CANCEL;
+        private SmartButton BTN_REGISTER;
+        private SmartButton BTN_CANCEL;
         private Label STT_GO_TO_LOGIN;
     }
 }

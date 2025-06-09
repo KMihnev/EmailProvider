@@ -23,5 +23,7 @@ public partial class MessageRecipient : IEntity
     /// </summary>
     public string Email { get; set; } = null!;
 
+    public bool IsOurUser { get; set; }
+
     public virtual Message Message { get; set; } = null!;
 }

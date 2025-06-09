@@ -16,9 +16,9 @@ namespace WindowsFormsCore
 
     public class SmartDialog : Form
     {
-        private Button okButton;
-        private Button cancelButton;
-        private Button closeButton;
+        private SmartButton okButton;
+        private SmartButton cancelButton;
+        private SmartButton closeButton;
 
         private bool _safeCloseInvoked = false;
         public bool IsMdiEmbedded { get; private set; }
@@ -45,6 +45,8 @@ namespace WindowsFormsCore
                 MaximizeBox = false;
                 ShowInTaskbar = false;
             }
+
+            ConfigureVisuals();
         }
 
         private void ApplyDialogMode()
@@ -76,7 +78,7 @@ namespace WindowsFormsCore
         {
             foreach (Control control in Controls)
             {
-                if (control is Button) continue;
+                if (control is SmartButton) continue;
                 control.Enabled = enabled;
             }
         }
@@ -122,6 +124,32 @@ namespace WindowsFormsCore
                 MessageBox.Show($"{errorMessage}\n\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        public void ConfigureVisuals()
+        {
+            Font = new Font("Segoe UI", 10);
+            BackColor = Color.WhiteSmoke;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 2,
+                Padding = new Padding(20),
+                BackColor = Color.White,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink
+            };
+
+            var mainContentPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                BackColor = Color.White
+            };
+        }
+
     }
 
 }

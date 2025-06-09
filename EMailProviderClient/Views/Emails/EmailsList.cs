@@ -3,6 +3,7 @@ using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.ClientModels;
 using EMailProviderClient.Dispatches.Emails;
+using EMailProviderClient.Views.Folders;
 using System.Collections.ObjectModel;
 using WindowsFormsCore;
 using WindowsFormsCore.Lists;
@@ -35,6 +36,10 @@ namespace EMailProviderClient.Views.Emails
             string subject = Truncate(email.Subject, 30);
             string body = Truncate(email.Body, 100);
             var item = new ListViewItem(email.DateOfRegistration.ToString("yyyy-MM-dd HH:mm"));
+            if (!email.bIsRead)
+            {
+                item.Font = new Font(listView.Font, FontStyle.Bold);
+            }
             item.SubItems.Add(currentFolder.FolderType == SystemFolders.Incoming ? email.FromEmail : string.Join(";", email.Recipients.Select(r => r.Email)));
             item.SubItems.Add(subject);
             item.SubItems.Add(body);
@@ -115,6 +120,12 @@ namespace EMailProviderClient.Views.Emails
                 Location = new Point( (listView.FindForm().Width - 600) / 2, (listView.FindForm().Height - 400) / 2 )
             };
 
+            List<int > messagesToRead = new List<int>();
+            messagesToRead.Add(message.Id);
+
+            if(await MarkEmailAsReadDispatchC.MarkEmailsAsRead(messagesToRead));
+                selectedMessage.bIsRead = true;
+
             emailView.LoadMessage(message);
 
             var container = listView.FindForm();
@@ -122,8 +133,7 @@ namespace EMailProviderClient.Views.Emails
             emailView.BringToFront();
             emailView.Show();
 
-            if (dialogMode != DialogMode.Preview)
-                await RefreshAsync();
+            await RefreshAsync();
         }
 
         private string Truncate(string text, int max)
@@ -147,7 +157,15 @@ namespace EMailProviderClient.Views.Emails
 
         protected override void InitilizeContextMenu(ContextMenuStrip contextMenu)
         {
-            base.InitilizeContextMenu(contextMenu);
+            var deleteItem = new ToolStripMenuItem("Move to bin");
+            deleteItem.Click += async (s, e) => await DeleteSelectedItemsAsync();
+
+            contextMenu.Items.Add(deleteItem);
+
+            contextMenu.Opening += (s, e) =>
+            {
+                deleteItem.Enabled = listView.CheckedItems.Count > 0 || listView.SelectedItems.Count > 0;
+            };
 
             var refreshItem = new ToolStripMenuItem("Refresh");
             refreshItem.Click += async (s, e) => await RefreshAsync();
@@ -208,10 +226,41 @@ namespace EMailProviderClient.Views.Emails
                 }
             };
 
+            var markAsReadItem = new ToolStripMenuItem("Mark as Read");
+            markAsReadItem.Click += async (s, e) =>
+            {
+                var selectedIds = GetSelectedModels().Where(m => !m.bIsRead).Select(m => m.Id).ToList();
+                if (!selectedIds.Any()) return;
+
+                bool success = await MarkEmailAsReadDispatchC.MarkEmailsAsRead(selectedIds);
+                if (success)
+                    await RefreshAsync();
+            };
+
+            var markAsUnreadItem = new ToolStripMenuItem("Mark as Unread");
+            markAsUnreadItem.Click += async (s, e) =>
+            {
+                var selectedIds = GetSelectedModels().Where(m => m.bIsRead).Select(m => m.Id).ToList();
+                if (!selectedIds.Any()) return;
+
+                bool success = await MarkEmailAsUnReadDispatchC.MarkEmailsAsUnRead(selectedIds);
+                if (success)
+                    await RefreshAsync();
+            };
+
             contextMenu.Items.Add(refreshItem);
-            contextMenu.Items.Add(moveToItem);
+
+            if(currentFolder?.OnlyDeleted == false && allUserFolders.Count > 0)
+                contextMenu.Items.Add(moveToItem);
             if(currentFolder?.FolderID !=0 )
                 contextMenu.Items.Add(removeFromFolderItem);
+            if(currentFolder?.FolderType == SystemFolders.Incoming && currentFolder?.OnlyDeleted == false)
+            {
+                contextMenu.Items.Add(markAsReadItem);
+                contextMenu.Items.Add(markAsUnreadItem);
+            }
+            if (currentFolder?.OnlyDeleted == false)
+                contextMenu.Items.Add(deleteItem);
         }
 
     }
