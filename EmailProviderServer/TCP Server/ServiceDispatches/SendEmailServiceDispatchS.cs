@@ -1,4 +1,5 @@
-﻿using EmailProviderServer.ServiceDispatches;
+﻿using EmailProviderServer.DBContext.Services.Base;
+using EmailProviderServer.ServiceDispatches;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
@@ -8,7 +9,14 @@ namespace EmailProviderServer.TCP_Server.ServiceDispatches
 {
     public class SendEmailServiceDispatchS
     {
-        public static async Task<bool> SendEmail(EmailServiceModel messageSerializable)
+        private readonly IMessageService _messageService;
+
+        public SendEmailServiceDispatchS(IMessageService messageService)
+        {
+            _messageService = messageService;
+        }
+
+        public async Task<bool> SendEmail(EmailViewModel messageSerializable)
         {
             try
             {
@@ -26,6 +34,14 @@ namespace EmailProviderServer.TCP_Server.ServiceDispatches
                 {
                     Logger.LogErrorCallingSilent();
                     return false;
+                }
+
+                BulkOutgoingMessageSerializable bulkOutgoingMessage = null;
+                OutPackage.Deserialize(out bulkOutgoingMessage);
+                if (bulkOutgoingMessage != null)
+                {
+                    await _messageService.AddBulkOutgoingMessagesAsyncm<BulkOutgoingMessageSerializable>(bulkOutgoingMessage);
+                    await _messageService.UpdateSentStatusAsync(messageSerializable.Id);
                 }
 
                 return true;

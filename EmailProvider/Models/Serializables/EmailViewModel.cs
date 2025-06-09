@@ -25,6 +25,7 @@ namespace EmailServiceIntermediate.Models.Serializables
         public string FromEmail { get; set; } = null!;
         public string Subject { get; set; } = null!;
         public string Body { get; set; } = null!;
+
         public DateTime DateOfRegistration { get; set; }
         public EmailStatuses Status { get; set; }
         public EmailDirections Direction { get; set; }

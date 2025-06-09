@@ -26,5 +26,7 @@ namespace EmailProvider.Models.Serializables
         public List<MessageRecipientSerializable> Recipients { get; set; } = new();
 
         public int FolderId { get; set; }
+
+        public bool bIsRead { get; set; }
     }
 }

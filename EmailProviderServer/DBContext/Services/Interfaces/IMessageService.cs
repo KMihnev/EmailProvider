@@ -18,6 +18,12 @@ namespace EmailProviderServer.DBContext.Services.Base
 
         Task<bool> UpdateMessageAsync(int messageId, EmailViewModel updatedMessage);
 
-        Task<List<EmailServiceModel>> GetMessagesForSending(int take);
+        Task<List<EmailViewModel>> GetMessagesForSending(int take);
+
+        Task AddBulkIncomingMessagesAsyncm<T>(T bulkIncomingMessageModel);
+
+        Task AddBulkOutgoingMessagesAsyncm<T>(T bulkIncomingMessageModel);
+
+        Task UpdateSentStatusAsync(int messageId);
     }
 }

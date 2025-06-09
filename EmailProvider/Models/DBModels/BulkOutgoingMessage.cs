@@ -20,10 +20,12 @@ public partial class BulkOutgoingMessage : IEntity
     /// <summary>
     /// Time to be sent
     /// </summary>
-    public int? ScheduledDate { get; set; }
+    public DateTime? SentDate { get; set; }
 
     /// <summary>
     /// refrence to message
     /// </summary>
     public int OutgoingMessageId { get; set; }
+
+    public virtual Message OutgoingMessage { get; set; } = null!;
 }

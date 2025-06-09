@@ -54,7 +54,12 @@ namespace WindowsFormsCore.Lists
         private void SetupContextMenu()
         {
             var contextMenu = new ContextMenuStrip();
-            InitilizeContextMenu(contextMenu);
+
+            contextMenu.Opening += (s, e) =>
+            {
+                contextMenu.Items.Clear();
+                InitilizeContextMenu(contextMenu);
+            };
 
             listView.ContextMenuStrip = contextMenu;
         }

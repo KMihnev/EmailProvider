@@ -20,7 +20,8 @@ namespace EmailServiceIntermediate.AutoMapper.Profiles
         public ModelsProfile()
         {
             CreateMap<BulkIncomingMessage, BulkIncomingMessageSerializable>().ReverseMap();
-            CreateMap<BulkOutgoingMessage, BulkIncomingMessageSerializable>().ReverseMap();
+            CreateMap<BulkOutgoingMessage, BulkOutgoingMessageSerializable>().ReverseMap();
+
             CreateMap<Country, CountryViewModel>().ReverseMap();
             CreateMap<File, FileViewModel>().ReverseMap();
             CreateMap<Folder, FolderViewModel>().ReverseMap();
@@ -40,7 +41,8 @@ namespace EmailServiceIntermediate.AutoMapper.Profiles
                 .ForMember(dest => dest.DateOfRegistration, opt => opt.MapFrom(src => src.Message.DateOfRegistration ?? DateTime.MinValue))
                 .ForMember(dest => dest.Direction, opt => opt.MapFrom(src => src.Message.Direction))
                 .ForMember(dest => dest.Recipients, opt => opt.MapFrom(src => src.Message.MessageRecipients))
-                .ForMember(dest => dest.FolderId, opt => opt.MapFrom(src => src.UserMessageFolders.FirstOrDefault() != null ? src.UserMessageFolders.First().FolderId : 0));
+                .ForMember(dest => dest.FolderId, opt => opt.MapFrom(src => src.UserMessageFolders.FirstOrDefault() != null ? src.UserMessageFolders.First().FolderId : 0))
+                .ForMember(dest => dest.bIsRead, opt => opt.MapFrom(src => src.IsRead));
 
             CreateMap<Message, EmailServiceModel>()
             .ForMember(dest => dest.Recipient,opt => opt.MapFrom(src => src.MessageRecipients.FirstOrDefault().Email))

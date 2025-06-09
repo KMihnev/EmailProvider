@@ -45,18 +45,34 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.ToTable("BULK_INCOMING_MESSAGES", tb => tb.HasComment("Table for incoming message to be processed"));
 
+            entity.HasIndex(e => e.IncomingMessageId, "UX_BULK_INCOMING_MESSAGES_MESSAGE_ID").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasComment("ID for incoming message to be processed")
                 .HasColumnName("ID");
+            entity.Property(e => e.IncomingMessageId)
+                .HasComment("refrence to message")
+                .HasColumnName("INCOMING_MESSAGE_ID");
             entity.Property(e => e.RawData)
                 .HasMaxLength(1024)
                 .HasComment("Raw data")
                 .HasColumnName("RAW_DATA");
+            entity.Property(e => e.ReceivedDate)
+                .HasComment("Time to be sent")
+                .HasColumnType("datetime")
+                .HasColumnName("RECEIVED_DATE");
+
+            entity.HasOne(d => d.IncomingMessage).WithOne(p => p.BulkIncomingMessage)
+                .HasForeignKey<BulkIncomingMessage>(d => d.IncomingMessageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RAW_INCOMING_MESSAGE_MESSAGE_ID");
         });
 
         modelBuilder.Entity<BulkOutgoingMessage>(entity =>
         {
             entity.ToTable("BULK_OUTGOING_MESSAGES", tb => tb.HasComment("Table for incoming message to be processed"));
+
+            entity.HasIndex(e => e.OutgoingMessageId, "UX_BULK_OUTGOING_MESSAGES_MESSAGE_ID").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasComment("ID for incoming message to be processed")
@@ -68,9 +84,15 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(1024)
                 .HasComment("Raw data")
                 .HasColumnName("RAW_DATA");
-            entity.Property(e => e.ScheduledDate)
+            entity.Property(e => e.SentDate)
                 .HasComment("Time to be sent")
-                .HasColumnName("SCHEDULED_DATE");
+                .HasColumnType("datetime")
+                .HasColumnName("SENT_DATE");
+
+            entity.HasOne(d => d.OutgoingMessage).WithOne(p => p.BulkOutgoingMessage)
+                .HasForeignKey<BulkOutgoingMessage>(d => d.OutgoingMessageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RAW_OUTGOING_MESSAGE_MESSAGE_ID");
         });
 
         modelBuilder.Entity<Country>(entity =>
@@ -196,11 +218,14 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.MessageId)
                 .HasComment("Id of message")
                 .HasColumnName("MESSAGE_ID");
+           entity.Property(e => e.IsOurUser)
+                .HasComment("Is the recipient our user")
+                .HasColumnName("IS_OUR_USER");
 
             entity.HasOne(d => d.Message).WithMany(p => p.MessageRecipients)
                 .HasForeignKey(d => d.MessageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MESSAGE_R__MESSA__524F1B17");
+                .HasConstraintName("FK__MESSAGE_R__MESSA__7DF8932B");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -243,6 +268,8 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.ToTable("USER_MESSAGES", tb => tb.HasComment("Table to store per-user message state"));
 
+            entity.HasIndex(e => e.UserId, "IX_USER_MESSAGES_USER_ID");
+
             entity.HasIndex(e => new { e.UserId, e.MessageId }, "UX_USER_MESSAGES_USER_ID_MESSAGE_ID").IsUnique();
 
             entity.Property(e => e.Id)
@@ -264,7 +291,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Message).WithMany(p => p.UserMessages)
                 .HasForeignKey(d => d.MessageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__USER_MESS__MESSA__561FABFB");
+                .HasConstraintName("FK__USER_MESS__MESSA__00D4FFD6");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserMessages)
                 .HasForeignKey(d => d.UserId)
@@ -290,15 +317,12 @@ public partial class ApplicationDbContext : DbContext
                 .HasComment("Time to be sent")
                 .HasColumnName("USER_MESSAGE_ID");
 
-            entity.HasOne(d => d.Folder)
-                .WithMany(p => p.UserMessageFolders)
+            entity.HasOne(d => d.Folder).WithMany(p => p.UserMessageFolders)
                 .HasForeignKey(d => d.FolderId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_MESSAGE_FOLDERS_FOLDERS");
 
             entity.HasOne(d => d.UserMessage).WithMany(p => p.UserMessageFolders)
                 .HasForeignKey(d => d.UserMessageId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_USER_MESSAGE_FOLDERS_USER_MESSAGE");
         });
 

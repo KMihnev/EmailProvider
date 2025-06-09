@@ -1,18 +1,12 @@
 ﻿using EmailProvider.Enums;
 using EmailProvider.Models.Serializables;
-using EMailProviderClient.Dispatches.Base;
 using EmailService.Parsers;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Models.Serializables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace EmailService
+namespace EmailService.PublicService
 {
     public class EmailMessageHandler
     {
@@ -60,16 +54,20 @@ namespace EmailService
             {
                 FromEmail = Regex.Match(fromHeader, @"<([^>]+)>").Groups[1].Value,
                 Recipients = recipients,
-                Body = selectedBody,
                 Subject = subject,
+                Body = selectedBody,
                 Direction = EmailDirections.EmailDirectionIn,
                 Status = EmailStatuses.EmailStatusComplete
             };
+
+            BulkIncomingMessageSerializable rawMessage = new BulkIncomingMessageSerializable();
+            rawMessage.RawData = body;
 
             var request = new SmartStreamArray();
             var response = new SmartStreamArray();
             request.Serialize(DispatchEnums.ReceiveEmails);
             request.Serialize(emailModel);
+            request.Serialize(rawMessage);
 
             var dispatcher = new DispatchHandlerService();
             await dispatcher.Execute(request, response);

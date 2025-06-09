@@ -17,4 +17,17 @@ public partial class BulkIncomingMessage : IEntity
     /// Raw data
     /// </summary>
     public string RawData { get; set; } = null!;
+
+
+    /// <summary>
+    /// Time to be sent
+    /// </summary>
+    public DateTime? ReceivedDate { get; set; }
+
+    /// <summary>
+    /// refrence to message
+    /// </summary>
+    public int IncomingMessageId { get; set; }
+
+    public virtual Message IncomingMessage { get; set; } = null!;
 }

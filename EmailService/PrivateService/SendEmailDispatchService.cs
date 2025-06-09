@@ -1,4 +1,5 @@
 ﻿using EmailProvider.Models.Serializables;
+using EmailService.PublicService;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
@@ -42,9 +43,16 @@ namespace EmailService.PrivateService
 
             try
             {
-               
+                SmtpMailSender smtpMailSender = new SmtpMailSender();
+                string rawMime = await smtpMailSender.SendAsync(messageSerializable);
+
+                BulkOutgoingMessageSerializable rawMessage = new BulkOutgoingMessageSerializable();
+                rawMessage.RawData = rawMime;
+                rawMessage.OutgoingMessageId = messageSerializable.Id;
+                rawMessage.SentDate = DateTime.UtcNow;
 
                 OutPackage.Serialize(true);
+                OutPackage.Serialize(rawMessage);
             }
             catch (Exception ex)
             {

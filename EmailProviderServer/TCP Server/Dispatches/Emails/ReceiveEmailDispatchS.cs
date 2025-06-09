@@ -22,8 +22,10 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
         {
             try
             {
+                BulkIncomingMessageSerializable rawMessage;
                 EmailViewModel message;
                 InPackage.Deserialize(out message);
+                InPackage.Deserialize(out rawMessage);
 
                 if (message == null || string.IsNullOrWhiteSpace(message.Subject))
                 {
@@ -32,6 +34,12 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
                 }
 
                 await _messageService.ProcessMessageAsync(message);
+
+                if (rawMessage != null)
+                {
+                    rawMessage.IncomingMessageId = message.Id;
+                    await _messageService.AddBulkIncomingMessagesAsyncm(rawMessage);
+                }
 
                 OutPackage.Serialize(true);
                 return true;
