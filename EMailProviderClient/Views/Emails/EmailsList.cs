@@ -250,14 +250,23 @@ namespace EMailProviderClient.Views.Emails
 
             contextMenu.Items.Add(refreshItem);
 
-            if(currentFolder?.OnlyDeleted == false && allUserFolders.Count > 0)
+            if(currentFolder?.OnlyDeleted == false && allUserFolders.Where(x=>x.FolderID > 0).ToList().Count > 0)
                 contextMenu.Items.Add(moveToItem);
             if(currentFolder?.FolderID !=0 )
                 contextMenu.Items.Add(removeFromFolderItem);
-            if(currentFolder?.FolderType == SystemFolders.Incoming && currentFolder?.OnlyDeleted == false)
+            if (currentFolder?.FolderType == SystemFolders.Incoming && currentFolder?.OnlyDeleted == false)
             {
-                contextMenu.Items.Add(markAsReadItem);
-                contextMenu.Items.Add(markAsUnreadItem);
+                var selected = GetSelectedModels();
+
+                if (selected.Any(m => !m.bIsRead))
+                {
+                    contextMenu.Items.Add(markAsReadItem);
+                }
+
+                if (selected.Any(m => m.bIsRead))
+                {
+                    contextMenu.Items.Add(markAsUnreadItem);
+                }
             }
             if (currentFolder?.OnlyDeleted == false)
                 contextMenu.Items.Add(deleteItem);

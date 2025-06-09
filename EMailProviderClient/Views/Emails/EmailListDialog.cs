@@ -1,4 +1,5 @@
 // File: EMailProviderClient/EmailProvider.cs
+using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.Views.Emails;
 using EMailProviderClient.Views.Folders;
@@ -24,6 +25,8 @@ namespace EMailProviderClient
         {
             foldersList.FolderSelected += async _ =>
             {
+                SELECT_ALL_CHB.Checked = false;
+
                 var folder = foldersList.GetSelectedItem();
                 if (folder is not null)
                 {
@@ -83,6 +86,15 @@ namespace EMailProviderClient
             }
 
             return Task.FromResult(true);
+        }
+
+        private void SELECT_ALL_CHB_CheckedChanged(object sender, EventArgs e)
+        {
+            bool isChecked = SELECT_ALL_CHB.Checked;
+            if (isChecked)
+                emailsList.SelectAllItems();
+            else
+                emailsList.ClearSelection();
         }
     }
 }

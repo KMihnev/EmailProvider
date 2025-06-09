@@ -34,7 +34,7 @@ namespace EMailProviderClient
             SEARCH_BOX = new TextBox();
             CMB_SORT = new ComboBox();
             ON_ADD_EMAIL = new SmartButton();
-            checkBox1 = new CheckBox();
+            SELECT_ALL_CHB = new CheckBox();
             ON_ACCOUNT = new SmartButton();
             pictureBox1 = new PictureBox();
             FILTER_BTN = new SmartButton();
@@ -85,15 +85,16 @@ namespace EMailProviderClient
             ON_ADD_EMAIL.UseVisualStyleBackColor = true;
             ON_ADD_EMAIL.Click += ON_ADD_EMAIL_Click;
             // 
-            // checkBox1
+            // SELECT_ALL_CHB
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(196, 130);
-            checkBox1.MaximumSize = new Size(100, 0);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(15, 14);
-            checkBox1.TabIndex = 12;
-            checkBox1.UseVisualStyleBackColor = true;
+            SELECT_ALL_CHB.AutoSize = true;
+            SELECT_ALL_CHB.Location = new Point(196, 130);
+            SELECT_ALL_CHB.MaximumSize = new Size(100, 0);
+            SELECT_ALL_CHB.Name = "SELECT_ALL_CHB";
+            SELECT_ALL_CHB.Size = new Size(15, 14);
+            SELECT_ALL_CHB.TabIndex = 12;
+            SELECT_ALL_CHB.UseVisualStyleBackColor = true;
+            SELECT_ALL_CHB.CheckedChanged += SELECT_ALL_CHB_CheckedChanged;
             // 
             // ON_ACCOUNT
             // 
@@ -166,7 +167,7 @@ namespace EMailProviderClient
             Controls.Add(FILTER_BTN);
             Controls.Add(pictureBox1);
             Controls.Add(ON_ACCOUNT);
-            Controls.Add(checkBox1);
+            Controls.Add(SELECT_ALL_CHB);
             Controls.Add(ON_ADD_EMAIL);
             Controls.Add(CMB_SORT);
             Controls.Add(SEARCH_BOX);
@@ -186,7 +187,7 @@ namespace EMailProviderClient
         private TextBox SEARCH_BOX;
         private ComboBox CMB_SORT;
         private SmartButton ON_ADD_EMAIL;
-        private CheckBox checkBox1;
+        private CheckBox SELECT_ALL_CHB;
         private SmartButton ON_ACCOUNT;
         private PictureBox pictureBox1;
         private SmartButton FILTER_BTN;
