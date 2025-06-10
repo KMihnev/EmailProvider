@@ -110,5 +110,24 @@ namespace EMailProviderClient
                 await emailsList.RefreshAsync();
             }
         }
+
+        private CancellationTokenSource debounceToken;
+        private async void SEARCH_BOX_TextChanged(object sender, EventArgs e)
+        {
+            debounceToken?.Cancel();
+            debounceToken = new CancellationTokenSource();
+            var token = debounceToken.Token;
+
+            try
+            {
+                await Task.Delay(300, token);
+                if (!token.IsCancellationRequested)
+                {
+                    SearchData.Keyword = SEARCH_BOX.Text;
+                    await emailsList.RefreshAsync();
+                }
+            }
+            catch (TaskCanceledException) { }
+        }
     }
 }

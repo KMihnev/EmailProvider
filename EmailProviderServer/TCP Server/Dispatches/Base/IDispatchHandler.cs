@@ -10,7 +10,7 @@ public abstract class BaseDispatchHandler
     protected virtual bool RequiresSession => true;
 
     protected User SessionUser { get; private set; }
-    public string errorMessage { get; protected set; }
+    public static string errorMessage { get; protected set; }
 
     public abstract Task<bool> Execute(SmartStreamArray inPackage, SmartStreamArray outPackage);
 
@@ -19,6 +19,7 @@ public abstract class BaseDispatchHandler
         SmartStreamArray outPackage,
         DispatchMapper dispatchMapper)
     {
+        errorMessage = string.Empty;
         try
         {
             inPackage.Deserialize(out string token);
@@ -58,9 +59,10 @@ public abstract class BaseDispatchHandler
         return true;
     }
 
-    private static void SetResponseFailed(SmartStreamArray ResponsePackage, string error = "")
+    private static void SetResponseFailed(SmartStreamArray ResponsePackage, string error)
     {
         ResponsePackage.Serialize(false);
-        ResponsePackage.Serialize(error);
+        string finalError = string.IsNullOrEmpty(errorMessage) ? error : errorMessage;
+        ResponsePackage.Serialize(finalError);
     }
 }

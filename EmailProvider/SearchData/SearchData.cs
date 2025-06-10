@@ -19,6 +19,8 @@ namespace EmailProvider.SearchData
 
         public OrderBy OrderBy { get; set; }
 
+        public string? Keyword { get; set; }
+
         public void Clear()
         {
             Conditions.Clear();

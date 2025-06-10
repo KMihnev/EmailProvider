@@ -137,13 +137,6 @@ namespace EmailProvider.Validation.User
                 return false;
             } //if
 
-            if (!Regex.IsMatch(email, ValidationPatterns.EmailPattern))
-            {
-                if (bLog)
-                    Logger.LogWarning(LogMessages.InvalidEmail);
-                return false;
-            } //if
-
             return true;
         }
 

@@ -12,11 +12,11 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {
     public interface IUserMessageRepository
     {
-        Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy);
-        Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy);
-        Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy);
-        Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy);
-        Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy);
+        Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
+        Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
+        Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
+        Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
+        Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
         Task<UserMessage> GetByUserAndMessageIdAsync(int userId, int messageId);
         Task SetIsDeletedAsync(int userId, int messageId, bool isDeleted);
         Task SetIsReadAsync(int userId, int messageId, bool isRead);

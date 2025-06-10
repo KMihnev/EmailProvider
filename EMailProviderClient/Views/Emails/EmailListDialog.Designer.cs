@@ -60,7 +60,7 @@ namespace EMailProviderClient
             SEARCH_BOX.Name = "SEARCH_BOX";
             SEARCH_BOX.Size = new Size(209, 25);
             SEARCH_BOX.TabIndex = 4;
-            SEARCH_BOX.Text = "Key word";
+            SEARCH_BOX.TextChanged += SEARCH_BOX_TextChanged;
             // 
             // CMB_SORT
             // 
