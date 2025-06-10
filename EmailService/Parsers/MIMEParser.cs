@@ -27,33 +27,26 @@ namespace EmailService.Parsers
             var lines = rawInput.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             int index = 0;
 
-            // Step 1: Parse headers
-            var headerBuilder = new StringBuilder();
-            while (index < lines.Length && string.IsNullOrWhiteSpace(lines[index]))
-                index++;
-
+            var headerLines = new List<string>();
             while (index < lines.Length)
             {
                 var line = lines[index];
+
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     index++;
                     break;
                 }
 
-                if (line.StartsWith(" ") || line.StartsWith("\t"))
+                if (!line.Contains(':') && !char.IsWhiteSpace(line[0]))
                 {
-                    headerBuilder.AppendLine(line);
-                }
-                else
-                {
-                    headerBuilder.AppendLine(line);
+                    break;
                 }
 
+                headerLines.Add(line);
                 index++;
             }
 
-            var headerLines = headerBuilder.ToString().Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             string currentKey = null;
             foreach (var line in headerLines)
             {
@@ -70,7 +63,8 @@ namespace EmailService.Parsers
                     {
                         currentKey = line.Substring(0, colon).Trim();
                         var value = line.Substring(colon + 1).Trim();
-                        message.Headers[currentKey] = value;
+                        if (!message.Headers.ContainsKey(currentKey))
+                            message.Headers[currentKey] = value;
                     }
                 }
             }
@@ -83,18 +77,40 @@ namespace EmailService.Parsers
             }
             message.Body = bodyBuilder.ToString().Trim();
 
+            // Step 3: Handle multipart
             if (message.ContentType?.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase) == true)
             {
-                var boundaryMatch = Regex.Match(message.ContentType, "boundary=\"?([^\"]+)\"?");
+                var boundaryMatch = Regex.Match(message.ContentType, @"boundary=""?([^"";]+)""?");
                 if (boundaryMatch.Success)
                 {
                     var boundary = "--" + boundaryMatch.Groups[1].Value;
-                    var sections = message.Body.Split(new[] { boundary }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var section in sections)
+                    var closingBoundary = boundary + "--";
+
+                    var normalizedBody = message.Body.Replace("\r\n", "\n").Replace("\r", "\n");
+                    var parts = Regex.Split(normalizedBody, $@"\n{Regex.Escape(boundary)}\s*");
+
+                    foreach (var rawPart in parts)
                     {
-                        var clean = section.Trim();
-                        if (clean == "--" || string.IsNullOrWhiteSpace(clean)) continue;
-                        message.Parts.Add(ParsePart(clean));
+                        var clean = rawPart.Trim();
+
+                        // Skip only true end marker like "--boundary--"
+                        if (clean.Equals("--", StringComparison.Ordinal)) continue;
+
+                        // Remove leading boundary line if present
+                        if (clean.StartsWith("--"))
+                        {
+                            var firstNewline = clean.IndexOf('\n');
+                            if (firstNewline > 0)
+                            {
+                                clean = clean.Substring(firstNewline + 1).TrimStart();
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(clean)) continue;
+
+                        var part = ParsePart(clean);
+                        if (part != null)
+                            message.Parts.Add(part);
                     }
                 }
             }
@@ -109,7 +125,7 @@ namespace EmailService.Parsers
             int index = 0;
 
             // Headers
-            var headerBuilder = new StringBuilder();
+            var headerLines = new List<string>();
             while (index < lines.Length)
             {
                 var line = lines[index];
@@ -119,12 +135,16 @@ namespace EmailService.Parsers
                     break;
                 }
 
-                headerBuilder.AppendLine(line);
+                if (!line.Contains(':') && !char.IsWhiteSpace(line[0]))
+                {
+                    break;
+                }
+
+                headerLines.Add(line);
                 index++;
             }
 
             // Parse headers
-            var headerLines = headerBuilder.ToString().Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             string currentKey = null;
             foreach (var line in headerLines)
             {
@@ -141,7 +161,8 @@ namespace EmailService.Parsers
                     {
                         currentKey = line.Substring(0, colon).Trim();
                         var value = line.Substring(colon + 1).Trim();
-                        part.Headers[currentKey] = value;
+                        if (!part.Headers.ContainsKey(currentKey))
+                            part.Headers[currentKey] = value;
                     }
                 }
             }
