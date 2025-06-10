@@ -117,7 +117,7 @@ namespace WindowsFormsCore.Lists
             listView.ContextMenuStrip = contextMenu;
         }
 
-        public async Task RefreshAsync()
+        public virtual async Task RefreshAsync()
         {
             var loaded = await LoadDataAsync();
 
@@ -148,23 +148,11 @@ namespace WindowsFormsCore.Lists
         protected List<TModel> GetSelectedModels()
         {
             var selected = new List<TModel>();
-            var indexes = new HashSet<int>();
-
-            foreach (ListViewItem item in listView.CheckedItems)
-            {
-                if (item.Index >= 0 && item.Index < items.Count)
-                    indexes.Add(item.Index);
-            }
 
             foreach (ListViewItem item in listView.SelectedItems)
             {
-                if (item.Index >= 0 && item.Index < items.Count)
-                    indexes.Add(item.Index);
-            }
-
-            foreach (int index in indexes)
-            {
-                selected.Add(items[index]);
+                if (item.Tag != null)
+                    selected.Add((TModel)item.Tag);
             }
 
             return selected;
@@ -206,6 +194,7 @@ namespace WindowsFormsCore.Lists
             bool first = true;
             foreach (ListViewItem item in listView.Items)
             {
+                if(item.Tag == null) continue;
                 item.Selected = true;
                 item.Focused = first;
                 first = false;

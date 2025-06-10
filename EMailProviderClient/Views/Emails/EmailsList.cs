@@ -12,6 +12,12 @@ namespace EMailProviderClient.Views.Emails
 {
     public class EmailsList : SmartList<EmailListModel>
     {
+        private int currentPage = 0;
+        private const int pageSize = 30;
+        private bool isLoading = false;
+        private bool allLoaded = false;
+        private readonly List<EmailListModel> loadedEmails = new();
+
         private readonly SearchData searchData;
 
         private FolderListModel? currentFolder;
@@ -21,6 +27,8 @@ namespace EMailProviderClient.Views.Emails
         public EmailsList(ListView listView, SearchData searchData) : base(listView)
         {
             this.searchData = searchData;
+            listView.MouseWheel += async (s, e) => await TryLoadMoreOnScroll();
+            listView.KeyUp += async (s, e) => await TryLoadMoreOnScroll();
         }
 
         protected override void SetupColumns()
@@ -272,6 +280,48 @@ namespace EMailProviderClient.Views.Emails
                 contextMenu.Items.Add(deleteItem);
         }
 
+        public override async Task RefreshAsync()
+        {
+            listView.Items.Clear();
+            loadedEmails.Clear();
+            currentPage = 0;
+            allLoaded = false;
+
+            await LoadMoreAsync();
+        }
+
+        private async Task LoadMoreAsync()
+        {
+            if (isLoading || allLoaded) return;
+
+            isLoading = true;
+            searchData.Skip = currentPage * pageSize;
+            searchData.Take = pageSize;
+
+            var newItems = await LoadDataAsync();
+            if (newItems.Count < pageSize)
+                allLoaded = true;
+
+            loadedEmails.AddRange(newItems);
+            foreach (var email in newItems)
+                listView.Items.Add(RenderItem(email));
+
+            currentPage++;
+            isLoading = false;
+        }
+
+        private async Task TryLoadMoreOnScroll()
+        {
+            if (listView.Items.Count == 0 || listView.TopItem == null) return;
+
+            int visibleCount = listView.ClientSize.Height / listView.Items[0].Bounds.Height;
+            int bottomIndex = listView.TopItem.Index + visibleCount;
+
+            if (bottomIndex >= listView.Items.Count - 5)
+            {
+                await LoadMoreAsync();
+            }
+        }
     }
 
 }

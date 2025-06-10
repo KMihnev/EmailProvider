@@ -22,4 +22,10 @@ namespace EmailProvider.Enums
         SearchTypeDateBefore,
         SearchTypeDateAfter,
     }
+
+    public enum OrderBy
+    {
+        OrderByAscending,
+        OrderByDescending,
+    }
 }

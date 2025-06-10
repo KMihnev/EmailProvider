@@ -1,4 +1,5 @@
 // File: EMailProviderClient/EmailProvider.cs
+using EmailProvider.Enums;
 using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.Views.Emails;
@@ -19,6 +20,10 @@ namespace EMailProviderClient
 
             emailsList = new EmailsList(EMAILS_LIST, SearchData);
             foldersList = new FoldersList(CATEGORIES_LIST);
+
+            CMB_SORT.DataSource = Enum.GetValues(typeof(OrderBy));
+            CMB_SORT.SelectedItem = SearchData.OrderBy;
+            CMB_SORT.SelectedIndexChanged += CMB_SORT_SelectedIndexChanged;
         }
 
         private async void EmailProvider_Load(object sender, EventArgs e)
@@ -95,6 +100,15 @@ namespace EMailProviderClient
                 emailsList.SelectAllItems();
             else
                 emailsList.ClearSelection();
+        }
+
+        private async void CMB_SORT_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CMB_SORT.SelectedItem is OrderBy selectedSort)
+            {
+                SearchData.OrderBy = selectedSort;
+                await emailsList.RefreshAsync();
+            }
         }
     }
 }

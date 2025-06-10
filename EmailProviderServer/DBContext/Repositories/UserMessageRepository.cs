@@ -1,8 +1,10 @@
 ﻿using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class UserMessageRepository : IUserMessageRepository
 {
@@ -13,84 +15,73 @@ public class UserMessageRepository : IUserMessageRepository
         _context = context;
     }
 
-    public async Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    public async Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         um.Message.Direction == EmailDirections.EmailDirectionIn &&
-                         !um.UserMessageFolders.Any())
+        var query = _context.UserMessages
+        .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionIn && !um.UserMessageFolders.Any())
+        .Include(um => um.Message)
+            .ThenInclude(m => m.MessageRecipients)
+        .Include(um => um.UserMessageFolders)
+            .Where(filter ?? (_ => true));
+
+        query = orderBy == OrderBy.OrderByAscending? query.OrderBy(um => um.Message.DateOfRegistration): query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take) .ToListAsync();
+    }
+
+    public async Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy)
+    {
+        var query = _context.UserMessages
+            .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionOut && um.Message.Status != EmailStatuses.EmailStatusDraft && !um.UserMessageFolders.Any())
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
-    }
+                .Where(filter ?? (_ => true));
 
-    public async Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
+    }
+    public async Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         um.Message.Direction == EmailDirections.EmailDirectionOut &&
-                         um.Message.Status != EmailStatuses.EmailStatusDraft &&
-                        !um.UserMessageFolders.Any())
+        var query = _context.UserMessages
+            .Where(um => um.UserId == userId && !um.IsDeleted && um.Message.Direction == EmailDirections.EmailDirectionOut && um.Message.Status == EmailStatuses.EmailStatusDraft)
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            .Where(filter ?? (_ => true));
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
     }
 
-    public async Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    public async Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         !um.IsDeleted &&
-                         um.Message.Direction == EmailDirections.EmailDirectionOut &&
-                         um.Message.Status == EmailStatuses.EmailStatusDraft)
+        var query = _context.UserMessages
+            .Where(um => um.UserId == userId && !um.IsDeleted && um.UserMessageFolders.Any(f => f.FolderId == folderId))
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            .Where(filter ?? (_ => true));
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
     }
 
-    public async Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    public async Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         !um.IsDeleted &&
-                         um.UserMessageFolders.Any(f => f.FolderId == folderId))
-            .Include(um => um.Message)
-                .ThenInclude(m => m.MessageRecipients)
-            .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
-    }
-
-    public async Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
-    {
-        return await _context.UserMessages
+        var query = _context.UserMessages
             .Where(um => um.UserId == userId &&
                          um.IsDeleted)
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            .Where(filter ?? (_ => true));
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<UserMessage> GetByUserAndMessageIdAsync(int userId, int messageId)
