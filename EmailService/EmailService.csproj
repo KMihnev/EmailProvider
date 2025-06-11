@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DnsClient" Version="1.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EmailProvider\EmailProvider.csproj" />
   </ItemGroup>
 
