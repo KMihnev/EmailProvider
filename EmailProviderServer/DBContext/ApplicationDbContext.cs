@@ -258,6 +258,11 @@ public partial class ApplicationDbContext : DbContext
                 .IsUnicode(false)
                 .HasComment("User phone number")
                 .HasColumnName("PHONE_NUMBER");
+            entity.Property(e => e.Photo)
+                .HasComment("Profile photo of the user (binary image)")
+                .HasColumnName("PHOTO")
+                .HasColumnType("varbinary(max)")
+                .IsRequired(false);
 
             entity.HasOne(d => d.Country).WithMany(p => p.Users).HasForeignKey(d => d.CountryId);
         });

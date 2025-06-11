@@ -44,6 +44,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 case    DispatchEnums.MarkEmailsAsUnread:       return ActivatorUtilities.CreateInstance<MarkEmailAsUnReadDispatchS>    (_serviceProvider);
                 case    DispatchEnums.MoveEmailsToFolder:       return ActivatorUtilities.CreateInstance<MoveEmailToFolderDispatchS>    (_serviceProvider);
                 case    DispatchEnums.RemoveEmailsFromFolder:   return ActivatorUtilities.CreateInstance<RemoveEmailFromFolder>         (_serviceProvider);
+                case    DispatchEnums.EditProfile:              return ActivatorUtilities.CreateInstance<EditProfileDispatchS>          (_serviceProvider);
                 default:
                     throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }

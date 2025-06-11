@@ -199,7 +199,7 @@ namespace EMailProviderClient.Views.Emails
             Controls.Add(CLOSE_BTN);
             Controls.Add(SEND_BTN);
             Name = "EMAIL_VIEW";
-            Text = "AddEmail";
+            Text = "Email";
             ResumeLayout(false);
             PerformLayout();
         }

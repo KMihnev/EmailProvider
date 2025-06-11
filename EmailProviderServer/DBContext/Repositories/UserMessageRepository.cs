@@ -181,8 +181,8 @@ public class UserMessageRepository : IUserMessageRepository
     public async Task<bool> RemoveFromFolderAsync(int userId, List<int> messageIds)
     {
         var userMessages = await _context.UserMessages
+            .Where(um => um.UserId == userId && messageIds.Contains(um.MessageId))
             .Include(um => um.UserMessageFolders)
-            .Where(um => um.UserId == userId && messageIds.Contains(um.Id))
             .ToListAsync();
 
         if (!userMessages.Any()) return false;

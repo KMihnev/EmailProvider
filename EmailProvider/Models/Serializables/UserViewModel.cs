@@ -22,5 +22,11 @@ namespace EmailServiceIntermediate.Models.Serializables
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public int CountryId { get; set; }
+
+        public byte[]? Photo { get; set; }
+
+        public string? PhotoBase64 => Photo != null ? Convert.ToBase64String(Photo) : null;
+
+
     }
 }

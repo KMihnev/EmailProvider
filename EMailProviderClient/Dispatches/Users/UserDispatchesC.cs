@@ -5,6 +5,7 @@ using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Base;
+using EmailProvider.Models.Serializables;
 
 namespace EMailProviderClient.Dispatches.Users
 {
@@ -79,7 +80,6 @@ namespace EMailProviderClient.Dispatches.Users
 
                 if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
                 {
-                    Logger.LogError(LogMessages.DispatchErrorRegister);
                     return false;
                 }
 
@@ -148,6 +148,47 @@ namespace EMailProviderClient.Dispatches.Users
                 Logger.LogErrorCalling();
                 return false;
             }
+        }
+
+        /// <summary> RPC за popylwane na данни за профила </summary>
+        public static async Task<bool> EditProfile(UserViewModel user, ChangePasswordModel ChangePassword)
+        {
+            try
+            {
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
+
+                //Сериализираме Данните
+                InPackage.Serialize((int)DispatchEnums.EditProfile);
+                InPackage.Serialize(user);
+                InPackage.Serialize(ChangePassword);
+
+                //Изпращаме заявката
+                DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
+
+                if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
+                {
+                    return false;
+                }
+
+                UserViewModel updatedUser = null;
+                OutPackage.Deserialize(out updatedUser);
+
+                if (updatedUser == null)
+                {
+                    Logger.LogErrorCalling();
+                    return false;
+                }
+
+                UserController.SetCurrentUser(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogErrorCalling();
+                return false;
+            }
+
+            return true;
         }
     }
 }

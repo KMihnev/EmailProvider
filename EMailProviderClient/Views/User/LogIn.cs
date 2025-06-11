@@ -39,7 +39,13 @@ namespace EMailProviderClient.Views.User
         {
             this.Hide();
             var RegisterForm = new Register();
-            RegisterForm.ShowDialog();
+
+            var dialogResult = RegisterForm.ShowDialog();
+
+            if (dialogResult == DialogResult.OK)
+            {
+                this.DialogResult = DialogResult.OK;
+            }
             this.Close();
         }
 
@@ -56,9 +62,14 @@ namespace EMailProviderClient.Views.User
             EmailServiceIntermediate.Models.User user = new EmailServiceIntermediate.Models.User();
 
             if (FieldValidator.IsEmail(EDC_NAME.Text))
+            {
+                FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
                 user.Email = EDC_NAME.Text;
+            }
             else
+            {
                 user.Name = EDC_NAME.Text;
+            }
 
             if (!FieldValidator.Validate(true))
                 return;
@@ -83,7 +94,6 @@ namespace EMailProviderClient.Views.User
             FieldValidator = new LoginFormValidationC();
 
             FieldValidator.AddValidationField(UserValidationTypes.ValidationTypePassword, EDC_PASSWORD);
-            FieldValidator.AddValidationField(UserValidationTypes.ValidationTypeEmail, EDC_NAME);
         }
     }
 }

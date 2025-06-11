@@ -137,6 +137,9 @@ namespace EMailProviderClient.Views.Emails
             if (Mode == DialogMode.Preview || DialogResult == DialogResult.OK)
                 return true;
 
+            if (IsLogOutInvoked)
+                return true;
+
             if (isNew && !IsEmailEmpty())
             {
                 var result = MessageBox.Show(LogMessages.DoYouWishToSaveDraft, LogMessages.SaveAsDraft,
@@ -162,5 +165,6 @@ namespace EMailProviderClient.Views.Emails
 
             return true;
         }
+
     }
 }

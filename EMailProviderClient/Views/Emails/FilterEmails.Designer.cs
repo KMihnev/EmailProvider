@@ -207,7 +207,7 @@ namespace EMailProviderClient.Views.Emails
             Controls.Add(BY_DATE_GRP);
             Controls.Add(Filter);
             Name = "FilterEmails";
-            Text = "FilterEmails";
+            Text = "Extended Filters";
             BY_DATE_GRP.ResumeLayout(false);
             BY_DATE_GRP.PerformLayout();
             BY_RECEIVER_GRP.ResumeLayout(false);

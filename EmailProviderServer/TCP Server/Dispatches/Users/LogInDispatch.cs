@@ -52,8 +52,6 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 logInValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeEmail, user.Email);
                 bIsUsingEmail = true;
             }
-            else
-                logInValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypeEmail, user.Name);
 
             logInValidator.AddValidation(EmailServiceIntermediate.Enums.UserValidationTypes.ValidationTypePassword, user.Password);
 

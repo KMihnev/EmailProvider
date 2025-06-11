@@ -31,12 +31,6 @@ namespace EmailProvider.Validation.User
 
         public override bool Validate(bool bLog = false)
         {
-            if (ValidationFields == null || ValidationFields.Count == 0)
-            {
-                Logger.LogError(LogMessages.NoFieldsToValidate);
-                return false;
-            }
-
             foreach (var pair in ValidationFields)
             {
                 switch (pair.Key)

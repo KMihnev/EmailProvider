@@ -27,7 +27,7 @@ namespace EMailProviderClient.Validation
 
         protected override bool ValidateEmail(string email, bool bLog = false)
         {
-            if (!base.ValidateEmail(email, false) && !base.ValidateName(email))
+            if (!base.ValidateEmail(email, bLog))
                 return false;
 
             return true;

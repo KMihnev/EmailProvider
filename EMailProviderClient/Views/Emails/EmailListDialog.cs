@@ -4,6 +4,8 @@ using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.Views.Emails;
 using EMailProviderClient.Views.Folders;
+using MDITest;
+using System.Windows.Forms.VisualStyles;
 using WindowsFormsCore;
 
 namespace EMailProviderClient
@@ -17,10 +19,14 @@ namespace EMailProviderClient
         public EmailListDialog() : base(DialogMode.Edit, showStandardButtons: false, isMdiEmbedded: true)
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.ControlBox = false;
+            this.Text = string.Empty;
 
             emailsList = new EmailsList(EMAILS_LIST, SearchData);
             foldersList = new FoldersList(CATEGORIES_LIST);
 
+            SELECT_ALL_CHB.Enabled = false;
             CMB_SORT.DataSource = Enum.GetValues(typeof(OrderBy));
             CMB_SORT.SelectedItem = SearchData.OrderBy;
             CMB_SORT.SelectedIndexChanged += CMB_SORT_SelectedIndexChanged;
@@ -28,6 +34,8 @@ namespace EMailProviderClient
 
         private async void EmailProvider_Load(object sender, EventArgs e)
         {
+            MDIClientSupport.SetBevel(this, false);
+
             foldersList.FolderSelected += async _ =>
             {
                 SELECT_ALL_CHB.Checked = false;
@@ -85,21 +93,19 @@ namespace EMailProviderClient
 
         protected override Task<bool> OnBeforeClose()
         {
-            if (!Confirm("Are you sure you want to exit the application?", "Confirm Exit"))
+            if (!IsLogOutInvoked)
             {
-                return Task.FromResult(false);
+                if (!Confirm("Are you sure you want to exit the application?", "Confirm Exit"))
+                {
+                    return Task.FromResult(false);
+                }
             }
-
             return Task.FromResult(true);
         }
 
         private void SELECT_ALL_CHB_CheckedChanged(object sender, EventArgs e)
         {
-            bool isChecked = SELECT_ALL_CHB.Checked;
-            if (isChecked)
-                emailsList.SelectAllItems();
-            else
-                emailsList.ClearSelection();
+
         }
 
         private async void CMB_SORT_SelectedIndexChanged(object sender, EventArgs e)
@@ -128,6 +134,22 @@ namespace EMailProviderClient
                 }
             }
             catch (TaskCanceledException) { }
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            SearchData.Clear();
+            SEARCH_BOX.Clear();
+            emailsList.RefreshAsync();
+        }
+
+        private void SELECT_ALL_CHB_MouseUp(object sender, MouseEventArgs e)
+        {
+            bool isChecked = SELECT_ALL_CHB.Checked;
+            if (isChecked)
+                emailsList.SelectAllItems();
+            else
+                emailsList.ClearSelection();
         }
     }
 }
