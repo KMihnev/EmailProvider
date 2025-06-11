@@ -24,7 +24,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailProvider", "EmailProvi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "EmailService\EmailService.csproj", "{6F186EDC-EC4C-4421-BEE1-6E83B1E59EC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsCore", "WindowsFormsCore\WindowsFormsCore.csproj", "{CD067D62-6C2B-4155-AABE-B940C65FC964}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsFormsCore", "WindowsFormsCore\WindowsFormsCore.csproj", "{CD067D62-6C2B-4155-AABE-B940C65FC964}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Settings", "Settings", "{C588CC79-FCD3-436C-B370-4BEBEDCCCA06}"
+	ProjectSection(SolutionItems) = preProject
+		Settings\Settings.ini = Settings\Settings.ini
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

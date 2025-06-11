@@ -1,6 +1,7 @@
 ﻿using EmailProvider.Validation.Base;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +136,23 @@ namespace EmailProvider.Validation.User
                 if (bLog)
                     Logger.LogWarning(LogMessages.RequiredFieldEmail);
                 return false;
-            } //if
+            }
+
+            var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+
+            if (!emailRegex.IsMatch(email))
+            {
+                if (bLog)
+                    Logger.LogWarning($"Invalid email format: {email}");
+                return false;
+            }
+
+            if (!email.EndsWith($"@{SettingsProvider.GetEmailDomain()}", StringComparison.OrdinalIgnoreCase))
+            {
+                if (bLog)
+                    Logger.LogWarning($"Email domain must be '@{SettingsProvider.GetEmailDomain()}': {email}");
+                return false;
+            }
 
             return true;
         }
