@@ -70,13 +70,6 @@ namespace EmailProvider.Validation.Email
                 return false;
             } //if
 
-            if (!Regex.IsMatch(email, ValidationPatterns.EmailPattern))
-            {
-                if (bLog)
-                    Logger.LogWarning(LogMessages.InvalidEmail);
-                return false;
-            } //if
-
             return true;
         }
     }

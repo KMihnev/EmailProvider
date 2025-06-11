@@ -14,7 +14,6 @@ namespace EmailProviderServer.Helpers
         public static Expression<Func<UserMessage, bool>> BuildExpression(
             List<SearchCondition> conditions,
             bool isIncoming = false,
-            bool isOutgoing = false,
             bool isDraft = false)
         {
             ParameterExpression param = Expression.Parameter(typeof(UserMessage), "um");
@@ -29,16 +28,21 @@ namespace EmailProviderServer.Helpers
                 {
                     case SearchType.SearchTypeDate:
                     {
-                        if (DateTime.TryParse(condition.SearchValue, out var date))
+                        if (DateTime.TryParse(condition.SearchValue, out DateTime date))
                         {
-                            var dateProp = Expression.Property(messageProp, nameof(Message.DateOfRegistration));
-                            expr = (SearchTypeDate)condition.SearchSubType switch
-                            {
-                                SearchTypeDate.SearchTypeDateBefore => Expression.LessThan(dateProp, Expression.Constant(date)),
-                                SearchTypeDate.SearchTypeDateAfter => Expression.GreaterThan(dateProp, Expression.Constant(date)),
-                                _ => null
-                            };
-                        }
+                                var dateProp = Expression.Property(messageProp, nameof(Message.DateOfRegistration));
+                                var hasValue = Expression.Property(dateProp, "HasValue");
+                                var value = Expression.Property(dateProp, "Value");
+
+                                Expression? dateExpr = (SearchTypeDate)condition.SearchSubType switch
+                                {
+                                    SearchTypeDate.SearchTypeDateBefore => Expression.LessThan(value, Expression.Constant(date)),
+                                    SearchTypeDate.SearchTypeDateAfter => Expression.GreaterThan(value, Expression.Constant(date)),
+                                    _ => null
+                                };
+
+                                expr = dateExpr != null ? Expression.AndAlso(hasValue, dateExpr) : null;
+                            }
                         break;
                     }
                     case SearchType.SearchTypeEmail:
@@ -49,7 +53,7 @@ namespace EmailProviderServer.Helpers
                             expr = Expression.Call(fromProp, nameof(string.Contains), null,
                                 Expression.Constant(condition.SearchValue));
                         }
-                        else if (isOutgoing)
+                        else
                         {
                             var recipientsProp = Expression.Property(messageProp, nameof(Message.MessageRecipients));
                             var recipientParam = Expression.Parameter(typeof(MessageRecipient), "r");

@@ -65,6 +65,15 @@ namespace EMailProviderClient.Views.User
             var selectedCountry = (CountryViewModel)CMB_COUNTRY.SelectedItem;
             user.CountryId = selectedCountry.Id;
 
+            if (PB_PROFILE.Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    PB_PROFILE.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    user.Photo = ms.ToArray();
+                }
+            }
+
             if (!await UserDispatchesC.SetUpProfile(user))
             {
                 this.Show();
@@ -74,11 +83,14 @@ namespace EMailProviderClient.Views.User
             this.Close();
         }
 
+
         private void AddValidation()
         {
             UserValidatorC = new UserValidatorC();
-            UserValidatorC.AddValidationField(UserValidationTypes.ValidationTypeName, EDC_NAME);
-            UserValidatorC.AddValidationField(UserValidationTypes.ValidationTypePhoneNumber, EDC_PHONE_NUMBER);
+            if(!string.IsNullOrEmpty(EDC_NAME.Text))
+                UserValidatorC.AddValidationField(UserValidationTypes.ValidationTypeName, EDC_NAME);
+            if (!string.IsNullOrEmpty(EDC_PHONE_NUMBER.Text))
+                UserValidatorC.AddValidationField(UserValidationTypes.ValidationTypePhoneNumber, EDC_PHONE_NUMBER);
         }
 
         private async void LoadCountries()

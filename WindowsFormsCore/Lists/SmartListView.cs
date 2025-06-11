@@ -24,7 +24,7 @@ namespace WindowsFormsCore.Lists
             listView.View = View.Details;
             listView.FullRowSelect = true;
             listView.CheckBoxes = false;
-            listView.MultiSelect = false;
+            listView.MultiSelect = true;
 
             listView.BorderStyle = BorderStyle.None;
             listView.BackColor = Color.White;
@@ -102,10 +102,22 @@ namespace WindowsFormsCore.Lists
                 InitilizeContextMenu(contextMenu);
             };
 
+            contextMenu.Opening += (s, e) =>
+            {
+                if (listView.SelectedItems.Count == 0 && listView.CheckedItems.Count == 0)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                contextMenu.Items.Clear();
+                InitilizeContextMenu(contextMenu);
+            };
+
             listView.ContextMenuStrip = contextMenu;
         }
 
-        public async Task RefreshAsync()
+        public virtual async Task RefreshAsync()
         {
             var loaded = await LoadDataAsync();
 
@@ -136,23 +148,11 @@ namespace WindowsFormsCore.Lists
         protected List<TModel> GetSelectedModels()
         {
             var selected = new List<TModel>();
-            var indexes = new HashSet<int>();
-
-            foreach (ListViewItem item in listView.CheckedItems)
-            {
-                if (item.Index >= 0 && item.Index < items.Count)
-                    indexes.Add(item.Index);
-            }
 
             foreach (ListViewItem item in listView.SelectedItems)
             {
-                if (item.Index >= 0 && item.Index < items.Count)
-                    indexes.Add(item.Index);
-            }
-
-            foreach (int index in indexes)
-            {
-                selected.Add(items[index]);
+                if (item.Tag != null)
+                    selected.Add((TModel)item.Tag);
             }
 
             return selected;
@@ -185,6 +185,38 @@ namespace WindowsFormsCore.Lists
                 return default;
 
             return listView.SelectedItems[0].Tag as TModel;
+        }
+
+        public void SelectAllItems()
+        {
+            listView.BeginUpdate();
+
+            bool first = true;
+            foreach (ListViewItem item in listView.Items)
+            {
+                if(item.Tag == null) continue;
+                item.Selected = true;
+                item.Focused = first;
+                first = false;
+            }
+
+            listView.Focus();
+            listView.EndUpdate();
+            listView.Invalidate();
+        }
+
+        public void ClearSelection()
+        {
+            listView.BeginUpdate();
+
+            foreach (ListViewItem item in listView.Items)
+            {
+                item.Selected = false;
+                item.Focused = false;
+            }
+
+            listView.EndUpdate();
+            listView.Invalidate();
         }
     }
 }

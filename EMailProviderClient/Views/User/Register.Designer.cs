@@ -44,7 +44,7 @@ namespace EMailProviderClient.Views.User
             EDC_EMAIL.Location = new Point(45, 84);
             EDC_EMAIL.Name = "EDC_EMAIL";
             EDC_EMAIL.PlaceholderText = "Email";
-            EDC_EMAIL.Size = new Size(172, 23);
+            EDC_EMAIL.Size = new Size(190, 23);
             EDC_EMAIL.TabIndex = 1;
             // 
             // EDC_PASSWORD
@@ -53,7 +53,7 @@ namespace EMailProviderClient.Views.User
             EDC_PASSWORD.Name = "EDC_PASSWORD";
             EDC_PASSWORD.PasswordChar = '*';
             EDC_PASSWORD.PlaceholderText = "Password";
-            EDC_PASSWORD.Size = new Size(172, 23);
+            EDC_PASSWORD.Size = new Size(190, 23);
             EDC_PASSWORD.TabIndex = 2;
             // 
             // EDC_RE_PASSWORD
@@ -62,14 +62,14 @@ namespace EMailProviderClient.Views.User
             EDC_RE_PASSWORD.Name = "EDC_RE_PASSWORD";
             EDC_RE_PASSWORD.PasswordChar = '*';
             EDC_RE_PASSWORD.PlaceholderText = "Repeat Password";
-            EDC_RE_PASSWORD.Size = new Size(172, 23);
+            EDC_RE_PASSWORD.Size = new Size(190, 23);
             EDC_RE_PASSWORD.TabIndex = 3;
             // 
             // StaticRegister
             // 
             StaticRegister.AutoSize = true;
             StaticRegister.Font = new Font("Verdana", 21.75F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            StaticRegister.Location = new Point(66, 27);
+            StaticRegister.Location = new Point(74, 27);
             StaticRegister.Name = "StaticRegister";
             StaticRegister.Size = new Size(133, 35);
             StaticRegister.TabIndex = 0;
@@ -77,7 +77,11 @@ namespace EMailProviderClient.Views.User
             // 
             // BTN_REGISTER
             // 
-            BTN_REGISTER.Location = new Point(142, 209);
+            BTN_REGISTER.BackColor = Color.DodgerBlue;
+            BTN_REGISTER.FlatStyle = FlatStyle.Flat;
+            BTN_REGISTER.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BTN_REGISTER.ForeColor = Color.White;
+            BTN_REGISTER.Location = new Point(160, 209);
             BTN_REGISTER.Name = "BTN_REGISTER";
             BTN_REGISTER.Size = new Size(75, 23);
             BTN_REGISTER.TabIndex = 6;
@@ -87,6 +91,10 @@ namespace EMailProviderClient.Views.User
             // 
             // BTN_CANCEL
             // 
+            BTN_CANCEL.BackColor = Color.DodgerBlue;
+            BTN_CANCEL.FlatStyle = FlatStyle.Flat;
+            BTN_CANCEL.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BTN_CANCEL.ForeColor = Color.White;
             BTN_CANCEL.Location = new Point(45, 209);
             BTN_CANCEL.Name = "BTN_CANCEL";
             BTN_CANCEL.Size = new Size(75, 23);
@@ -99,7 +107,7 @@ namespace EMailProviderClient.Views.User
             // 
             STT_GO_TO_LOGIN.AutoSize = true;
             STT_GO_TO_LOGIN.ForeColor = SystemColors.HotTrack;
-            STT_GO_TO_LOGIN.Location = new Point(48, 173);
+            STT_GO_TO_LOGIN.Location = new Point(59, 173);
             STT_GO_TO_LOGIN.Name = "STT_GO_TO_LOGIN";
             STT_GO_TO_LOGIN.Size = new Size(162, 15);
             STT_GO_TO_LOGIN.TabIndex = 4;
@@ -110,7 +118,7 @@ namespace EMailProviderClient.Views.User
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(259, 260);
+            ClientSize = new Size(287, 248);
             Controls.Add(STT_GO_TO_LOGIN);
             Controls.Add(BTN_CANCEL);
             Controls.Add(BTN_REGISTER);

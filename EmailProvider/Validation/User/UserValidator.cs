@@ -1,6 +1,7 @@
 ﻿using EmailProvider.Validation.Base;
 using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,12 +31,6 @@ namespace EmailProvider.Validation.User
 
         public override bool Validate(bool bLog = false)
         {
-            if (ValidationFields == null || ValidationFields.Count == 0)
-            {
-                Logger.LogError(LogMessages.NoFieldsToValidate);
-                return false;
-            }
-
             foreach (var pair in ValidationFields)
             {
                 switch (pair.Key)
@@ -135,14 +130,23 @@ namespace EmailProvider.Validation.User
                 if (bLog)
                     Logger.LogWarning(LogMessages.RequiredFieldEmail);
                 return false;
-            } //if
+            }
 
-            if (!Regex.IsMatch(email, ValidationPatterns.EmailPattern))
+            var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+
+            if (!emailRegex.IsMatch(email))
             {
                 if (bLog)
-                    Logger.LogWarning(LogMessages.InvalidEmail);
+                    Logger.LogWarning($"Invalid email format: {email}");
                 return false;
-            } //if
+            }
+
+            if (!email.EndsWith($"@{SettingsProvider.GetEmailDomain()}", StringComparison.OrdinalIgnoreCase))
+            {
+                if (bLog)
+                    Logger.LogWarning($"Email domain must be '@{SettingsProvider.GetEmailDomain()}': {email}");
+                return false;
+            }
 
             return true;
         }

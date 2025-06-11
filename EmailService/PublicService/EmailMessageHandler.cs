@@ -26,21 +26,29 @@ namespace EmailService.PublicService
             foreach (var to in toList)
                 Console.WriteLine($"- {to}");
 
-            string selectedBody = message.Body;
-            foreach (var part in message.Parts)
+            string selectedBody = string.Empty;
+
+            if (message.Parts.Count > 0)
             {
-                if (part.Headers.TryGetValue("Content-Type", out var contentType))
+                foreach (var part in message.Parts)
                 {
-                    if (contentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase))
+                    if (part.Headers.TryGetValue("Content-Type", out var contentType))
                     {
-                        selectedBody = part.Body;
-                        break;
-                    }
-                    else if (contentType.StartsWith("text/html", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(selectedBody))
-                    {
-                        selectedBody = part.Body;
+                        if (contentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase))
+                        {
+                            selectedBody = part.Body;
+                            break;
+                        }
+                        else if (contentType.StartsWith("text/html", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(selectedBody))
+                        {
+                            selectedBody = part.Body;
+                        }
                     }
                 }
+            }
+            else
+            {
+                selectedBody = message.Body;
             }
 
             Console.WriteLine($"Subject: {subject}");

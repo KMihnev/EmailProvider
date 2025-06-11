@@ -35,9 +35,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<UserMessageFolder> UserMessageFolders { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=EMAIL_DB;Trusted_Connection=True;TrustServerCertificate=True;");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -260,6 +258,11 @@ public partial class ApplicationDbContext : DbContext
                 .IsUnicode(false)
                 .HasComment("User phone number")
                 .HasColumnName("PHONE_NUMBER");
+            entity.Property(e => e.Photo)
+                .HasComment("Profile photo of the user (binary image)")
+                .HasColumnName("PHOTO")
+                .HasColumnType("varbinary(max)")
+                .IsRequired(false);
 
             entity.HasOne(d => d.Country).WithMany(p => p.Users).HasForeignKey(d => d.CountryId);
         });

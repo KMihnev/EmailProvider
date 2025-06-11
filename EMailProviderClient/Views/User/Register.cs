@@ -3,6 +3,7 @@ using EmailServiceIntermediate.Enums;
 using EmailServiceIntermediate.Logging;
 using EMailProviderClient.Validation;
 using EMailProviderClient.Dispatches.Users;
+using System.Windows.Forms;
 
 namespace EMailProviderClient.Views.User
 {
@@ -38,7 +39,12 @@ namespace EMailProviderClient.Views.User
         {
             this.Hide();
             var LogInForm = new LogIn();
-            LogInForm.ShowDialog();
+            var dialogResult = LogInForm.ShowDialog();
+
+            if (dialogResult == DialogResult.OK)
+            {
+                this.DialogResult = DialogResult.OK;
+            }
             this.Close();
         }
 
@@ -63,10 +69,10 @@ namespace EMailProviderClient.Views.User
                 return;
             }
 
-            this.DialogResult = DialogResult.OK;
             this.Hide();
             var SetUpProfile = new SetupProfile();
             SetUpProfile.ShowDialog();
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 

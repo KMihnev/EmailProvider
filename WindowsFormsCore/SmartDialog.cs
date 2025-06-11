@@ -21,6 +21,8 @@ namespace WindowsFormsCore
         private SmartButton closeButton;
 
         private bool _safeCloseInvoked = false;
+
+        public bool IsLogOutInvoked = false;
         public bool IsMdiEmbedded { get; private set; }
 
         public DialogMode Mode { get; private set; }

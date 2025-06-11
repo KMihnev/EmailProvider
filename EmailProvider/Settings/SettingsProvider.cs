@@ -39,6 +39,21 @@ namespace EmailServiceIntermediate.Settings
         {
             return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPrivateServicePort, SectionNames._sectionShared);
         }
+
+        public static string GetEmailDomain()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramEmailDomain, SectionNames._sectionShared);
+        }
+
+        public static string GetDKIMKeyPath()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramDKIMPrivateKeyPath, SectionNames._sectionShared);
+        }
+
+        public static string GetDKIMRecordSelector()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramDKIMRecordSelector, SectionNames._sectionShared);
+        }
     }
 
 }

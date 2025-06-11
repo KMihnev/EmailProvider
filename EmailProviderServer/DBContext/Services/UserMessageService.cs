@@ -31,40 +31,40 @@ namespace EmailProviderServer.DBContext.Services
         public async Task<List<T>> GetIncomingMessagesAsync<T>(SearchData searchData, int UserId)
         {
             var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: true);
-            var messages = await _repository.GetIncomingMessagesAsync(UserId, filter, searchData.Skip, searchData.Take);
+            var messages = await _repository.GetIncomingMessagesAsync(UserId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 
         public async Task<List<T>> GetOutgoingMessagesAsync<T>(SearchData searchData, int UserId)
         {
-            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isOutgoing: true);
-            var messages = await _repository.GetOutgoingMessagesAsync(UserId, filter, searchData.Skip, searchData.Take);
+            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: false);
+            var messages = await _repository.GetOutgoingMessagesAsync(UserId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 
         public async Task<List<T>> GetDraftMessagesAsync<T>(SearchData searchData, int UserId)
         {
-            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isOutgoing: true, isDraft: true);
-            var messages = await _repository.GetDraftMessagesAsync(UserId, filter, searchData.Skip, searchData.Take);
+            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: false, isDraft: true);
+            var messages = await _repository.GetDraftMessagesAsync(UserId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 
         public async Task<List<T>> GetMessagesInFolderAsync<T>(SearchData searchData, int UserId, int folderId)
         {
-            var Folder = await _folderRepository.GetByIdAsync(folderId);
+        var Folder = await _folderRepository.GetByIdAsync(folderId);
 
             bool bIsIncoming = Folder.FolderDirection == EmailDirections.EmailDirectionIn;
 
             var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: bIsIncoming);
-            var messages = await _repository.GetMessagesInFolderAsync(UserId, folderId, filter, searchData.Skip, searchData.Take);
+            var messages = await _repository.GetMessagesInFolderAsync(UserId, folderId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 
         public async Task<List<T>> GetDeletedMessagesAsync<T>(SearchData searchData, int UserId)
         {
-            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isOutgoing: true, isDraft: false);
+            var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: false, isDraft: false);
 
-            var messages = await _repository.GetDeletedMessagesForUserAsync(UserId, filter, searchData.Skip, searchData.Take);
+            var messages = await _repository.GetDeletedMessagesForUserAsync(UserId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 

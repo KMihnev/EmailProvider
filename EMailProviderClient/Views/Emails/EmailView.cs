@@ -41,8 +41,20 @@ namespace EMailProviderClient.Views.Emails
 
         protected override void FillData()
         {
-            if (emailSerializable?.Recipients != null)
-                RECEIVER_EDIT.Text = string.Join(";", emailSerializable.Recipients.Select(r => r.Email));
+            if (emailSerializable.Direction == EmailDirections.EmailDirectionOut)
+            {
+                if (Mode != DialogMode.Add)
+                    HEADER.Text = "Sent Email";
+
+                if (emailSerializable?.Recipients != null)
+                    RECEIVER_EDIT.Text = string.Join(";", emailSerializable.Recipients.Select(r => r.Email));
+            }
+            else
+            {
+                RECEIVER_LABEL.Text = "Sender";
+                HEADER.Text = "Received Email";
+                RECEIVER_EDIT.Text = emailSerializable.FromEmail;
+            }
 
             SUBJECT_EDIT.Text = emailSerializable.Subject ?? string.Empty;
 
@@ -55,6 +67,7 @@ namespace EMailProviderClient.Views.Emails
         public void LoadMessage(EmailViewModel message)
         {
             emailSerializable = message;
+
             FillData();
         }
 
@@ -124,6 +137,9 @@ namespace EMailProviderClient.Views.Emails
             if (Mode == DialogMode.Preview || DialogResult == DialogResult.OK)
                 return true;
 
+            if (IsLogOutInvoked)
+                return true;
+
             if (isNew && !IsEmailEmpty())
             {
                 var result = MessageBox.Show(LogMessages.DoYouWishToSaveDraft, LogMessages.SaveAsDraft,
@@ -149,5 +165,6 @@ namespace EMailProviderClient.Views.Emails
 
             return true;
         }
+
     }
 }

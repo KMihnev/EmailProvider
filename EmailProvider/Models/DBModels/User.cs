@@ -17,6 +17,7 @@ public partial class User : IEntity
         Password = string.Empty;
         PhoneNumber = string.Empty;
         CountryId = 0;
+        Photo = null;
         Folders = new List<Folder>();
         UserMessages = new List<UserMessage>();
         Country = null;
@@ -51,6 +52,11 @@ public partial class User : IEntity
     /// Foreign key to country
     /// </summary>
     public int CountryId { get; set; }
+
+    /// <summary>
+    /// Profile photo of the user
+    /// </summary>
+    public byte[]? Photo { get; set; }
 
     public virtual Country Country { get; set; } = null!;
 

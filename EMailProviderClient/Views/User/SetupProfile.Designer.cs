@@ -59,12 +59,12 @@ namespace EMailProviderClient.Views.User
             // 
             // CMB_COUNTRY
             // 
+            CMB_COUNTRY.DropDownStyle = ComboBoxStyle.DropDownList;
             CMB_COUNTRY.FormattingEnabled = true;
             CMB_COUNTRY.Location = new Point(51, 246);
             CMB_COUNTRY.Name = "CMB_COUNTRY";
             CMB_COUNTRY.Size = new Size(168, 23);
             CMB_COUNTRY.TabIndex = 3;
-            CMB_COUNTRY.Text = "Country";
             CMB_COUNTRY.SelectedIndexChanged += ON_COUNTRIES_CHANGE;
             // 
             // STT_SETUP_PROFILE
@@ -87,6 +87,10 @@ namespace EMailProviderClient.Views.User
             // 
             // BTN_UPLOAD_PICTURE
             // 
+            BTN_UPLOAD_PICTURE.BackColor = Color.DodgerBlue;
+            BTN_UPLOAD_PICTURE.FlatStyle = FlatStyle.Flat;
+            BTN_UPLOAD_PICTURE.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BTN_UPLOAD_PICTURE.ForeColor = Color.White;
             BTN_UPLOAD_PICTURE.Location = new Point(77, 188);
             BTN_UPLOAD_PICTURE.Name = "BTN_UPLOAD_PICTURE";
             BTN_UPLOAD_PICTURE.Size = new Size(121, 23);
@@ -97,6 +101,10 @@ namespace EMailProviderClient.Views.User
             // 
             // BTN_CONTINUE
             // 
+            BTN_CONTINUE.BackColor = Color.DodgerBlue;
+            BTN_CONTINUE.FlatStyle = FlatStyle.Flat;
+            BTN_CONTINUE.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BTN_CONTINUE.ForeColor = Color.White;
             BTN_CONTINUE.Location = new Point(144, 320);
             BTN_CONTINUE.Name = "BTN_CONTINUE";
             BTN_CONTINUE.Size = new Size(75, 23);
@@ -107,6 +115,10 @@ namespace EMailProviderClient.Views.User
             // 
             // BTN_SKIP
             // 
+            BTN_SKIP.BackColor = Color.DodgerBlue;
+            BTN_SKIP.FlatStyle = FlatStyle.Flat;
+            BTN_SKIP.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            BTN_SKIP.ForeColor = Color.White;
             BTN_SKIP.Location = new Point(51, 320);
             BTN_SKIP.Name = "BTN_SKIP";
             BTN_SKIP.Size = new Size(75, 23);
@@ -129,7 +141,7 @@ namespace EMailProviderClient.Views.User
             Controls.Add(EDC_PHONE_NUMBER);
             Controls.Add(EDC_NAME);
             Name = "SetupProfile";
-            Text = "SetupProfile";
+            Text = "Additional Information";
             Load += SetupProfile_Load;
             ((System.ComponentModel.ISupportInitialize)PB_PROFILE).EndInit();
             ResumeLayout(false);

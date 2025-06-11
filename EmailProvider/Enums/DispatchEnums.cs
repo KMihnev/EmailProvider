@@ -31,6 +31,7 @@ namespace EmailServiceIntermediate.Enums
         LoadDeletedEmails,
         MoveEmailsToFolder,
         RemoveEmailsFromFolder,
+        EditProfile,
 
         //Server - Service
         SendEmailToService,

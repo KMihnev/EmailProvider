@@ -1,8 +1,10 @@
 ﻿using EmailProvider.Enums;
 using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailServiceIntermediate.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 public class UserMessageRepository : IUserMessageRepository
 {
@@ -13,84 +15,108 @@ public class UserMessageRepository : IUserMessageRepository
         _context = context;
     }
 
-    public async Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    public async Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         um.Message.Direction == EmailDirections.EmailDirectionIn &&
-                         !um.UserMessageFolders.Any())
+        var query = _context.UserMessages
+        .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionIn && !um.UserMessageFolders.Any())
+        .Include(um => um.Message)
+            .ThenInclude(m => m.MessageRecipients)
+        .Include(um => um.UserMessageFolders)
+            .Where(filter ?? (_ => true));
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(um =>
+                um.Message.Subject.Contains(keyword) ||
+                um.Message.Body.Contains(keyword));
+        }
+
+        query = orderBy == OrderBy.OrderByAscending? query.OrderBy(um => um.Message.DateOfRegistration): query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take) .ToListAsync();
+    }
+
+    public async Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
+    {
+        var query = _context.UserMessages
+            .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionOut && um.Message.Status != EmailStatuses.EmailStatusDraft && !um.UserMessageFolders.Any())
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
-    }
+                .Where(filter ?? (_ => true));
 
-    public async Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(um =>
+                um.Message.Subject.Contains(keyword) ||
+                um.Message.Body.Contains(keyword));
+        }
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
+    }
+    public async Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         um.Message.Direction == EmailDirections.EmailDirectionOut &&
-                         um.Message.Status != EmailStatuses.EmailStatusDraft &&
-                        !um.UserMessageFolders.Any())
+        var query = _context.UserMessages
+            .Where(um => um.UserId == userId && !um.IsDeleted && um.Message.Direction == EmailDirections.EmailDirectionOut && um.Message.Status == EmailStatuses.EmailStatusDraft)
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            .Where(filter ?? (_ => true));
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(um =>
+                um.Message.Subject.Contains(keyword) ||
+                um.Message.Body.Contains(keyword));
+        }
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
     }
 
-    public async Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    public async Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         !um.IsDeleted &&
-                         um.Message.Direction == EmailDirections.EmailDirectionOut &&
-                         um.Message.Status == EmailStatuses.EmailStatusDraft)
+        var query = _context.UserMessages
+            .Where(um => um.UserId == userId && !um.IsDeleted && um.UserMessageFolders.Any(f => f.FolderId == folderId))
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            .Where(filter ?? (_ => true));
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(um =>
+                um.Message.Subject.Contains(keyword) ||
+                um.Message.Body.Contains(keyword));
+        }
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
     }
 
-    public async Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
+    public async Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
     {
-        return await _context.UserMessages
-            .Where(um => um.UserId == userId &&
-                         !um.IsDeleted &&
-                         um.UserMessageFolders.Any(f => f.FolderId == folderId))
-            .Include(um => um.Message)
-                .ThenInclude(m => m.MessageRecipients)
-            .Include(um => um.UserMessageFolders)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
-    }
-
-    public async Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take)
-    {
-        return await _context.UserMessages
+        var query = _context.UserMessages
             .Where(um => um.UserId == userId &&
                          um.IsDeleted)
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
-            .Where(filter ?? (_ => true))
-            .OrderByDescending(um => um.Message.DateOfRegistration)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            .Where(filter ?? (_ => true));
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(um =>
+                um.Message.Subject.Contains(keyword) ||
+                um.Message.Body.Contains(keyword));
+        }
+
+        query = orderBy == OrderBy.OrderByAscending ? query.OrderBy(um => um.Message.DateOfRegistration) : query.OrderByDescending(um => um.Message.DateOfRegistration);
+
+        return await query.Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<UserMessage> GetByUserAndMessageIdAsync(int userId, int messageId)
@@ -132,7 +158,7 @@ public class UserMessageRepository : IUserMessageRepository
     {
         var messages = await _context.UserMessages
             .Include(m => m.UserMessageFolders)
-            .Where(m => messageIds.Contains(m.Id))
+            .Where(m => messageIds.Contains(m.MessageId))
             .ToListAsync();
 
         if (!messages.Any()) return false;
@@ -155,8 +181,8 @@ public class UserMessageRepository : IUserMessageRepository
     public async Task<bool> RemoveFromFolderAsync(int userId, List<int> messageIds)
     {
         var userMessages = await _context.UserMessages
+            .Where(um => um.UserId == userId && messageIds.Contains(um.MessageId))
             .Include(um => um.UserMessageFolders)
-            .Where(um => um.UserId == userId && messageIds.Contains(um.Id))
             .ToListAsync();
 
         if (!userMessages.Any()) return false;
