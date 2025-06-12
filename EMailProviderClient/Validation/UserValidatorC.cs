@@ -21,7 +21,7 @@ namespace EMailProviderClient.Validation
         //Methods
         public void AddValidationField(UserValidationTypes eValidationType, TextBox textBox)
         {
-            ValidationFieldsC.Add(eValidationType, textBox);
+            ValidationFieldsC[eValidationType] =textBox;
         }
 
         public override bool Validate(bool bLog = false)

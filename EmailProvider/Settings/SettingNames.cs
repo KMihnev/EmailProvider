@@ -29,7 +29,9 @@ namespace EmailServiceIntermediate.Settings
         public const string _paramSMTPServiceIP = "SMTPServiceIP";
         public const string _paramSMTPPrivateServicePort = "SMTPPrivateServicePort";
         public const string _paramSMTPPublicServicePort = "SMTPPublicServicePort";
+        public const string _paramSMTPPublicServiceCertSubject = "SMTPPublicServiceCertSubject";
         public const string _paramEmailDomain = "EmailDomain";
+        public const string _paramEmailPublicDomain = "EmailPublicDomain";
         public const string _paramDKIMPrivateKeyPath = "DKIMPrivateKeyPath";
         public const string _paramDKIMRecordSelector = "DKIMRecordSelector";
     }

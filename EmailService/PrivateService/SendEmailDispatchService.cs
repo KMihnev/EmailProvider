@@ -45,7 +45,7 @@ namespace EmailService.PrivateService
             {
                 SmtpMailSender smtpMailSender = new SmtpMailSender();
                 string rawMime = await smtpMailSender.SendAsync(messageSerializable);
-
+                Logger.Log("Finished sending");
                 BulkOutgoingMessageSerializable rawMessage = new BulkOutgoingMessageSerializable();
                 rawMessage.RawData = rawMime;
                 rawMessage.OutgoingMessageId = messageSerializable.Id;

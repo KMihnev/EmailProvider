@@ -10,6 +10,7 @@ using EmailProviderServer.Validation.User;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
 using EmailProvider.Models.Serializables;
+using EmailProviderServer.Helpers;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -79,7 +80,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
 
             if(changePasswordModel != null )
             {
-                if(CurrentUser.Password != changePasswordModel.OldPassword)
+                if(CurrentUser.Password != EncryptionHelper.HashPassword(changePasswordModel.OldPassword))
                 {
                     errorMessage = "Incorrect Password!";
                     return false;

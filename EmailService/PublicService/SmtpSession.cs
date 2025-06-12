@@ -6,6 +6,7 @@ using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
 using EmailService.Parsers;
+using EmailServiceIntermediate.Settings;
 
 namespace EmailService.PublicService
 {
@@ -34,7 +35,14 @@ namespace EmailService.PublicService
 
             while (true)
             {
-                var line = await reader.ReadLineAsync();
+                Task<string> readTask = reader.ReadLineAsync();
+                if (await Task.WhenAny(readTask, Task.Delay(15000)) != readTask)
+                {
+                    Console.WriteLine("Timed out");
+                    break;
+                }
+
+                var line = readTask.Result;
                 if (line == null) break;
 
                 if (readingData)
@@ -45,6 +53,9 @@ namespace EmailService.PublicService
                         await writer.WriteLineAsync("250 OK: Message received");
                         var handler = new EmailMessageHandler();
                         await handler.HandleAsync(sender, recipients, dataBuffer.ToString());
+
+                        // ✅ Reset state after send
+                        sender = null;
                         recipients.Clear();
                         dataBuffer.Clear();
                     }
@@ -74,25 +85,25 @@ namespace EmailService.PublicService
         public void SetSender(string value) => sender = value;
         public void AddRecipient(string value) => recipients.Add(value);
         public List<string> GetRecipients() => recipients;
-
         public void MarkStartTlsRequested() => tlsRequested = true;
 
         private async Task UpgradeToTlsAsync()
         {
-            using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+            var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
-            var certs = store.Certificates.Find(X509FindType.FindBySubjectName, "localhost", validOnly: false);
 
-            if (certs.Count == 0)
-            {
-                await writer.WriteLineAsync("454 TLS not available: certificate not found");
-                throw new Exception("No TLS certificate found.");
-            }
+            var certs = store.Certificates.Find(
+                X509FindType.FindBySubjectName,
+                SettingsProvider.GetSMTPServicePublicCertSubject(),
+                validOnly: false
+            );
 
-            var cert = certs[0];
+            var cert = certs.Count > 0 ? certs[0] : null;
+            if (cert == null)
+                throw new InvalidOperationException("No valid certificate found for STARTTLS");
+
             var sslStream = new SslStream(baseStream, false);
             await sslStream.AuthenticateAsServerAsync(cert, false, false);
-
             reader = new StreamReader(sslStream, Encoding.ASCII);
             writer = new StreamWriter(sslStream, Encoding.ASCII) { AutoFlush = true };
         }

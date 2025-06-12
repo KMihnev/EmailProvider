@@ -27,28 +27,38 @@ namespace EmailService.PrivateService
         private async Task HandleClientAsync(TcpClient client)
         {
             using (client)
+            using (var stream = client.GetStream())
             {
-                var stream = client.GetStream();
-
                 SmartStreamArray InPackage = new SmartStreamArray();
                 SmartStreamArray OutPackage = new SmartStreamArray();
 
                 try
                 {
-                    // Зареждаме потока в "умниия масив" ;)
+                    Console.WriteLine("Loading stream...");
                     InPackage.LoadFromStream(stream);
+                    Console.WriteLine("Loaded stream");
 
+
+                    Console.WriteLine("Handling dispatch...");
                     await BaseDispatchHandler.HandleRequestAsync(InPackage, OutPackage, new DispatchMapper());
+                    Console.WriteLine("Handled dispatch");
 
-                    // изпращаме отговор
+                    Console.WriteLine("Writing response...");
                     byte[] responseData = OutPackage.ToByte();
-                    await stream.WriteAsync(responseData, 0, responseData.Length);
+
+                    var writeTask = stream.WriteAsync(responseData, 0, responseData.Length);
+                    if (await Task.WhenAny(writeTask, Task.Delay(5000)) != writeTask)
+                    {
+                        Logger.LogError("Write timed out.");
+                        return;
+                    }
 
                     await stream.FlushAsync();
+                    Console.WriteLine("Flushed response");
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(LogMessages.InteralError);
+                    Logger.LogError("Exception in HandleClientAsync: " + ex.Message);
                 }
             }
         }

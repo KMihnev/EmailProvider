@@ -60,7 +60,16 @@ public class SmtpMailSender
                 await ReadEhloAndDetectStartTlsAsync(reader);
             }
 
-            await writer.WriteLineAsync($"MAIL FROM:<{email.FromEmail}>");
+            string internalDomain = SettingsProvider.GetEmailDomain();
+            string publicDomain = SettingsProvider.GetEmailPublicDomain();
+
+            string mailFrom = Regex.Replace(
+                email.FromEmail,
+                $"@{Regex.Escape(internalDomain)}$",
+                $"@{publicDomain}",
+                RegexOptions.IgnoreCase
+            );
+            await writer.WriteLineAsync($"MAIL FROM:<{mailFrom}>");
             await ReadResponseAsync(reader);
 
             await writer.WriteLineAsync($"RCPT TO:<{recipient.Email}>");

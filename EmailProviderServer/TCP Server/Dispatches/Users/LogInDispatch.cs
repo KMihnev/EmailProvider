@@ -7,6 +7,7 @@ using EmailProviderServer.Validation.User;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.TCP_Server.UserSessions;
+using EmailProviderServer.Helpers;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
@@ -79,7 +80,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
-            if (recUser.Password != user.Password)
+            if (recUser.Password != EncryptionHelper.HashPassword(user.Password))
             {
                 errorMessage = LogMessages.IncorrectPassword;
                 return false;

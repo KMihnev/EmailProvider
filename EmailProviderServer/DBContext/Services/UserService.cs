@@ -5,6 +5,7 @@ using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Services.Base;
 using Microsoft.EntityFrameworkCore;
 using EmailServiceIntermediate.Models;
+using EmailProviderServer.Helpers;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -65,6 +66,7 @@ namespace EmailProviderServer.DBContext.Services
             if (user == null)
                 Logger.LogNullValue();
 
+            user.Password = EncryptionHelper.HashPassword(user.Password);
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
@@ -79,6 +81,7 @@ namespace EmailProviderServer.DBContext.Services
                 throw new ArgumentNullException(nameof(user));
             }
 
+            user.Password = EncryptionHelper.HashPassword(user.Password);
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 
