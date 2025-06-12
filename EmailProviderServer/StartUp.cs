@@ -16,12 +16,19 @@ using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.TCP_Server.ScheduledTasks;
 
-void AddServices(IServiceCollection services)
+void AddServices(IServiceCollection services, bool useInMemory)
 {
-    //Задаваме контекс
-    services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(ConnectionStringCreator.CreateConnectionString()));
-
+    //Дали ще ипозлваме база данни в операционната памет
+    if (useInMemory)
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseInMemoryDatabase("TestDb"));
+    }
+    else
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(ConnectionStringCreator.CreateConnectionString()));
+    }
     //Базово Repository
     services.AddScoped(typeof(IRepositoryS<>), typeof(RepositoryS<>));
 
@@ -67,13 +74,15 @@ void RegisterTcpServer(IServiceCollection services)
     services.AddHostedService<TcpServerService>();
 }
 
-IHost GetDefaultHost()
+IHost GetDefaultHost(string[] args)
 {
+    bool useInMemory = args.Any(arg => arg.Equals("--UseInMemory=true", StringComparison.OrdinalIgnoreCase));
+
     IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         RegisterTcpServer(services);
-        AddServices(services);
+        AddServices(services, useInMemory);
         LoadAutoMapperProfiles(services);
 
     })
@@ -82,5 +91,5 @@ IHost GetDefaultHost()
     return host;
 }
 
-var host = GetDefaultHost();
+var host = GetDefaultHost(args);
 await host.RunAsync();

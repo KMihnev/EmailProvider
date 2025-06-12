@@ -35,9 +35,14 @@ namespace EmailServiceIntermediate.Settings
             return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPublicServicePort, SectionNames._sectionShared);
         }
 
-        public static string GetSMTPServicePublicCertSubject()
+        public static string GetSMTPServicePublicCertPFXPath()
         {
-            return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPublicServiceCertSubject, SectionNames._sectionShared);
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPublicServiceCertPFXPath, SectionNames._sectionShared);
+        }
+
+        public static string GetSMTPServicePublicCertPassword()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramSMTPPublicServiceCertPassword, SectionNames._sectionShared);
         }
 
         public static string GetSMTPServicePrivatePort()

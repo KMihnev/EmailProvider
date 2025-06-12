@@ -12,10 +12,11 @@ namespace EmailService.PublicService
 {
     public class SmtpSession
     {
+        private static readonly X509Certificate2 CachedCert = LoadCertificate();
+
         private StreamReader reader;
         private StreamWriter writer;
         private Stream baseStream;
-        private bool tlsRequested = false;
 
         private string sender;
         private List<string> recipients = new();
@@ -51,10 +52,10 @@ namespace EmailService.PublicService
                     {
                         readingData = false;
                         await writer.WriteLineAsync("250 OK: Message received");
+
                         var handler = new EmailMessageHandler();
                         await handler.HandleAsync(sender, recipients, dataBuffer.ToString());
 
-                        // ✅ Reset state after send
                         sender = null;
                         recipients.Clear();
                         dataBuffer.Clear();
@@ -68,14 +69,9 @@ namespace EmailService.PublicService
 
                 var processor = new SmtpCommandProcessor(this);
                 var response = await processor.ProcessAsync(line);
-                await writer.WriteLineAsync(response);
 
-                if (tlsRequested)
-                {
-                    await UpgradeToTlsAsync();
-                    tlsRequested = false;
-                    continue;
-                }
+                if (!string.IsNullOrEmpty(response))
+                    await writer.WriteLineAsync(response);
 
                 if (response.StartsWith("221")) break;
             }
@@ -85,27 +81,51 @@ namespace EmailService.PublicService
         public void SetSender(string value) => sender = value;
         public void AddRecipient(string value) => recipients.Add(value);
         public List<string> GetRecipients() => recipients;
-        public void MarkStartTlsRequested() => tlsRequested = true;
 
-        private async Task UpgradeToTlsAsync()
+        public async Task WriteLineAsync(string line)
         {
-            var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-            store.Open(OpenFlags.ReadOnly);
+            await writer.WriteLineAsync(line);
+        }
 
-            var certs = store.Certificates.Find(
-                X509FindType.FindBySubjectName,
-                SettingsProvider.GetSMTPServicePublicCertSubject(),
-                validOnly: false
-            );
-
-            var cert = certs.Count > 0 ? certs[0] : null;
-            if (cert == null)
-                throw new InvalidOperationException("No valid certificate found for STARTTLS");
-
+        public async Task UpgradeToTlsAsync()
+        {
             var sslStream = new SslStream(baseStream, false);
-            await sslStream.AuthenticateAsServerAsync(cert, false, false);
+            try
+            {
+                var cert = CachedCert;
+                if (cert == null)
+                    throw new InvalidOperationException("No valid certificate found for STARTTLS");
+
+                await sslStream.AuthenticateAsServerAsync(cert, clientCertificateRequired: false, enabledSslProtocols: System.Security.Authentication.SslProtocols.Tls12, checkCertificateRevocation: false);
+                Console.WriteLine("TLS handshake completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("TLS handshake failed: " + ex.Message);
+                if (ex.InnerException != null)
+                    Console.WriteLine("Inner exception: " + ex.InnerException.Message);
+                throw;
+            }
             reader = new StreamReader(sslStream, Encoding.ASCII);
             writer = new StreamWriter(sslStream, Encoding.ASCII) { AutoFlush = true };
+
+            Console.WriteLine("TLS handshake successful. Session stream upgraded.");
+        }
+
+        private static X509Certificate2 LoadCertificate()
+        {
+            var cert = new X509Certificate2(
+                SettingsProvider.GetSMTPServicePublicCertPFXPath(),
+                SettingsProvider.GetSMTPServicePublicCertPassword(),
+                X509KeyStorageFlags.MachineKeySet |
+                X509KeyStorageFlags.PersistKeySet |
+                X509KeyStorageFlags.Exportable
+            );
+
+            if (!cert.HasPrivateKey)
+                throw new InvalidOperationException("Cached cert does not have a private key.");
+
+            return cert;
         }
     }
 }

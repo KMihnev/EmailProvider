@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EmailService.PublicService;
 
@@ -16,40 +13,63 @@ namespace EmailService.Parsers
             this.session = session;
         }
 
-        public Task<string> ProcessAsync(string command)
+        public async Task<string> ProcessAsync(string command)
         {
-            if (command.StartsWith("STARTTLS"))
+            Console.WriteLine($"C: {command}");
+
+            if (command.StartsWith("STARTTLS", StringComparison.OrdinalIgnoreCase))
             {
-                session.MarkStartTlsRequested();
-                return Task.FromResult("220 Ready to start TLS");
+                Console.WriteLine("S: 220 Ready to start TLS");
+                await session.WriteLineAsync("220 Ready to start TLS");
+                await session.UpgradeToTlsAsync();
+                return "";
             }
 
-            if (command.StartsWith("EHLO") || command.StartsWith("HELO"))
-                return Task.FromResult("250-tyron.mail\n250-STARTTLS\n250-SIZE 35882577\n250-8BITMIME\n250-ENHANCEDSTATUSCODES\n250 PIPELINING");
-
-            if (command.StartsWith("MAIL FROM:"))
+            if (command.StartsWith("EHLO", StringComparison.OrdinalIgnoreCase) ||
+                command.StartsWith("HELO", StringComparison.OrdinalIgnoreCase))
             {
-                session.SetSender(command[10..].Trim('<', '>'));
-                return Task.FromResult("250 OK");
+                string response =
+                    "250-tyron.mail\n" +
+                    "250-STARTTLS\n" +
+                    "250-SIZE 35882577\n" +
+                    "250-8BITMIME\n" +
+                    "250-ENHANCEDSTATUSCODES\n" +
+                    "250 PIPELINING";
+                Console.WriteLine($"S: {response.Replace("\n", "\nS: ")}");
+                return response;
             }
 
-            if (command.StartsWith("RCPT TO:"))
+            if (command.StartsWith("MAIL FROM:", StringComparison.OrdinalIgnoreCase))
             {
-                session.AddRecipient(command[8..].Trim('<', '>'));
-                return Task.FromResult("250 OK");
+                string sender = command[10..].Trim('<', '>');
+                session.SetSender(sender);
+                Console.WriteLine($"S: 250 OK (MAIL FROM: {sender})");
+                return "250 OK";
             }
 
-            if (command.StartsWith("DATA"))
+            if (command.StartsWith("RCPT TO:", StringComparison.OrdinalIgnoreCase))
+            {
+                string recipient = command[8..].Trim('<', '>');
+                session.AddRecipient(recipient);
+                Console.WriteLine($"S: 250 OK (RCPT TO: {recipient})");
+                return "250 OK";
+            }
+
+            if (command.StartsWith("DATA", StringComparison.OrdinalIgnoreCase))
             {
                 session.BeginData();
-                return Task.FromResult("354 End data with <CR><LF>.<CR><LF>");
+                Console.WriteLine("S: 354 End data with <CR><LF>.<CR><LF>");
+                return "354 End data with <CR><LF>.<CR><LF>";
             }
 
-            if (command.StartsWith("QUIT"))
-                return Task.FromResult("221 Bye");
+            if (command.StartsWith("QUIT", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("S: 221 Bye");
+                return "221 Bye";
+            }
 
-            return Task.FromResult("500 Command not recognized");
+            Console.WriteLine("S: 500 Command not recognized");
+            return "500 Command not recognized";
         }
     }
-
 }
