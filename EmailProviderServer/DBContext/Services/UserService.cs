@@ -73,7 +73,7 @@ namespace EmailProviderServer.DBContext.Services
             return _mapper.Map<T>(user);
         }
 
-        public async Task<T> UpdateAsync<T>(User user)
+        public async Task<T> UpdateAsync<T>(User user, bool bUpdatePassword)
         {
             if (user == null)
             {
@@ -81,7 +81,8 @@ namespace EmailProviderServer.DBContext.Services
                 throw new ArgumentNullException(nameof(user));
             }
 
-            user.Password = EncryptionHelper.HashPassword(user.Password);
+            if(bUpdatePassword)
+                user.Password = EncryptionHelper.HashPassword(user.Password);
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 

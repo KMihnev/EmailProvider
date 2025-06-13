@@ -69,6 +69,11 @@ namespace EmailServiceIntermediate.Settings
         {
             return GlSettingsIni.IniFile.Read(SettingsNames._paramDKIMRecordSelector, SectionNames._sectionShared);
         }
+
+        public static string GetServerCertificateSubject()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramServerCertificateSubject, SectionNames._sectionShared);
+        }
     }
 
 }

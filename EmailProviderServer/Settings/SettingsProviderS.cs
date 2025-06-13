@@ -18,5 +18,10 @@ namespace EmailProviderServer.Settings
             return GlSettingsIni.IniFile.Read(SettingsNames._paramDatabaseName, SectionNames._sectionServer);
         }
 
+        public static string GetEncryptionString()
+        {
+            return GlSettingsIni.IniFile.Read(SettingsNames._paramEncryptionKey, SectionNames._sectionServer);
+        }
+
     }
 }

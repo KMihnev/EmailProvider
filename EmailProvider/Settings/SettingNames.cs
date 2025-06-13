@@ -35,5 +35,7 @@ namespace EmailServiceIntermediate.Settings
         public const string _paramEmailPublicDomain = "EmailPublicDomain";
         public const string _paramDKIMPrivateKeyPath = "DKIMPrivateKeyPath";
         public const string _paramDKIMRecordSelector = "DKIMRecordSelector";
+        public const string _paramServerCertificateSubject = "ServerCertificateSubject";
+        public const string _paramEncryptionKey = "EncryptionKey";
     }
 }

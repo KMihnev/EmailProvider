@@ -35,7 +35,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
 
                 await _messageService.ProcessMessageAsync(message);
 
-                if (rawMessage != null)
+                if (rawMessage != null && message?.Id != 0)
                 {
                     rawMessage.IncomingMessageId = message.Id;
                     await _messageService.AddBulkIncomingMessagesAsyncm(rawMessage);

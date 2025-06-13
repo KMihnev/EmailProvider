@@ -1,7 +1,10 @@
 ﻿using EMailProviderClient.Controllers.UserControl;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
+using EmailServiceIntermediate.Settings;
+using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
 
 namespace EMailProviderClient.Dispatches.Base
 {
@@ -16,8 +19,11 @@ namespace EMailProviderClient.Dispatches.Base
 
                 using var cts = new CancellationTokenSource(5000);
                 await client.ConnectAsync(AddressHelper.GetIpAddress(), AddressHelper.GetPort(), cts.Token);
-                using var stream = client.GetStream();
-                stream.Flush();
+
+                using var sslStream = new SslStream(client.GetStream(), false, (sender, certificate, chain, errors) => true);
+                await sslStream.AuthenticateAsClientAsync( targetHost: SettingsProvider.GetServerCertificateSubject(), clientCertificates: null,enabledSslProtocols: SslProtocols.Tls12, checkCertificateRevocation: false);
+
+                sslStream.Flush();
 
                 SmartStreamArray finalPackage = new();
                 finalPackage.Serialize(SessionControllerC.Token ?? "");
@@ -25,9 +31,9 @@ namespace EMailProviderClient.Dispatches.Base
                 finalPackage.Append(inPackage);
 
                 byte[] requestData = finalPackage.ToByte();
-                await stream.WriteAsync(requestData, 0, requestData.Length);
+                await sslStream.WriteAsync(requestData, 0, requestData.Length);
 
-                outPackage.LoadFromStream(stream);
+                outPackage.LoadFromStream(sslStream);
 
                 bool result = false;
                 outPackage.Deserialize(out result);
@@ -40,7 +46,7 @@ namespace EMailProviderClient.Dispatches.Base
                     return false;
                 }
 
-                stream.Flush();
+                sslStream.Flush();
 
                 return true;
             }

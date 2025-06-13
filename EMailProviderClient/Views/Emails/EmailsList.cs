@@ -43,12 +43,19 @@ namespace EMailProviderClient.Views.Emails
         {
             string subject = Truncate(email.Subject, 30);
             string body = Truncate(email.Body, 100);
-            var item = new ListViewItem(email.DateOfRegistration.ToString("yyyy-MM-dd HH:mm"));
+
+            var localTime = email.DateOfRegistration.ToLocalTime();
+            var item = new ListViewItem(localTime.ToString("yyyy-MM-dd HH:mm"));
+
             if (!email.bIsRead)
             {
                 item.Font = new Font(listView.Font, FontStyle.Bold);
             }
-            item.SubItems.Add(currentFolder.FolderType == SystemFolders.Incoming ? email.FromEmail : string.Join(";", email.Recipients.Select(r => r.Email)));
+
+            item.SubItems.Add(currentFolder.FolderType == SystemFolders.Incoming
+                ? email.FromEmail
+                : string.Join(";", email.Recipients.Select(r => r.Email)));
+
             item.SubItems.Add(subject);
             item.SubItems.Add(body);
             item.Tag = email;

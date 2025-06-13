@@ -78,6 +78,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
             CurrentUser.Name = user.Name;
             CurrentUser.Photo = user.Photo;
 
+            bool bUpdatePassword = false;
             if(changePasswordModel != null )
             {
                 if(CurrentUser.Password != EncryptionHelper.HashPassword(changePasswordModel.OldPassword))
@@ -92,12 +93,13 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                     return false;
                 }
 
+                bUpdatePassword = true;
                 CurrentUser.Password = changePasswordModel.NewPassword;
             }
 
             try
             {
-                UserViewModel userSerializable = await _userService.UpdateAsync<UserViewModel>(CurrentUser);
+                UserViewModel userSerializable = await _userService.UpdateAsync<UserViewModel>(CurrentUser, bUpdatePassword);
                 OutPackage.Serialize(true);
                 OutPackage.Serialize(user);
             }

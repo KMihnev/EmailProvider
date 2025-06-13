@@ -24,6 +24,6 @@ namespace EmailProviderServer.DBContext.Services.Base
 
         Task<T> CreateAsync<T>(User user);
 
-        Task<T> UpdateAsync<T>(User user);
+        Task<T> UpdateAsync<T>(User user, bool bUpdatePassword);
     }
 }

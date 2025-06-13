@@ -15,6 +15,7 @@ using EmailProviderServer.DBContext.Repositories.Interfaces;
 using EmailProviderServer.DBContext.Repositories;
 using EmailProviderServer.DBContext.Services.Interfaces;
 using EmailProviderServer.TCP_Server.ScheduledTasks;
+using System.Security.Cryptography.X509Certificates;
 
 void AddServices(IServiceCollection services, bool useInMemory)
 {
@@ -71,7 +72,24 @@ void RegisterTcpServer(IServiceCollection services)
     int port = int.Parse(SettingsProvider.GetServerPort());
 
     services.AddSingleton<TcpListener>(provider => new TcpListener(ipAddress, port));
-    services.AddHostedService<TcpServerService>();
+
+    services.AddSingleton<IHostedService>(provider =>
+    {
+        var listener = provider.GetRequiredService<TcpListener>();
+        var mapper = provider.GetRequiredService<DispatchMapper>();
+
+        try
+        {
+            var cert = new X509Certificate2( SettingsProvider.GetSMTPServicePublicCertPFXPath(),SettingsProvider.GetSMTPServicePublicCertPassword(),X509KeyStorageFlags.MachineKeySet |X509KeyStorageFlags.Exportable |X509KeyStorageFlags.PersistKeySet
+    );
+            return new TcpServerService(listener, mapper, cert);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+    });
 }
 
 IHost GetDefaultHost(string[] args)

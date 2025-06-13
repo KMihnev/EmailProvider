@@ -44,7 +44,12 @@ namespace EMailProviderClient.Views.Emails
             if (emailSerializable.Direction == EmailDirections.EmailDirectionOut)
             {
                 if (Mode != DialogMode.Add)
-                    HEADER.Text = "Sent Email";
+                {
+                    if(Mode == DialogMode.Edit)
+                        HEADER.Text = "Draft Email";
+                    else
+                        HEADER.Text = "Sent Email";
+                }
 
                 if (emailSerializable?.Recipients != null)
                     RECEIVER_EDIT.Text = string.Join(";", emailSerializable.Recipients.Select(r => r.Email));

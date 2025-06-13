@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EmailProviderServer.DBContext.DbEncryption;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
 using File = EmailServiceIntermediate.Models.File;
@@ -39,6 +40,43 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        /* Future Development will break dynamic searching by keyword
+        var encrypt = new EncryptedStringConverter();
+
+        modelBuilder.Entity<Message>()
+            .Property(m => m.Body)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<Message>()
+            .Property(m => m.Subject)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<BulkIncomingMessage>()
+            .Property(b => b.RawData)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<BulkOutgoingMessage>()
+            .Property(b => b.RawData)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<MessageRecipient>()
+            .Property(r => r.Email)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Email)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.PhoneNumber)
+            .HasConversion(encrypt);
+
+        modelBuilder.Entity<File>()
+            .Property(f => f.Name)
+            .HasConversion(encrypt);
+        */
+
+
         modelBuilder.Entity<BulkIncomingMessage>(entity =>
         {
             entity.ToTable("BULK_INCOMING_MESSAGES", tb => tb.HasComment("Table for incoming message to be processed"));

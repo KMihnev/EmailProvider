@@ -5,6 +5,8 @@ using EmailProviderServer.TCP_Server.Dispatches;
 using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailServiceIntermediate.Dispatches;
 using EmailServiceIntermediate.Logging;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace EmailProviderServer.TCP_Server
 {
@@ -13,14 +15,17 @@ namespace EmailProviderServer.TCP_Server
     //------------------------------------------------------
     public class TcpServerService : BackgroundService
     {
+        private readonly X509Certificate2 _serverCertificate;
+
         private readonly TcpListener _listener;
         private readonly DispatchMapper _dispatchMapper;
 
         //Constructor
-        public TcpServerService(TcpListener listener, DispatchMapper dispatchMapper)
+        public TcpServerService(TcpListener listener, DispatchMapper dispatchMapper, X509Certificate2 serverCertificate)
         {
             _listener = listener;
             _dispatchMapper = dispatchMapper;
+            _serverCertificate = serverCertificate;
         }
 
         //Methods
@@ -50,7 +55,17 @@ namespace EmailProviderServer.TCP_Server
         {
             using (client)
             {
-                var stream = client.GetStream();
+                var sslStream = new SslStream(client.GetStream(), false);
+                try
+                {
+                    await sslStream.AuthenticateAsServerAsync(_serverCertificate, clientCertificateRequired: false,enabledSslProtocols: System.Security.Authentication.SslProtocols.Tls12,checkCertificateRevocation: false);
+                    Console.WriteLine("TLS handshake successful.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("TLS handshake failed: " + ex.Message);
+                    return;
+                }
 
                 SmartStreamArray InPackage = new SmartStreamArray();
                 SmartStreamArray OutPackage = new SmartStreamArray();
@@ -58,15 +73,15 @@ namespace EmailProviderServer.TCP_Server
                 try
                 {
                     // Зареждаме потока в "умниия масив" ;)
-                    InPackage.LoadFromStream(stream);
+                    InPackage.LoadFromStream(sslStream);
 
                     await BaseDispatchHandler.HandleRequestAsync(InPackage, OutPackage, _dispatchMapper);
 
                     // изпращаме отговор
                     byte[] responseData = OutPackage.ToByte();
-                    await stream.WriteAsync(responseData, 0, responseData.Length, cancellationToken);
+                    await sslStream.WriteAsync(responseData, 0, responseData.Length, cancellationToken);
 
-                    await stream.FlushAsync();
+                    await sslStream.FlushAsync();
                 }
                 catch (Exception ex)
                 {

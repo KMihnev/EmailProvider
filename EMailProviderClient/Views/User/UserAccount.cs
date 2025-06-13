@@ -98,6 +98,7 @@ namespace EMailProviderClient.Views.User
 
             var success = await UserDispatchesC.EditProfile(
                 currentUser,
+                passwordModel != null &&
                 string.IsNullOrWhiteSpace(passwordModel?.OldPassword) &&
                 string.IsNullOrWhiteSpace(passwordModel?.NewPassword) &&
                 string.IsNullOrWhiteSpace(passwordModel?.ConfirmPassword)
