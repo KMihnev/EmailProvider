@@ -2,6 +2,7 @@
 using EmailServiceIntermediate.Enums;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace EmailTests.Validation
         {
             var fields = new Dictionary<UserValidationTypes, string>
             {
-                { UserValidationTypes.ValidationTypeEmail, "ValidUser@mail.tyron.rocks" },
+                { UserValidationTypes.ValidationTypeEmail, $"ValidUser@{EmailServiceIntermediate.Settings.SettingsProvider.GetEmailDomain()}" },
                 { UserValidationTypes.ValidationTypeName, "ValidUser" },
                 { UserValidationTypes.ValidationTypePassword, "StrongPassword123" }
             };
