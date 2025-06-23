@@ -45,6 +45,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 case    DispatchEnums.MoveEmailsToFolder:       return ActivatorUtilities.CreateInstance<MoveEmailToFolderDispatchS>    (_serviceProvider);
                 case    DispatchEnums.RemoveEmailsFromFolder:   return ActivatorUtilities.CreateInstance<RemoveEmailFromFolder>         (_serviceProvider);
                 case    DispatchEnums.EditProfile:              return ActivatorUtilities.CreateInstance<EditProfileDispatchS>          (_serviceProvider);
+                case    DispatchEnums.MakeAnnouncement:         return ActivatorUtilities.CreateInstance<MakeAnnouncementDispatcjS>     (_serviceProvider);
+                case    DispatchEnums.LoadStatistics:           return ActivatorUtilities.CreateInstance<LoadStatisticsDispatchS>       (_serviceProvider);
                 default:
                     throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }

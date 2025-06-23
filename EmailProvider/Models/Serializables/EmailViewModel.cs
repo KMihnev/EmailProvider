@@ -19,6 +19,7 @@ namespace EmailServiceIntermediate.Models.Serializables
  
             Files = new List<FileViewModel>();
             Status = EmailStatuses.EmailStatusNew;
+            IsAccouncement = false;
         }
 
         public int Id { get; set; }
@@ -29,6 +30,8 @@ namespace EmailServiceIntermediate.Models.Serializables
         public DateTime DateOfRegistration { get; set; }
         public EmailStatuses Status { get; set; }
         public EmailDirections Direction { get; set; }
+
+        public bool IsAccouncement { get; set; }
 
         public List<MessageRecipientSerializable> Recipients { get; set; } = new();
         public List<FileViewModel> Files { get; set; } = new();

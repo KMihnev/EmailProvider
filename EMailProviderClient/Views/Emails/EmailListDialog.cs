@@ -2,8 +2,10 @@
 using EmailProvider.Enums;
 using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
+using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Views.Emails;
 using EMailProviderClient.Views.Folders;
+using EmailServiceIntermediate.Models;
 using MDITest;
 using System.Windows.Forms.VisualStyles;
 using WindowsFormsCore;
@@ -30,6 +32,9 @@ namespace EMailProviderClient
             CMB_SORT.DataSource = Enum.GetValues(typeof(OrderBy));
             CMB_SORT.SelectedItem = SearchData.OrderBy;
             CMB_SORT.SelectedIndexChanged += CMB_SORT_SelectedIndexChanged;
+
+            if (UserController.GetCurrentUser().UserRoleId != (int)UserRoles.UserRoleAdministrator)
+                smartButton1.Hide();
         }
 
         private async void EmailProvider_Load(object sender, EventArgs e)
@@ -150,6 +155,27 @@ namespace EMailProviderClient
                 emailsList.SelectAllItems();
             else
                 emailsList.ClearSelection();
+        }
+
+        private void smartButton1_Click(object sender, EventArgs e)
+        {
+            var addEmailForm = new EMAIL_VIEW(DialogMode.Add, true)
+            {
+                TopLevel = false,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                StartPosition = FormStartPosition.Manual,
+                Location = new Point((this.Width - 600) / 2, (this.Height - 400) / 2),
+                BackColor = Color.White
+            };
+
+            addEmailForm.EmailSaved += async (_, _) =>
+            {
+                await emailsList.RefreshAsync();
+            };
+
+            this.Controls.Add(addEmailForm);
+            addEmailForm.BringToFront();
+            addEmailForm.Show();
         }
     }
 }

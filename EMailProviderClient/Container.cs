@@ -1,6 +1,7 @@
 ﻿using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Views.Emails;
 using EMailProviderClient.Views.User;
+using EmailServiceIntermediate.Models;
 using EmailServiceIntermediate.Models.Serializables;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,18 @@ namespace EMailProviderClient
             };
             this.Controls.Add(headerPanel);
 
+            var statisticsButton = new SmartButton
+            {
+                Text = "Statistics",
+                Size = new Size(130, 50),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            statisticsButton.Click += OnStatisticsClick;
+
+            if(UserController._currentUser.UserRoleId == (int)UserRoles.UserRoleAdministrator)
+                headerPanel.Controls.Add(statisticsButton);
+
             onAccountButton = new SmartButton
             {
                 Text = "My Account ",
@@ -96,8 +109,16 @@ namespace EMailProviderClient
 
             this.Load += (s, e) =>
             {
+                if (headerPanel.Controls.Contains(statisticsButton))
+                {
+                    statisticsButton.Location = new Point(
+                        headerPanel.Width - onAccountButton.Width - statisticsButton.Width - 10,
+                        (headerPanel.Height - statisticsButton.Height) / 2
+                    );
+                }
+
                 onAccountButton.Location = new Point(
-                    headerPanel.Width - onAccountButton.Width ,
+                    headerPanel.Width - onAccountButton.Width,
                     (headerPanel.Height - onAccountButton.Height) / 2
                 );
             };
@@ -155,6 +176,13 @@ namespace EMailProviderClient
                     Application.Exit();
                 }
             }
+        }
+
+        private async void OnStatisticsClick(object sender, EventArgs e)
+        {
+            using var statisticsForm = new Views.User.Statistics();
+            statisticsForm.StartPosition = FormStartPosition.CenterParent;
+            var result = statisticsForm.ShowDialog(this);
         }
 
 

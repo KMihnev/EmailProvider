@@ -16,7 +16,8 @@ namespace EmailTests.Validation
                 { EmailValidationTypes.ValidationTypeReceiver, "" }
             };
             var validator = new EmailValidator(fields);
-            bool result = validator.Validate(false);
+            bool result = validator.Validate
+                (false);
             Assert.False(result);
         }
 

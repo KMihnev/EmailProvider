@@ -21,6 +21,8 @@ public partial class User : IEntity
         Folders = new List<Folder>();
         UserMessages = new List<UserMessage>();
         Country = null;
+        UserRoleId = 0;
+        UserRole = new UserRole();
     }
 
     /// <summary>
@@ -58,7 +60,11 @@ public partial class User : IEntity
     /// </summary>
     public byte[]? Photo { get; set; }
 
+    public int UserRoleId { get; set; }
+
     public virtual Country Country { get; set; } = null!;
+
+    public virtual UserRole UserRole { get; set; } = null!;
 
     public virtual ICollection<Folder> Folders { get; set; }
 

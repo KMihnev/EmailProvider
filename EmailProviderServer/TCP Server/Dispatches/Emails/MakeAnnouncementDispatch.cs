@@ -6,18 +6,21 @@ using EmailProviderServer.TCP_Server.Dispatches.Interfaces;
 using EmailProviderServer.Validation.Email;
 using EmailProviderServer.DBContext.Services.Base;
 using EmailProvider.Models.Serializables;
+using EmailServiceIntermediate.Models;
 
 namespace EmailProviderServer.TCP_Server.Dispatches
 {
     //------------------------------------------------------
     //	SaveEmailDispatchS
     //------------------------------------------------------
-    public class SaveEmailDispatchS : BaseDispatchHandler
+    public class MakeAnnouncementDispatcjS : BaseDispatchHandler
     {
+        protected override UserRoles RequiredRole => UserRoles.UserRoleAdministrator;
+
         private readonly IMessageService _messageService;
 
         //Constructor
-        public SaveEmailDispatchS(IMessageService messageService)
+        public MakeAnnouncementDispatcjS(IMessageService messageService)
         {
             _messageService = messageService;
         }
@@ -41,19 +44,11 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
+            messageSerializable.IsAccouncement = true;
             AddEmailValidationS AddEmailValidator = new AddEmailValidationS();
-
-            if (messageSerializable.Status != EmailProvider.Enums.EmailStatuses.EmailStatusDraft)
-            {
-                foreach (MessageRecipientSerializable email in messageSerializable.Recipients)
-                {
-                    AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeReceiver, email.Email);
-                }
-            }
-
             AddEmailValidator.AddValidation(EmailServiceIntermediate.Enums.EmailValidationTypes.ValidationTypeSubject, messageSerializable.Subject);
 
-            if(!AddEmailValidator.Validate())
+            if (!AddEmailValidator.Validate())
             {
                 errorMessage = LogMessages.InvalidData;
                 return false;

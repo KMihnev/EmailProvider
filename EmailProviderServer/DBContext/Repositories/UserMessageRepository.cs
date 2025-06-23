@@ -15,10 +15,10 @@ public class UserMessageRepository : IUserMessageRepository
         _context = context;
     }
 
-    public async Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
+    public async Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, string userEmail, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
     {
         var query = _context.UserMessages
-        .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionIn && !um.UserMessageFolders.Any())
+        .Where(um => um.UserId == userId && um.Message.MessageRecipients.Any(x=>x.Email == userEmail) && !um.UserMessageFolders.Any())
         .Include(um => um.Message)
             .ThenInclude(m => m.MessageRecipients)
         .Include(um => um.UserMessageFolders)
@@ -36,10 +36,10 @@ public class UserMessageRepository : IUserMessageRepository
         return await query.Skip(skip).Take(take) .ToListAsync();
     }
 
-    public async Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
+    public async Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, string userEmail, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword)
     {
         var query = _context.UserMessages
-            .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionOut && um.Message.Status != EmailStatuses.EmailStatusDraft && !um.UserMessageFolders.Any())
+            .Where(um => um.UserId == userId && um.Message.Direction == EmailDirections.EmailDirectionOut && um.Message.FromEmail == userEmail && um.Message.Status != EmailStatuses.EmailStatusDraft && !um.UserMessageFolders.Any())
             .Include(um => um.Message)
                 .ThenInclude(m => m.MessageRecipients)
             .Include(um => um.UserMessageFolders)

@@ -12,8 +12,8 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
 {
     public interface IUserMessageRepository
     {
-        Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
-        Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
+        Task<List<UserMessage>> GetIncomingMessagesAsync(int userId, string userEmail, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
+        Task<List<UserMessage>> GetOutgoingMessagesAsync(int userId, string userEmail, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
         Task<List<UserMessage>> GetDraftMessagesAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
         Task<List<UserMessage>> GetMessagesInFolderAsync(int userId, int folderId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);
         Task<List<UserMessage>> GetDeletedMessagesForUserAsync(int userId, Expression<Func<UserMessage, bool>>? filter, int skip, int take, OrderBy orderBy, string? keyword);

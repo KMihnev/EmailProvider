@@ -17,12 +17,14 @@ namespace EMailProviderClient.Views.Emails
         private EmailViewModel emailSerializable;
         private AttachedFileList attachedFileList;
 
+        private bool bIsAnnounvement;
+
         public EMAIL_VIEW() : this(DialogMode.Add) { }
 
-        public EMAIL_VIEW(DialogMode mode) : base(mode, false, true)
+        public EMAIL_VIEW(DialogMode mode, bool IsAnnouncement = false) : base(mode, false, true)
         {
             InitializeComponent();
-
+            bIsAnnounvement = IsAnnouncement;
             emailSerializable = new EmailViewModel
             {
                 FromEmail = UserController.GetCurrentUserEmail(),
@@ -36,6 +38,12 @@ namespace EMailProviderClient.Views.Emails
             {
                 UPLOAD_BTN.Hide();
                 SEND_BTN.Hide();
+            }
+
+            if(IsAnnouncement)
+            {
+                RECEIVER_EDIT.ReadOnly = true;
+                RECEIVER_EDIT.Text = "@ALL";
             }
         }
 
@@ -51,7 +59,11 @@ namespace EMailProviderClient.Views.Emails
                         HEADER.Text = "Sent Email";
                 }
 
-                if (emailSerializable?.Recipients != null)
+                if(emailSerializable.IsAccouncement)
+                {
+                    RECEIVER_EDIT.Text = "@ALL";
+                }
+                else if (emailSerializable?.Recipients != null)
                     RECEIVER_EDIT.Text = string.Join(";", emailSerializable.Recipients.Select(r => r.Email));
             }
             else
@@ -91,21 +103,34 @@ namespace EMailProviderClient.Views.Emails
 
         private async Task<bool> SaveEmail(bool isDraft = false)
         {
-            emailSerializable.Recipients = RECEIVER_EDIT.Text
-                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(email => new MessageRecipientSerializable { Email = email })
-                .ToList();
-
+            if (!emailSerializable.IsAccouncement && !bIsAnnounvement)
+            {
+                emailSerializable.Recipients = RECEIVER_EDIT.Text
+                        .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Select(email => new MessageRecipientSerializable { Email = email })
+                        .ToList();
+            }
             emailSerializable.Subject = SUBJECT_EDIT.Text;
             emailSerializable.Body = CONTENT_BOX.Text;
             emailSerializable.DateOfRegistration = DateTime.Now;
             emailSerializable.Status = isDraft ? EmailStatuses.EmailStatusDraft : EmailStatuses.EmailStatusNew;
             emailSerializable.Files = attachedFileList.GetFiles();
 
-            if (!await SendEmailDispatchC.SendEmail(emailSerializable))
+            if (emailSerializable.IsAccouncement || bIsAnnounvement)
             {
-                Logger.LogError(LogMessages.ErrorSavingEmail);
-                return false;
+                if (!await MakeAnnouncementDispatchC.MakeAnnouncement(emailSerializable))
+                {
+                    Logger.LogError(LogMessages.ErrorSavingEmail);
+                    return false;
+                }
+            }
+            else
+            {
+                if (!await SendEmailDispatchC.SendEmail(emailSerializable))
+                {
+                    Logger.LogError(LogMessages.ErrorSavingEmail);
+                    return false;
+                }
             }
 
             return true;

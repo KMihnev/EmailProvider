@@ -28,17 +28,17 @@ namespace EmailProviderServer.DBContext.Services
             _mapper = mapper;
         }
 
-        public async Task<List<T>> GetIncomingMessagesAsync<T>(SearchData searchData, int UserId)
+        public async Task<List<T>> GetIncomingMessagesAsync<T>(SearchData searchData, int UserId, string userEmail)
         {
             var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: true);
-            var messages = await _repository.GetIncomingMessagesAsync(UserId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
+            var messages = await _repository.GetIncomingMessagesAsync(UserId, userEmail, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 
-        public async Task<List<T>> GetOutgoingMessagesAsync<T>(SearchData searchData, int UserId)
+        public async Task<List<T>> GetOutgoingMessagesAsync<T>(SearchData searchData, int UserId, string userEmail)
         {
             var filter = SearchExpressionBuilder.BuildExpression(searchData.Conditions, isIncoming: false);
-            var messages = await _repository.GetOutgoingMessagesAsync(UserId, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
+            var messages = await _repository.GetOutgoingMessagesAsync(UserId, userEmail, filter, searchData.Skip, searchData.Take, searchData.OrderBy, searchData.Keyword);
             return _mapper.Map<List<T>>(messages);
         }
 

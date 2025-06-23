@@ -42,6 +42,7 @@ namespace EMailProviderClient
             CONTENT_HEADER = new ColumnHeader();
             label1 = new Label();
             button1 = new SmartButton();
+            smartButton1 = new SmartButton();
             SuspendLayout();
             // 
             // CATEGORIES_LIST
@@ -76,9 +77,9 @@ namespace EMailProviderClient
             ON_ADD_EMAIL.FlatStyle = FlatStyle.Flat;
             ON_ADD_EMAIL.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             ON_ADD_EMAIL.ForeColor = Color.White;
-            ON_ADD_EMAIL.Location = new Point(12, 9);
+            ON_ADD_EMAIL.Location = new Point(12, 42);
             ON_ADD_EMAIL.Name = "ON_ADD_EMAIL";
-            ON_ADD_EMAIL.Size = new Size(167, 59);
+            ON_ADD_EMAIL.Size = new Size(167, 26);
             ON_ADD_EMAIL.TabIndex = 11;
             ON_ADD_EMAIL.Text = "Write New";
             ON_ADD_EMAIL.UseVisualStyleBackColor = true;
@@ -163,11 +164,26 @@ namespace EMailProviderClient
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // smartButton1
+            // 
+            smartButton1.BackColor = Color.DodgerBlue;
+            smartButton1.FlatStyle = FlatStyle.Flat;
+            smartButton1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            smartButton1.ForeColor = Color.White;
+            smartButton1.Location = new Point(12, 10);
+            smartButton1.Name = "smartButton1";
+            smartButton1.Size = new Size(167, 26);
+            smartButton1.TabIndex = 20;
+            smartButton1.Text = "Make Announcement";
+            smartButton1.UseVisualStyleBackColor = true;
+            smartButton1.Click += smartButton1_Click;
+            // 
             // EmailListDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1915, 867);
+            Controls.Add(smartButton1);
             Controls.Add(button1);
             Controls.Add(label1);
             Controls.Add(EMAILS_LIST);
@@ -199,5 +215,6 @@ namespace EMailProviderClient
         private ColumnHeader CONTENT_HEADER;
         private Label label1;
         private SmartButton button1;
+        private SmartButton smartButton1;
     }
 }

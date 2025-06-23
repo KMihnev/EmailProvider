@@ -190,5 +190,41 @@ namespace EMailProviderClient.Dispatches.Users
 
             return true;
         }
+
+        public static async Task<StatisticsViewModel> LoadStatistics()
+        {
+            try
+            {
+                SmartStreamArray InPackage = new SmartStreamArray();
+                SmartStreamArray OutPackage = new SmartStreamArray();
+
+                //Сериализираме Данните
+                InPackage.Serialize((int)DispatchEnums.LoadStatistics);
+
+                //Изпращаме заявката
+                DispatchHandlerC dispatchHandlerC = new DispatchHandlerC();
+
+                if (!await dispatchHandlerC.Execute(InPackage, OutPackage))
+                {
+                    return null;
+                }
+
+                StatisticsViewModel updatedStatistics = null;
+                OutPackage.Deserialize(out updatedStatistics);
+
+                if (updatedStatistics == null)
+                {
+                    Logger.LogErrorCalling();
+                    return null;
+                }
+
+                return updatedStatistics;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogErrorCalling();
+                return null;
+            }
+        }
     }
 }

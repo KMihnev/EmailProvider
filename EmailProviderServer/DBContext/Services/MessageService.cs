@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.DBContext.Repositories;
+using EmailProvider.Enums;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -52,26 +53,51 @@ namespace EmailProviderServer.DBContext.Services
                 Status = dto.Status,
             };
 
-            foreach (var recipientDto in dto.Recipients)
+            if (dto.IsAccouncement)
             {
-                var internalUser = await _userRepository.GetUserByEmail(recipientDto.Email);
+                var allUsers = await _userRepository.AllAsNoTracking().Where(x=>x.Email != dto.FromEmail).ToListAsync();
+                bIsForUs = true;
 
-                var messageRecipient = new MessageRecipient();
-                messageRecipient.Email = recipientDto.Email;
-
-                if (internalUser != null)
+                foreach (var user in allUsers)
                 {
-                    bIsForUs = true;
-                    messageRecipient.IsOurUser = true;
+                    var messageRecipient = new MessageRecipient
+                    {
+                        Email = user.Email,
+                        IsOurUser = true
+                    };
+                    message.MessageRecipients.Add(messageRecipient);
+
                     message.UserMessages.Add(new UserMessage
                     {
-                        UserId = internalUser.Id,
+                        UserId = user.Id,
                         IsRead = false,
-                        IsDeleted = false,
+                        IsDeleted = false
                     });
                 }
+            }
+            else
+            {
+                foreach (var recipientDto in dto.Recipients)
+                {
+                    var internalUser = await _userRepository.GetUserByEmail(recipientDto.Email);
 
-                message.MessageRecipients.Add(messageRecipient);
+                    var messageRecipient = new MessageRecipient();
+                    messageRecipient.Email = recipientDto.Email;
+
+                    if (internalUser != null)
+                    {
+                        bIsForUs = true;
+                        messageRecipient.IsOurUser = true;
+                        message.UserMessages.Add(new UserMessage
+                        {
+                            UserId = internalUser.Id,
+                            IsRead = false,
+                            IsDeleted = false,
+                        });
+                    }
+
+                    message.MessageRecipients.Add(messageRecipient);
+                }
             }
 
             var sender = await _userRepository.GetUserByEmail(dto.FromEmail);
@@ -179,6 +205,14 @@ namespace EmailProviderServer.DBContext.Services
             message.Status = EmailProvider.Enums.EmailStatuses.EmailStatusComplete;
             _messageRepository.Update(message);
             await _messageRepository.SaveChangesAsync();
+        }
+
+        public async Task<int> GetMessagesCount(EmailDirections direction)
+        {
+            return await _messageRepository
+                .AllAsNoTracking()
+                .Where(m => m.Direction == direction)
+                .CountAsync();
         }
     }
 }

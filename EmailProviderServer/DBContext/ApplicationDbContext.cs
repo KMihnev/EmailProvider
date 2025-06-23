@@ -30,6 +30,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<MessageRecipient> MessageRecipients { get; set; }
 
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserMessage> UserMessages { get; set; }
@@ -148,6 +150,21 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(5)
                 .HasComment("Country dialing code prefix")
                 .HasColumnName("PHONE_NUMBER_CODE");
+        });
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_USER_ROLES_ID");
+
+            entity.ToTable("USER_ROLES", tb => tb.HasComment("Table for user roles"));
+
+            entity.Property(e => e.Id)
+                .HasComment("ID of the role")
+                .HasColumnName("ID");
+            entity.Property(e => e.Name)
+                .HasMaxLength(32)
+                .HasComment("Name of the role")
+                .HasColumnName("NAME");
         });
 
         modelBuilder.Entity<File>(entity =>
@@ -301,8 +318,13 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("PHOTO")
                 .HasColumnType("varbinary(max)")
                 .IsRequired(false);
+            entity.Property(e => e.UserRoleId)
+                .HasDefaultValue(0)
+                .HasComment("The role of the user")
+                .HasColumnName("USER_ROLE_ID");
 
             entity.HasOne(d => d.Country).WithMany(p => p.Users).HasForeignKey(d => d.CountryId);
+            entity.HasOne(r=>r.UserRole).WithMany(p => p.Users).HasForeignKey(r => r.UserRoleId);
         });
 
         modelBuilder.Entity<UserMessage>(entity =>

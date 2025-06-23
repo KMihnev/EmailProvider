@@ -6,6 +6,7 @@ using EmailProviderServer.DBContext.Services.Base;
 using Microsoft.EntityFrameworkCore;
 using EmailServiceIntermediate.Models;
 using EmailProviderServer.Helpers;
+using EmailProviderServer.DBContext.Repositories;
 
 namespace EmailProviderServer.DBContext.Services
 {
@@ -66,6 +67,8 @@ namespace EmailProviderServer.DBContext.Services
             if (user == null)
                 Logger.LogNullValue();
 
+            user.UserRole = null;
+            user.UserRoleId = (int)UserRoles.UserRoleDefault;
             user.Password = EncryptionHelper.HashPassword(user.Password);
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
@@ -87,6 +90,13 @@ namespace EmailProviderServer.DBContext.Services
             await _userRepository.SaveChangesAsync();
 
             return _mapper.Map<T>(user);
+        }
+
+        public async Task<int> GetUserCount()
+        {
+            return await _userRepository
+                .AllAsNoTracking()
+                .CountAsync();
         }
     }
 }

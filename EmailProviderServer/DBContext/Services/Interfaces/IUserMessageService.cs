@@ -11,8 +11,8 @@ namespace EmailProviderServer.DBContext.Services.Interfaces
 {
     public interface IUserMessageService
     {
-        Task<List<T>> GetIncomingMessagesAsync<T>(SearchData searchData, int UserId);
-        Task<List<T>> GetOutgoingMessagesAsync<T>(SearchData searchData, int UserId);
+        Task<List<T>> GetIncomingMessagesAsync<T>(SearchData searchData, int UserId,  string userEmail);
+        Task<List<T>> GetOutgoingMessagesAsync<T>(SearchData searchData, int UserId, string userEmail);
         Task<List<T>> GetDraftMessagesAsync<T>(SearchData searchData, int UserId);
         Task<List<T>> GetMessagesInFolderAsync<T>(SearchData searchData, int UserId, int folderId);
         Task<List<T>> GetDeletedMessagesAsync<T>(SearchData searchData, int UserId);

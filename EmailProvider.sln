@@ -9,10 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMailProviderClient", "EMai
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{672AFA66-B921-4A80-8041-F36F73EA86A4}"
 	ProjectSection(SolutionItems) = preProject
-		Add Countries.sql = Add Countries.sql
-		Create DB.sql = Create DB.sql
-		Create Tables.sql = Create Tables.sql
-		Procedures.sql = Procedures.sql
+		3) Create Tables.sql = 3) Create Tables.sql
+		2) Procedures.sql = 2) Procedures.sql
+		1) Create DB.sql = 1) Create DB.sql
+		4) Add Countries.sql = 4) Add Countries.sql
+		..\..\..\OneDrive\Documents\SQL Server Management Studio\5) Add Roles + Administrator.sql = ..\..\..\OneDrive\Documents\SQL Server Management Studio\5) Add Roles + Administrator.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61548381-6217-49E2-9A7F-42D10FCEAFCC}"
@@ -34,6 +35,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Img", "Img", "{E05BB81E-6683-4064-8AC7-2BF51A6123FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailTests", "EmailTests\EmailTests.csproj", "{3EDF0CBE-14E5-4644-992A-D170F7C7416E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{78B2E8FF-94F6-4C61-9F40-AFBD21F1C280}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,8 +62,8 @@ Global
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|x86.Build.0 = Debug|Any CPU
+		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|x86.ActiveCfg = Debug|x86
+		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Debug|x86.Build.0 = Debug|x86
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD04439A-62C1-437A-90C8-8FEFCFF3F4DC}.Release|x64.ActiveCfg = Release|Any CPU

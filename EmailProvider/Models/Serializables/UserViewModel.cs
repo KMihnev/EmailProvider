@@ -25,6 +25,8 @@ namespace EmailServiceIntermediate.Models.Serializables
 
         public byte[]? Photo { get; set; }
 
+        public int UserRoleId { get; set; }
+
         public string? PhotoBase64 => Photo != null ? Convert.ToBase64String(Photo) : null;
 
 

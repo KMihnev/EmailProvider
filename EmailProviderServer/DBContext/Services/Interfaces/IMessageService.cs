@@ -2,6 +2,7 @@
 using EmailProvider.SearchData;
 using EmailServiceIntermediate.Models.Serializables;
 using EmailServiceIntermediate.Models;
+using EmailProvider.Enums;
 
 namespace EmailProviderServer.DBContext.Services.Base
 {
@@ -25,5 +26,7 @@ namespace EmailProviderServer.DBContext.Services.Base
         Task AddBulkOutgoingMessagesAsyncm<T>(T bulkIncomingMessageModel);
 
         Task UpdateSentStatusAsync(int messageId);
+
+        Task<int> GetMessagesCount(EmailDirections direction);
     }
 }

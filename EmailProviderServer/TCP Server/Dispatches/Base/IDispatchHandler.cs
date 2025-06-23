@@ -9,6 +9,8 @@ public abstract class BaseDispatchHandler
 {
     protected virtual bool RequiresSession => true;
 
+    protected virtual UserRoles RequiredRole => UserRoles.UserRoleDefault;
+
     protected User SessionUser { get; private set; }
     public static string errorMessage { get; protected set; }
 
@@ -42,6 +44,13 @@ public abstract class BaseDispatchHandler
                     return false;
                 }
                 dispatchHandler.SessionUser = user;
+
+                if(dispatchHandler.RequiredRole != UserRoles.UserRoleDefault && dispatchHandler.SessionUser.UserRoleId != (int)dispatchHandler.RequiredRole)
+                {
+                    outPackage.Serialize(false);
+                    outPackage.Serialize("Invalid user role.");
+                    return false;
+                }
             }
 
             if(!await dispatchHandler.Execute(inPackage, outPackage))
