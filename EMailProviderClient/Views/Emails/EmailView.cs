@@ -47,6 +47,12 @@ namespace EMailProviderClient.Views.Emails
             }
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            attachedFileList.Enable();
+        }
+
         protected override void FillData()
         {
             if (emailSerializable.Direction == EmailDirections.EmailDirectionOut)

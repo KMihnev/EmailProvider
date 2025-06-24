@@ -86,12 +86,12 @@ namespace EmailProviderServer.DBContext.Services
                 await _repository.SetIsReadAsync(userId, messageId, false);
         }
 
-        public async Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId)
+        public async Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId, int userId)
         {
             if (messageIds == null || messageIds.Count == 0)
                 return false;
 
-            return await _repository.MoveMessagesToFolderAsync(messageIds, folderId);
+            return await _repository.MoveMessagesToFolderAsync(messageIds, folderId, userId);
         }
 
         public async Task<bool> RemoveMessagesFromFolderAsync(int userId, List<int> messageIds)

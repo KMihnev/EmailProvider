@@ -50,7 +50,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches.Emails
 
             try
             {
-                await _userMessageService.MoveMessagesToFolderAsync(messagesToMove, FolderId);
+                await _userMessageService.MoveMessagesToFolderAsync(messagesToMove, FolderId, SessionUser.Id);
                 OutPackage.Serialize(true);
             }
             catch (Exception ex)

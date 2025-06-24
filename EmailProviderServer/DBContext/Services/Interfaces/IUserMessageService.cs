@@ -19,7 +19,7 @@ namespace EmailProviderServer.DBContext.Services.Interfaces
         Task MarkAsDeletedAsync(int userId, List<int> messageIdArray);
         Task MarkAsReadAsync(int userId, List<int> messageIdArray);
         Task MarkAsUnreadAsync(int userId, List<int> messageIdArray);
-        Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId);
+        Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId, int userId);
         Task<bool> RemoveMessagesFromFolderAsync(int userId, List<int> messageIds);
     }
 }

@@ -154,7 +154,7 @@ public class UserMessageRepository : IUserMessageRepository
         }
     }
 
-    public async Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId)
+    public async Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId, int userId)
     {
         var messages = await _context.UserMessages
             .Include(m => m.UserMessageFolders)
@@ -165,6 +165,9 @@ public class UserMessageRepository : IUserMessageRepository
 
         foreach (var msg in messages)
         {
+            if (msg.UserId != userId)
+                continue;
+
             msg.UserMessageFolders.Clear();
 
             msg.UserMessageFolders.Add(new UserMessageFolder
@@ -189,6 +192,9 @@ public class UserMessageRepository : IUserMessageRepository
 
         foreach (var um in userMessages)
         {
+            if (um.UserId != userId)
+                continue;
+
             um.UserMessageFolders.Clear();
         }
 

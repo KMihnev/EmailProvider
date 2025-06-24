@@ -30,9 +30,21 @@ namespace WindowsFormsCore.Controls
             fileStorage = new List<FileViewModel>();
 
             fileList.ContextMenuStrip = contextMenu;
+
+            if (!contextMenu.Items.Contains(downloadItem))
+                contextMenu.Items.Add(downloadItem);
+
+            if (!contextMenu.Items.Contains(removeItem))
+                contextMenu.Items.Add(removeItem);
+
             contextMenu.Opening += ContextMenu_Opening;
             downloadItem.Click += DownloadFile_Click;
             removeItem.Click += RemoveFile_Click;
+        }
+
+        public void Enable()
+        {
+            fileList.Enabled = true;
         }
 
         public void LoadFiles(IEnumerable<FileViewModel> files)
@@ -61,6 +73,12 @@ namespace WindowsFormsCore.Controls
 
         private void ContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (fileList.SelectedItems.Count == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             removeItem.Enabled = !isReadOnly;
         }
 

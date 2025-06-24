@@ -81,7 +81,22 @@ namespace WindowsFormsCore
             foreach (Control control in Controls)
             {
                 if (control is SmartButton) continue;
-                control.Enabled = enabled;
+
+                switch (control)
+                {
+                    case TextBox textBox:
+                        textBox.ReadOnly = !enabled;
+                        break;
+                    case RichTextBox richTextBox:
+                        richTextBox.ReadOnly = !enabled;
+                        break;
+                    case DataGridView dataGridView:
+                        dataGridView.ReadOnly = !enabled;
+                        break;
+                    default:
+                        control.Enabled = enabled;
+                        break;
+                }
             }
         }
 

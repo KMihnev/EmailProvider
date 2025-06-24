@@ -20,7 +20,7 @@ namespace EmailProviderServer.DBContext.Repositories.Interfaces
         Task<UserMessage> GetByUserAndMessageIdAsync(int userId, int messageId);
         Task SetIsDeletedAsync(int userId, int messageId, bool isDeleted);
         Task SetIsReadAsync(int userId, int messageId, bool isRead);
-        Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId);
+        Task<bool> MoveMessagesToFolderAsync(List<int> messageIds, int folderId, int userId);
         Task<bool> RemoveFromFolderAsync(int userId, List<int> messageIds);
     }
 }

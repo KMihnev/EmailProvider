@@ -163,6 +163,7 @@ namespace EMailProviderClient.Views.Emails
             UPLOAD_BTN.TabIndex = 9;
             UPLOAD_BTN.Text = "Upload";
             UPLOAD_BTN.UseVisualStyleBackColor = true;
+            UPLOAD_BTN.Click += UPLOAD_BTN_Click;
             // 
             // FILES_CONTEXT
             // 
