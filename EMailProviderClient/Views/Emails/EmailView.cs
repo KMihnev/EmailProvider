@@ -7,6 +7,7 @@ using EmailProvider.Models.Serializables;
 using EmailProvider.Enums;
 using WindowsFormsCore;
 using WindowsFormsCore.Controls;
+using EMailProviderClient.LangSupport;
 
 namespace EMailProviderClient.Views.Emails
 {
@@ -60,9 +61,9 @@ namespace EMailProviderClient.Views.Emails
                 if (Mode != DialogMode.Add)
                 {
                     if(Mode == DialogMode.Edit)
-                        HEADER.Text = "Draft Email";
+                        HEADER.Text = DlgLangSupport.DraftEmail;
                     else
-                        HEADER.Text = "Sent Email";
+                        HEADER.Text = DlgLangSupport.SentEmail;
                 }
 
                 if(emailSerializable.IsAccouncement)
@@ -74,8 +75,8 @@ namespace EMailProviderClient.Views.Emails
             }
             else
             {
-                RECEIVER_LABEL.Text = "Sender";
-                HEADER.Text = "Received Email";
+                RECEIVER_LABEL.Text = DlgLangSupport.Sender;
+                HEADER.Text = DlgLangSupport.ReceivedEmail;
                 RECEIVER_EDIT.Text = emailSerializable.FromEmail;
             }
 

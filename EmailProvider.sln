@@ -12,8 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{672A
 		1) Create DB.sql = 1) Create DB.sql
 		2) Procedures.sql = 2) Procedures.sql
 		3) Create Tables.sql = 3) Create Tables.sql
-		4) Add Countries.sql = 4) Add Countries.sql
 		5) Add Roles + Administrator.sql = 5) Add Roles + Administrator.sql
+		4) Add Countries + Languages.sql = 4) Add Countries + Languages.sql
+		6) Add Transaltion.sql = 6) Add Transaltion.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61548381-6217-49E2-9A7F-42D10FCEAFCC}"

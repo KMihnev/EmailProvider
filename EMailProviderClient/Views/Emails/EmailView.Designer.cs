@@ -1,4 +1,5 @@
-﻿using WindowsFormsCore;
+﻿using EMailProviderClient.LangSupport;
+using WindowsFormsCore;
 
 namespace EMailProviderClient.Views.Emails
 {
@@ -58,7 +59,7 @@ namespace EMailProviderClient.Views.Emails
             SEND_BTN.Name = "SEND_BTN";
             SEND_BTN.Size = new Size(122, 57);
             SEND_BTN.TabIndex = 11;
-            SEND_BTN.Text = "Send";
+            SEND_BTN.Text = DlgLangSupport.Send;
             SEND_BTN.UseVisualStyleBackColor = true;
             SEND_BTN.Click += SEND_BTN_Click;
             // 
@@ -72,7 +73,7 @@ namespace EMailProviderClient.Views.Emails
             CLOSE_BTN.Name = "CLOSE_BTN";
             CLOSE_BTN.Size = new Size(122, 57);
             CLOSE_BTN.TabIndex = 10;
-            CLOSE_BTN.Text = "Close";
+            CLOSE_BTN.Text = DlgLangSupport.Close;
             CLOSE_BTN.UseVisualStyleBackColor = true;
             CLOSE_BTN.Click += CLOSE_BTN_Click;
             // 
@@ -98,7 +99,7 @@ namespace EMailProviderClient.Views.Emails
             CONTENT_LABEL.Name = "CONTENT_LABEL";
             CONTENT_LABEL.Size = new Size(59, 19);
             CONTENT_LABEL.TabIndex = 5;
-            CONTENT_LABEL.Text = "Content";
+            CONTENT_LABEL.Text = DlgLangSupport.Content;
             // 
             // SUBJECT_LABEL
             // 
@@ -107,7 +108,7 @@ namespace EMailProviderClient.Views.Emails
             SUBJECT_LABEL.Name = "SUBJECT_LABEL";
             SUBJECT_LABEL.Size = new Size(53, 19);
             SUBJECT_LABEL.TabIndex = 3;
-            SUBJECT_LABEL.Text = "Subject";
+            SUBJECT_LABEL.Text = DlgLangSupport.Subject;
             // 
             // RECEIVER_EDIT
             // 
@@ -132,7 +133,7 @@ namespace EMailProviderClient.Views.Emails
             RECEIVER_LABEL.Name = "RECEIVER_LABEL";
             RECEIVER_LABEL.Size = new Size(59, 19);
             RECEIVER_LABEL.TabIndex = 1;
-            RECEIVER_LABEL.Text = "Receiver";
+            RECEIVER_LABEL.Text = DlgLangSupport.Receiver;
             // 
             // FILES_LIST
             // 
@@ -149,7 +150,7 @@ namespace EMailProviderClient.Views.Emails
             FILES_LABEL.Name = "FILES_LABEL";
             FILES_LABEL.Size = new Size(35, 19);
             FILES_LABEL.TabIndex = 7;
-            FILES_LABEL.Text = "Files";
+            FILES_LABEL.Text = DlgLangSupport.Files;
             // 
             // UPLOAD_BTN
             // 
@@ -161,7 +162,7 @@ namespace EMailProviderClient.Views.Emails
             UPLOAD_BTN.Name = "UPLOAD_BTN";
             UPLOAD_BTN.Size = new Size(75, 26);
             UPLOAD_BTN.TabIndex = 9;
-            UPLOAD_BTN.Text = "Upload";
+            UPLOAD_BTN.Text = DlgLangSupport.Uplaod;
             UPLOAD_BTN.UseVisualStyleBackColor = true;
             UPLOAD_BTN.Click += UPLOAD_BTN_Click;
             // 
@@ -174,13 +175,13 @@ namespace EMailProviderClient.Views.Emails
             // 
             downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
             downloadToolStripMenuItem.Size = new Size(180, 22);
-            downloadToolStripMenuItem.Text = "Download";
+            downloadToolStripMenuItem.Text = DlgLangSupport.Download;
             // 
             // removeToolStripMenuItem
             // 
             removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             removeToolStripMenuItem.Size = new Size(180, 22);
-            removeToolStripMenuItem.Text = "Remove";
+            removeToolStripMenuItem.Text = DlgLangSupport.Remove;
             // 
             // EMAIL_VIEW
             // 
@@ -200,7 +201,7 @@ namespace EMailProviderClient.Views.Emails
             Controls.Add(CLOSE_BTN);
             Controls.Add(SEND_BTN);
             Name = "EMAIL_VIEW";
-            Text = "Email";
+            Text = DlgLangSupport.Email;
             ResumeLayout(false);
             PerformLayout();
         }

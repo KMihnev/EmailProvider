@@ -2,6 +2,7 @@
 using EmailProvider.Models.Serializables;
 using EMailProviderClient.ClientModels;
 using EMailProviderClient.Dispatches.Folders;
+using EMailProviderClient.LangSupport;
 using EmailServiceIntermediate.Models;
 using System.Collections.ObjectModel;
 using WindowsFormsCore.Lists;
@@ -23,7 +24,7 @@ namespace EMailProviderClient.Views.Folders
 
         protected override void SetupColumns()
         {
-            listView.Columns.Add("Folders", listView.Width - 4);
+            listView.Columns.Add(DlgLangSupport.Folders, listView.Width - 4);
         }
 
         protected override async Task<List<FolderListModel>> LoadDataAsync()
@@ -50,7 +51,7 @@ namespace EMailProviderClient.Views.Folders
             oFoldersList.Add(new FolderListModel
             {
                 FolderID = 0,
-                Name = type.ToString(),
+                Name = DlgLangSupport.Get(type.ToString()),
                 FolderType = type,
                 IsMainFolder = true,
             });
@@ -74,7 +75,7 @@ namespace EMailProviderClient.Views.Folders
             oFoldersList.Add(new FolderListModel
             {
                 FolderID = -1,
-                Name = "Deleted",
+                Name = DlgLangSupport.Deleted,
                 FolderType = SystemFolders.Deleted,
                 OnlyDeleted = true,
                 IsMainFolder = true,
@@ -83,7 +84,7 @@ namespace EMailProviderClient.Views.Folders
             oFoldersList.Add(new FolderListModel
             {
                 FolderID = 0,
-                Name = "    Incoming",
+                Name = "    " + DlgLangSupport.Incoming,
                 FolderType = SystemFolders.Incoming,
                 OnlyDeleted = true
             });
@@ -91,7 +92,7 @@ namespace EMailProviderClient.Views.Folders
             oFoldersList.Add(new FolderListModel
             {
                 FolderID = 0,
-                Name = "    Outgoing",
+                Name = "    " + DlgLangSupport.Outgoing,
                 FolderType = SystemFolders.Outgoing,
                 OnlyDeleted = true
             });
@@ -144,7 +145,7 @@ namespace EMailProviderClient.Views.Folders
 
         public async Task AddFolderAsync(FolderListModel parentFolder)
         {
-            var newItem = new ListViewItem("New Folder (editing...)")
+            var newItem = new ListViewItem(DlgLangSupport.NewFolderEditing)
             {
                 Tag = parentFolder
             };
@@ -229,7 +230,7 @@ namespace EMailProviderClient.Views.Folders
                     }
                     else
                     {
-                        MessageBox.Show("Failed to add folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(DlgLangSupport.FailedToAddFolder, DlgLangSupport.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         listView.Items.Remove(newItem);
                     }
                 }
@@ -275,8 +276,8 @@ namespace EMailProviderClient.Views.Folders
 
         protected override void InitilizeContextMenu(ContextMenuStrip contextMenu)
         {
-            var addItem = new ToolStripMenuItem("Add");
-            var deleteItem = new ToolStripMenuItem("Delete");
+            var addItem = new ToolStripMenuItem(DlgLangSupport.Add);
+            var deleteItem = new ToolStripMenuItem(DlgLangSupport.Delete);
 
             addItem.Click += async (s, e) =>
             {

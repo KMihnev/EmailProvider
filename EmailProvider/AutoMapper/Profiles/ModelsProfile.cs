@@ -4,6 +4,7 @@ using EmailServiceIntermediate.Models.Serializables;
 using EmailProvider.Models.Serializables;
 using EmailServiceIntermediate.Models;
 using File = EmailServiceIntermediate.Models.File;
+using EmailProvider.Models.DBModels;
 
 namespace EmailServiceIntermediate.AutoMapper.Profiles
 {
@@ -50,6 +51,9 @@ namespace EmailServiceIntermediate.AutoMapper.Profiles
             .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.Body ?? string.Empty))
             .ForMember(dest => dest.DateOfRegistration,opt => opt.MapFrom(src => src.DateOfRegistration ?? DateTime.UtcNow))
             .ForMember(dest => dest.Files, opt => opt.MapFrom(src => src.Files));
+
+            CreateMap<Language, LanguageDto>();
+            CreateMap<LanguageDto, Language>();
         }
     }
 }

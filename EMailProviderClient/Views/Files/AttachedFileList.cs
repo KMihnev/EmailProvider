@@ -1,5 +1,6 @@
 ﻿// File: WindowsFormsCore/Controls/AttachedFileList.cs
 using EmailProvider.Models.Serializables;
+using EMailProviderClient.LangSupport;
 using EmailServiceIntermediate.Models.Serializables;
 using System;
 using System.Collections.Generic;
@@ -95,11 +96,11 @@ namespace WindowsFormsCore.Controls
             try
             {
                 File.WriteAllBytes(dialog.FileName, file.Content);
-                MessageBox.Show("File downloaded successfully.", "Download File", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(DlgLangSupport.FileDownloadSuccessfully, DlgLangSupport.DownloadFile, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Download File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", DlgLangSupport.DownloadFile, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

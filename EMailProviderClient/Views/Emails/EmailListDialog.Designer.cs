@@ -1,4 +1,5 @@
-﻿using WindowsFormsCore;
+﻿using EMailProviderClient.LangSupport;
+using WindowsFormsCore;
 
 namespace EMailProviderClient
 {
@@ -81,7 +82,7 @@ namespace EMailProviderClient
             ON_ADD_EMAIL.Name = "ON_ADD_EMAIL";
             ON_ADD_EMAIL.Size = new Size(167, 26);
             ON_ADD_EMAIL.TabIndex = 11;
-            ON_ADD_EMAIL.Text = "Write New";
+            ON_ADD_EMAIL.Text = "[WriteNew]";
             ON_ADD_EMAIL.UseVisualStyleBackColor = true;
             ON_ADD_EMAIL.Click += ON_ADD_EMAIL_Click;
             // 
@@ -110,7 +111,7 @@ namespace EMailProviderClient
             FILTER_BTN.Name = "FILTER_BTN";
             FILTER_BTN.Size = new Size(105, 26);
             FILTER_BTN.TabIndex = 16;
-            FILTER_BTN.Text = "Filter";
+            FILTER_BTN.Text = "[Filter]";
             FILTER_BTN.UseVisualStyleBackColor = true;
             FILTER_BTN.Click += FILTER_BTN_Click;
             // 
@@ -128,27 +129,27 @@ namespace EMailProviderClient
             // 
             // DATE_HEADER
             // 
-            DATE_HEADER.Text = "Date";
+            DATE_HEADER.Text = "[Date]";
             DATE_HEADER.Width = 150;
             // 
             // SUBJECT_HEADER
             // 
-            SUBJECT_HEADER.Text = "Subject";
+            SUBJECT_HEADER.Text = "[Subject]";
             SUBJECT_HEADER.Width = 200;
             // 
             // CONTENT_HEADER
             // 
-            CONTENT_HEADER.Text = "Content";
+            CONTENT_HEADER.Text = "[Content]";
             CONTENT_HEADER.Width = 300;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(1689, 46);
+            label1.Location = new Point(1658, 46);
             label1.Name = "label1";
             label1.Size = new Size(86, 19);
             label1.TabIndex = 18;
-            label1.Text = "Sort by Date";
+            label1.Text = "[SortByDate]";
             // 
             // button1
             // 
@@ -160,7 +161,7 @@ namespace EMailProviderClient
             button1.Name = "button1";
             button1.Size = new Size(105, 27);
             button1.TabIndex = 19;
-            button1.Text = "Clear Filter";
+            button1.Text = "[ClearFilter]";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -174,7 +175,7 @@ namespace EMailProviderClient
             smartButton1.Name = "smartButton1";
             smartButton1.Size = new Size(167, 26);
             smartButton1.TabIndex = 20;
-            smartButton1.Text = "Make Announcement";
+            smartButton1.Text = "[MakeAnnouncement]";
             smartButton1.UseVisualStyleBackColor = true;
             smartButton1.Click += smartButton1_Click;
             // 

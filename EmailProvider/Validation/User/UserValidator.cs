@@ -137,14 +137,14 @@ namespace EmailProvider.Validation.User
             if (!emailRegex.IsMatch(email))
             {
                 if (bLog)
-                    Logger.LogWarning($"Invalid email format: {email}");
+                    Logger.LogWarning(LogMessages.InvalidEmailFormat.ReplaceTokens(("email", email)));
                 return false;
             }
 
             if (!email.EndsWith($"@{SettingsProvider.GetEmailDomain()}", StringComparison.OrdinalIgnoreCase))
             {
                 if (bLog)
-                    Logger.LogWarning($"Email domain must be '@{SettingsProvider.GetEmailDomain()}': {email}");
+                    Logger.LogWarning(LogMessages.EmailDomainMustBe.ReplaceTokens(("email", email),("domain", SettingsProvider.GetEmailDomain())));
                 return false;
             }
 

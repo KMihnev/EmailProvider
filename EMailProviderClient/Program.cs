@@ -1,3 +1,6 @@
+using EMailProviderClient.Controllers.UserControl;
+using EMailProviderClient.Dispatches.Lang;
+using EMailProviderClient.LangSupport;
 using EMailProviderClient.Views.User;
 
 namespace EMailProviderClient
@@ -19,6 +22,14 @@ namespace EMailProviderClient
 
             if (result == DialogResult.OK)
             {
+                var user = UserController.GetCurrentUser();
+                if (user != null)
+                {
+                    var translations = LangSupportDispatchesC.LoadTranslations(user.PrefferedLanguageId).Result;
+                    if (translations != null)
+                        DlgLangSupport.Load(translations);
+                }
+
                 Application.Run(new Container());
             }
             else

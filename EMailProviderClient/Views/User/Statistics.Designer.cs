@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient.Views.User
+﻿using EMailProviderClient.LangSupport;
+
+namespace EMailProviderClient.Views.User
 {
     partial class Statistics
     {
@@ -60,7 +62,7 @@
             label1.Name = "label1";
             label1.Size = new Size(111, 19);
             label1.TabIndex = 2;
-            label1.Text = "Number of users";
+            label1.Text = DlgLangSupport.NumberOfUsers;
             // 
             // label2
             // 
@@ -69,7 +71,7 @@
             label2.Name = "label2";
             label2.Size = new Size(177, 19);
             label2.TabIndex = 3;
-            label2.Text = "Number of outgoing emails";
+            label2.Text = DlgLangSupport.NumberOfOutgoingEmail;
             // 
             // button3
             // 
@@ -86,7 +88,7 @@
             label3.Name = "label3";
             label3.Size = new Size(177, 19);
             label3.TabIndex = 5;
-            label3.Text = "Number of incoming emails";
+            label3.Text = DlgLangSupport.NumberOfIncomingEmails;
             // 
             // button4
             // 
@@ -94,7 +96,7 @@
             button4.Name = "button4";
             button4.Size = new Size(75, 26);
             button4.TabIndex = 6;
-            button4.Text = "Close";
+            button4.Text = DlgLangSupport.Close;
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
@@ -111,7 +113,7 @@
             Controls.Add(button2);
             Controls.Add(button1);
             Name = "Statistics";
-            Text = "Statistics";
+            Text = DlgLangSupport.Statistics;
             ResumeLayout(false);
             PerformLayout();
         }

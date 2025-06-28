@@ -1,4 +1,6 @@
 ﻿using EMailProviderClient.Controllers.UserControl;
+using EMailProviderClient.Dispatches.Lang;
+using EMailProviderClient.LangSupport;
 using EMailProviderClient.Views.Emails;
 using EMailProviderClient.Views.User;
 using EmailServiceIntermediate.Models;
@@ -69,7 +71,7 @@ namespace EMailProviderClient
 
             var statisticsButton = new SmartButton
             {
-                Text = "Statistics",
+                Text = DlgLangSupport.Statistics,
                 Size = new Size(130, 50),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
                 TextAlign = ContentAlignment.MiddleCenter
@@ -81,7 +83,7 @@ namespace EMailProviderClient
 
             onAccountButton = new SmartButton
             {
-                Text = "My Account ",
+                Text = DlgLangSupport.MyAccount,
                 Size = new Size(180, 50),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
                 ImageAlign = ContentAlignment.MiddleRight,
@@ -167,6 +169,14 @@ namespace EMailProviderClient
                 var startUp = new StartUp();
                 if (startUp.ShowDialog() == DialogResult.OK)
                 {
+                    var user = UserController.GetCurrentUser();
+                    if (user != null)
+                    {
+                        var translations = await LangSupportDispatchesC.LoadTranslations(user.PrefferedLanguageId);
+                        if (translations != null)
+                            DlgLangSupport.Load(translations);
+                    }
+
                     RefreshAccountButtonImage();
                     ShowEmailList();
                     this.Show();

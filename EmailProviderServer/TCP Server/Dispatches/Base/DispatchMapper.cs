@@ -47,6 +47,8 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 case    DispatchEnums.EditProfile:              return ActivatorUtilities.CreateInstance<EditProfileDispatchS>          (_serviceProvider);
                 case    DispatchEnums.MakeAnnouncement:         return ActivatorUtilities.CreateInstance<MakeAnnouncementDispatcjS>     (_serviceProvider);
                 case    DispatchEnums.LoadStatistics:           return ActivatorUtilities.CreateInstance<LoadStatisticsDispatchS>       (_serviceProvider);
+                case    DispatchEnums.LoadLangSupport:          return ActivatorUtilities.CreateInstance<GetLangSupportDispatchS>       (_serviceProvider);
+                case    DispatchEnums.LoadLanguages:            return ActivatorUtilities.CreateInstance<GetLanguagesDispatchS>         (_serviceProvider);
                 default:
                     throw new NotImplementedException($"Dispatch code {dispatchCode} is not supported.");
             }

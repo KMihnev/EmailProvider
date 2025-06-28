@@ -34,6 +34,8 @@ namespace EmailServiceIntermediate.Enums
         EditProfile,
         LoadStatistics,
         MakeAnnouncement,
+        LoadLangSupport,
+        LoadLanguages,
 
         //Server - Service
         SendEmailToService,

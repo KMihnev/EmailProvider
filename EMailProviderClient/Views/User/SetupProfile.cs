@@ -6,6 +6,8 @@ using EMailProviderClient.Dispatches.Countries;
 using EMailProviderClient.Dispatches.Users;
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Validation;
+using EMailProviderClient.LangSupport;
+using EmailProvider.Models.DBModels;
 
 namespace EMailProviderClient.Views.User
 {
@@ -71,6 +73,20 @@ namespace EMailProviderClient.Views.User
                 {
                     PB_PROFILE.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                     user.Photo = ms.ToArray();
+                }
+            }
+
+            if(user.CountryId != 0 && selectedCountry.LanguageId != (int)Languages.LanguagesEnglish)
+            {
+                var confirmResult = MessageBox.Show(
+                  "The selected country has a default language. Do you want to switch your interface language accordingly?",
+                  "Change Language",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmResult == DialogResult.Yes)
+                {
+                    user.PrefferedLanguageId = selectedCountry.LanguageId;
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using WindowsFormsCore;
+﻿using EMailProviderClient.LangSupport;
+using WindowsFormsCore;
 
 namespace EMailProviderClient.Views.User
 {
@@ -49,7 +50,7 @@ namespace EMailProviderClient.Views.User
             STT_CHANGE_PASSWORD.Name = "STT_CHANGE_PASSWORD";
             STT_CHANGE_PASSWORD.Size = new Size(204, 26);
             STT_CHANGE_PASSWORD.TabIndex = 1;
-            STT_CHANGE_PASSWORD.Text = "Change Password";
+            STT_CHANGE_PASSWORD.Text = DlgLangSupport.ChangePassword;
             // 
             // OLD_PASSWORD_EDIT
             // 
@@ -82,7 +83,7 @@ namespace EMailProviderClient.Views.User
             label1.Name = "label1";
             label1.Size = new Size(79, 15);
             label1.TabIndex = 5;
-            label1.Text = "Old password";
+            label1.Text = DlgLangSupport.OldPassWord;
             // 
             // label2
             // 
@@ -91,7 +92,7 @@ namespace EMailProviderClient.Views.User
             label2.Name = "label2";
             label2.Size = new Size(84, 15);
             label2.TabIndex = 6;
-            label2.Text = "New password";
+            label2.Text = DlgLangSupport.NewPassword;
             // 
             // label3
             // 
@@ -100,7 +101,7 @@ namespace EMailProviderClient.Views.User
             label3.Name = "label3";
             label3.Size = new Size(96, 15);
             label3.TabIndex = 7;
-            label3.Text = "Repeat password";
+            label3.Text = DlgLangSupport.RepeatPassword;
             // 
             // CLOSE_BTN
             // 
@@ -112,7 +113,7 @@ namespace EMailProviderClient.Views.User
             CLOSE_BTN.Name = "CLOSE_BTN";
             CLOSE_BTN.Size = new Size(88, 23);
             CLOSE_BTN.TabIndex = 8;
-            CLOSE_BTN.Text = "Close";
+            CLOSE_BTN.Text = DlgLangSupport.Close;
             CLOSE_BTN.UseVisualStyleBackColor = true;
             CLOSE_BTN.Click += CLOSE_BTN_Click;
             // 
@@ -126,7 +127,7 @@ namespace EMailProviderClient.Views.User
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 9;
-            button1.Text = "OK";
+            button1.Text = DlgLangSupport.OK;
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -145,7 +146,7 @@ namespace EMailProviderClient.Views.User
             Controls.Add(OLD_PASSWORD_EDIT);
             Controls.Add(STT_CHANGE_PASSWORD);
             Name = "ChangePassword";
-            Text = "Change Password";
+            Text = DlgLangSupport.ChangePassword;
             ResumeLayout(false);
             PerformLayout();
         }

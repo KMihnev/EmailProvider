@@ -7,4 +7,4 @@ SELECT 0, 'User' WHERE NOT EXISTS (SELECT * FROM USER_ROLES WHERE ID = 0);
 INSERT INTO USER_ROLES (ID, NAME)
 SELECT 1, 'Admin' WHERE NOT EXISTS (SELECT * FROM USER_ROLES WHERE ID = 1);
 
-INSERT INTO USERS VALUES('Administrator', 'administrator@tyron.rocks', 'LdGlptK9Xt7Vx8MX7LlsGM1++lmOAjGSG7q+bpVXT1E=', '', 0, NULL, 1)  --123A
+INSERT INTO USERS VALUES('Administrator', 'administrator@tyron.rocks', 'LdGlptK9Xt7Vx8MX7LlsGM1++lmOAjGSG7q+bpVXT1E=', '', 0, NULL, 1, 1)  --123A

@@ -3,6 +3,7 @@ using EmailProvider.Enums;
 using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.Controllers.UserControl;
+using EMailProviderClient.LangSupport;
 using EMailProviderClient.Views.Emails;
 using EMailProviderClient.Views.Folders;
 using EmailServiceIntermediate.Models;
@@ -28,9 +29,16 @@ namespace EMailProviderClient
             emailsList = new EmailsList(EMAILS_LIST, SearchData);
             foldersList = new FoldersList(CATEGORIES_LIST);
 
+            var orderByValues = Enum.GetValues(typeof(OrderBy))
+                        .Cast<OrderBy>()
+                        .Select(ob => new { Value = ob, Display = DlgLangSupport.Get(ob.ToString()) })
+                        .ToList();
+
             SELECT_ALL_CHB.Enabled = false;
-            CMB_SORT.DataSource = Enum.GetValues(typeof(OrderBy));
-            CMB_SORT.SelectedItem = SearchData.OrderBy;
+            CMB_SORT.DisplayMember = "Display";
+            CMB_SORT.ValueMember = "Value";
+            CMB_SORT.DataSource = orderByValues;
+            CMB_SORT.SelectedValue = SearchData.OrderBy;
             CMB_SORT.SelectedIndexChanged += CMB_SORT_SelectedIndexChanged;
 
             if (UserController.GetCurrentUser().UserRoleId != (int)UserRoles.UserRoleAdministrator)
@@ -100,7 +108,7 @@ namespace EMailProviderClient
         {
             if (!IsLogOutInvoked)
             {
-                if (!Confirm("Are you sure you want to exit the application?", "Confirm Exit"))
+                if (!Confirm(DlgLangSupport.ExitConfirmation, DlgLangSupport.ConfirmExit))
                 {
                     return Task.FromResult(false);
                 }

@@ -1,4 +1,5 @@
-﻿using WindowsFormsCore;
+﻿using EMailProviderClient.LangSupport;
+using WindowsFormsCore;
 
 namespace EMailProviderClient.Views.Emails
 {
@@ -55,7 +56,7 @@ namespace EMailProviderClient.Views.Emails
             Filter.Name = "Filter";
             Filter.Size = new Size(129, 63);
             Filter.TabIndex = 0;
-            Filter.Text = "Filter";
+            Filter.Text = DlgLangSupport.Filter;
             // 
             // BY_DATE_GRP
             // 
@@ -68,7 +69,7 @@ namespace EMailProviderClient.Views.Emails
             BY_DATE_GRP.Size = new Size(302, 112);
             BY_DATE_GRP.TabIndex = 2;
             BY_DATE_GRP.TabStop = false;
-            BY_DATE_GRP.Text = "By Date";
+            BY_DATE_GRP.Text = DlgLangSupport.ByDate;
             // 
             // END_DATE_LABEL
             // 
@@ -77,7 +78,7 @@ namespace EMailProviderClient.Views.Emails
             END_DATE_LABEL.Name = "END_DATE_LABEL";
             END_DATE_LABEL.Size = new Size(65, 19);
             END_DATE_LABEL.TabIndex = 2;
-            END_DATE_LABEL.Text = "End Date";
+            END_DATE_LABEL.Text = DlgLangSupport.EndDate;
             // 
             // BEGIN_DATE_LABEL
             // 
@@ -86,7 +87,7 @@ namespace EMailProviderClient.Views.Emails
             BEGIN_DATE_LABEL.Name = "BEGIN_DATE_LABEL";
             BEGIN_DATE_LABEL.Size = new Size(76, 19);
             BEGIN_DATE_LABEL.TabIndex = 0;
-            BEGIN_DATE_LABEL.Text = "Begin Date";
+            BEGIN_DATE_LABEL.Text =DlgLangSupport.BeginDate;
             // 
             // DATE_TO
             // 
@@ -123,7 +124,7 @@ namespace EMailProviderClient.Views.Emails
             BY_RECEIVER_GRP.Size = new Size(302, 68);
             BY_RECEIVER_GRP.TabIndex = 4;
             BY_RECEIVER_GRP.TabStop = false;
-            BY_RECEIVER_GRP.Text = "By Email";
+            BY_RECEIVER_GRP.Text = DlgLangSupport.ByEmail;
             // 
             // EMAIL_LABEL
             // 
@@ -132,7 +133,7 @@ namespace EMailProviderClient.Views.Emails
             EMAIL_LABEL.Name = "EMAIL_LABEL";
             EMAIL_LABEL.Size = new Size(41, 19);
             EMAIL_LABEL.TabIndex = 0;
-            EMAIL_LABEL.Text = "Email";
+            EMAIL_LABEL.Text = DlgLangSupport.Email;
             // 
             // RECEIVER_EMAIL
             // 
@@ -175,7 +176,7 @@ namespace EMailProviderClient.Views.Emails
             APPLY.Name = "APPLY";
             APPLY.Size = new Size(75, 26);
             APPLY.TabIndex = 6;
-            APPLY.Text = "Apply";
+            APPLY.Text = DlgLangSupport.Apply;
             APPLY.UseVisualStyleBackColor = true;
             APPLY.Click += APPLY_Click;
             // 
@@ -189,7 +190,7 @@ namespace EMailProviderClient.Views.Emails
             CLEAR_BTN.Name = "CLEAR_BTN";
             CLEAR_BTN.Size = new Size(75, 26);
             CLEAR_BTN.TabIndex = 5;
-            CLEAR_BTN.Text = "Clear";
+            CLEAR_BTN.Text = DlgLangSupport.Clear;
             CLEAR_BTN.UseVisualStyleBackColor = true;
             CLEAR_BTN.Click += CLEAR_BTN_Click;
             // 
@@ -207,7 +208,7 @@ namespace EMailProviderClient.Views.Emails
             Controls.Add(BY_DATE_GRP);
             Controls.Add(Filter);
             Name = "FilterEmails";
-            Text = "Extended Filters";
+            Text = DlgLangSupport.ExtendedFilters;
             BY_DATE_GRP.ResumeLayout(false);
             BY_DATE_GRP.PerformLayout();
             BY_RECEIVER_GRP.ResumeLayout(false);

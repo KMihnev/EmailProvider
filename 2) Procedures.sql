@@ -66,8 +66,15 @@ BEGIN
 
         WHILE @@FETCH_STATUS = 0
         BEGIN
-            SET @SQL = 'EXEC sp_dropextendedproperty N''MS_Description'', N''SCHEMA'', N''dbo'', N''TABLE'', N''' + @TABLE_NAME + ''', N''COLUMN'', N''' + @COLUMN_NAME + ''''
-            EXEC sp_executesql @SQL
+            BEGIN TRY
+                SET @SQL = 'EXEC sp_dropextendedproperty N''MS_Description'', N''SCHEMA'', N''dbo'', N''TABLE'', N''' 
+                           + @TABLE_NAME + ''', N''COLUMN'', N''' + @COLUMN_NAME + ''''
+                EXEC sp_executesql @SQL
+            END TRY
+            BEGIN CATCH
+
+            END CATCH
+
             FETCH NEXT FROM ColumnCursor INTO @COLUMN_NAME
         END
 

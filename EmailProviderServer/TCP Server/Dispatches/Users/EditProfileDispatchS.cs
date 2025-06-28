@@ -73,6 +73,7 @@ namespace EmailProviderServer.TCP_Server.Dispatches
                 return false;
             }
 
+            CurrentUser.PrefferedLanguageId = user.PrefferedLanguageId;
             CurrentUser.PhoneNumber = user.PhoneNumber;
             CurrentUser.CountryId = user.CountryId;
             CurrentUser.Name = user.Name;

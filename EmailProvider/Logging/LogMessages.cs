@@ -7,6 +7,20 @@ namespace EmailServiceIntermediate.Logging
     //------------------------------------------------------
     public static class LogMessages
     {
+        public static string ReplaceTokens(this string template, params (string key, string value)[] tokens)
+        {
+            if (string.IsNullOrEmpty(template) || tokens == null)
+                return template;
+
+            foreach (var (key, value) in tokens)
+            {
+                var placeholder = $"{{{key}}}";
+                template = template.Replace(placeholder, value ?? string.Empty);
+            }
+
+            return template;
+        }
+
         public const string InvalidName = "Name: Only Alphabetic characters are allowed";
         public const string InvalidPassword = "Password: Only Alphabetic characters and numbers are allowed";
         public const string InvalidPasswordNoUpper = "Password: An uppercase letter is required";
@@ -49,5 +63,10 @@ namespace EmailServiceIntermediate.Logging
         public const string RecordNotFound = "Record not found: {0}, Searched value:{1}";
         public const string UpdateRecordError = "Updating record failed";
         public const string SaveChanges = "Do you want to save the changes made to this message?";
+        public const string DisconnectedBeforeReadingLenght = "Disconnected before reading the length prefix.";
+        public const string InvalidMessageLenght = "Invalid message length";
+        public const string DisconnectedBeforeReadingFullPayload = "Disconnected before reading the full payload.";
+        public const string InvalidEmailFormat = "Invalid email format: {email}";
+        public const string EmailDomainMustBe = "Email domain must be @'{domain}' : {email}";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EmailProvider.Models.DBModels;
 using EmailProviderServer.DBContext.DbEncryption;
 using EmailServiceIntermediate.Models;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,10 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<UserMessage> UserMessages { get; set; }
 
     public virtual DbSet<UserMessageFolder> UserMessageFolders { get; set; }
+
+    public virtual DbSet<Language> Languages { get; set; }
+
+    public virtual DbSet<LangSupport> LangSupports { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -150,6 +155,16 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(5)
                 .HasComment("Country dialing code prefix")
                 .HasColumnName("PHONE_NUMBER_CODE");
+            entity.Property(e => e.LanguageId)
+                .HasColumnName("LANGUAGE_CODE")
+                .HasDefaultValue(1)
+                .HasComment("Language for the country");
+
+            entity.HasOne(e => e.Language)
+                .WithMany(c => c.Countries) // <-- specify navigation collection
+                .HasForeignKey(e => e.LanguageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LANG_SUPPORT_LANGUAGE_ID");
         });
 
         modelBuilder.Entity<UserRole>(entity =>
@@ -322,9 +337,14 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValue(0)
                 .HasComment("The role of the user")
                 .HasColumnName("USER_ROLE_ID");
+            entity.Property(e => e.PrefferedLanguageId)
+                .HasDefaultValue(1)
+                .HasComment("Preferred language of the user")
+                .HasColumnName("PREFFERED_LANGUAGE_ID");
 
             entity.HasOne(d => d.Country).WithMany(p => p.Users).HasForeignKey(d => d.CountryId);
             entity.HasOne(r=>r.UserRole).WithMany(p => p.Users).HasForeignKey(r => r.UserRoleId);
+            entity.HasOne(d => d.PrefferedLanguage).WithMany(p => p.Users).HasForeignKey(d => d.PrefferedLanguageId);
         });
 
         modelBuilder.Entity<UserMessage>(entity =>
@@ -387,6 +407,65 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.UserMessage).WithMany(p => p.UserMessageFolders)
                 .HasForeignKey(d => d.UserMessageId)
                 .HasConstraintName("FK_USER_MESSAGE_FOLDERS_USER_MESSAGE");
+        });
+
+        modelBuilder.Entity<LangSupport>(entity =>
+        {
+            entity.ToTable("LANG_SUPPORT", tb => tb.HasComment("Table for message translations"));
+
+            entity.HasKey(e => e.Id).HasName("PK_LANG_SUPPORT_ID");
+            entity.HasIndex(e => e.LanguageId).HasDatabaseName("IX_LANG_SUPPORT_LAGUAGE_ID");
+
+            entity.Property(e => e.Id)
+                .HasColumnName("ID")
+                .HasComment("Identifier");
+
+            entity.Property(e => e.MessageName)
+                .HasMaxLength(256)
+                .HasColumnName("MESSAGE_NAME")
+                .HasComment("Name of the message");
+
+            entity.Property(e => e.Value)
+                .HasMaxLength(512)
+                .HasColumnName("VALUE")
+                .HasComment("Message in the corresponding language");
+
+            entity.Property(e => e.Context)
+                .HasColumnName("CONTEXT")
+                .HasComment("Context specifting the use of the message");
+
+            entity.Property(e => e.LanguageId)
+                .HasColumnName("LANGUAGE_ID")
+                .HasComment("Language of the message");
+
+            entity.HasOne(e => e.Language)
+                .WithMany(l => l.LangSupports)
+                .HasForeignKey(e => e.LanguageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LANG_SUPPORT_LANGUAGE_ID");
+        });
+
+        modelBuilder.Entity<Language>(entity =>
+        {
+            entity.ToTable("LANGUAGES", tb => tb.HasComment("Table for languages"));
+
+            entity.HasKey(e => e.Id).HasName("PK_LANGUAGES_ID");
+
+            entity.Property(e => e.Id)
+                .HasColumnName("ID")
+                .HasComment("Language ID");
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(32)
+                .HasColumnName("NAME")
+                .HasComment("Name of the language");
+
+            entity.Property(e => e.Code)
+                .IsRequired()
+                .HasMaxLength(5)
+                .HasColumnName("CODE")
+                .HasComment("CODE of the language");
         });
 
         OnModelCreatingPartial(modelBuilder);

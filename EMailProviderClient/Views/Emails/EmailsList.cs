@@ -3,6 +3,7 @@ using EmailProvider.Models.Serializables;
 using EmailProvider.SearchData;
 using EMailProviderClient.ClientModels;
 using EMailProviderClient.Dispatches.Emails;
+using EMailProviderClient.LangSupport;
 using EMailProviderClient.Views.Folders;
 using System.Collections.ObjectModel;
 using WindowsFormsCore;
@@ -33,10 +34,10 @@ namespace EMailProviderClient.Views.Emails
 
         protected override void SetupColumns()
         {
-            listView.Columns.Add("Date", 100);
-            listView.Columns.Add("From/To", 100);
-            listView.Columns.Add("Subject", 200);
-            listView.Columns.Add("Content", 300);
+            listView.Columns.Add(DlgLangSupport.Date, 100);
+            listView.Columns.Add(DlgLangSupport.FromTo, 100);
+            listView.Columns.Add(DlgLangSupport.Subject, 200);
+            listView.Columns.Add(DlgLangSupport.Content, 300);
         }
 
         protected override ListViewItem RenderItem(EmailListModel email)
@@ -163,8 +164,8 @@ namespace EMailProviderClient.Views.Emails
             if (listView.Columns.Count > 1)
             {
                 listView.Columns[1].Text = folder.FolderType == SystemFolders.Incoming
-                    ? "Sender Email"
-                    : "Receiver Email";
+                    ? DlgLangSupport.SenderEmail
+                    : DlgLangSupport.ReceiverEmail;
             }
 
             _ = RefreshAsync();
@@ -172,7 +173,7 @@ namespace EMailProviderClient.Views.Emails
 
         protected override void InitilizeContextMenu(ContextMenuStrip contextMenu)
         {
-            var deleteItem = new ToolStripMenuItem("Move to bin");
+            var deleteItem = new ToolStripMenuItem(DlgLangSupport.MoveToBin);
             deleteItem.Click += async (s, e) => await DeleteSelectedItemsAsync();
 
             contextMenu.Items.Add(deleteItem);
@@ -182,15 +183,15 @@ namespace EMailProviderClient.Views.Emails
                 deleteItem.Enabled = listView.CheckedItems.Count > 0 || listView.SelectedItems.Count > 0;
             };
 
-            var refreshItem = new ToolStripMenuItem("Refresh");
+            var refreshItem = new ToolStripMenuItem(DlgLangSupport.Refresh);
             refreshItem.Click += async (s, e) => await RefreshAsync();
 
-            var removeFromFolderItem = new ToolStripMenuItem("Remove from Folder");
+            var removeFromFolderItem = new ToolStripMenuItem(DlgLangSupport.RemoveFromFolder);
             removeFromFolderItem.Click += async (s, e) =>
             {
                 if (currentFolder == null || currentFolder.FolderID == 0)
                 {
-                    MessageBox.Show("This action is only available in custom folders.", "Invalid Operation",
+                    MessageBox.Show(DlgLangSupport.ActionAvailableOnCustomFolders, DlgLangSupport.InvalidOperation,
                                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -203,10 +204,10 @@ namespace EMailProviderClient.Views.Emails
                 if (success)
                     await RefreshAsync();
                 else
-                    MessageBox.Show("Failed to remove email(s) from folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(DlgLangSupport.FailedToRemoveEmail, DlgLangSupport.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
 
-            var moveToItem = new ToolStripMenuItem("Move to Folder");
+            var moveToItem = new ToolStripMenuItem(DlgLangSupport.MoveToFolder);
 
             moveToItem.DropDownOpening += (s, e) =>
             {
@@ -235,13 +236,13 @@ namespace EMailProviderClient.Views.Emails
                         if (moved)
                             await RefreshAsync();
                         else
-                            MessageBox.Show("Failed to move email(s).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(DlgLangSupport.FailedToMoveToFolder, DlgLangSupport.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     };
                     moveToItem.DropDownItems.Add(subItem);
                 }
             };
 
-            var markAsReadItem = new ToolStripMenuItem("Mark as Read");
+            var markAsReadItem = new ToolStripMenuItem(DlgLangSupport.MarkAsRead);
             markAsReadItem.Click += async (s, e) =>
             {
                 var selectedIds = GetSelectedModels().Where(m => !m.bIsRead).Select(m => m.Id).ToList();
@@ -252,7 +253,7 @@ namespace EMailProviderClient.Views.Emails
                     await RefreshAsync();
             };
 
-            var markAsUnreadItem = new ToolStripMenuItem("Mark as Unread");
+            var markAsUnreadItem = new ToolStripMenuItem(DlgLangSupport.MarkAsUnread);
             markAsUnreadItem.Click += async (s, e) =>
             {
                 var selectedIds = GetSelectedModels().Where(m => m.bIsRead).Select(m => m.Id).ToList();

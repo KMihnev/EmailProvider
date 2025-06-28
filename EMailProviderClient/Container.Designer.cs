@@ -1,4 +1,6 @@
-﻿namespace EMailProviderClient
+﻿using EMailProviderClient.LangSupport;
+
+namespace EMailProviderClient
 {
     partial class Container
     {

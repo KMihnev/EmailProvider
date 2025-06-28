@@ -35,6 +35,8 @@ void AddServices(IServiceCollection services, bool useInMemory)
 
     //Регистирране на repositories
 
+    services.AddScoped<ILanguageRepository, LanguageRepository>();
+    services.AddScoped<ILangSupportRepository, LangSupportRepository>();
     services.AddScoped<ICountryRepository, CountryRepository>();
     services.AddScoped<IUserMessageRepository, UserMessageRepository>();
     services.AddScoped<IMessageRepository, MessageRepository>();
@@ -45,6 +47,8 @@ void AddServices(IServiceCollection services, bool useInMemory)
     services.AddScoped<IBulkOutgoingMessagesRepositoryS, BulkOutgoingMessagesRepository>();
 
     //Регистриране на сервизи
+    services.AddScoped<ILanguageService, LanguageService>();
+    services.AddScoped<ILangSupportService, LangSupportService>();
     services.AddScoped<IBulkIncomingMessageService, BulkIncomingMessageService>();
     services.AddScoped<IBulkOutgoingMessageService, BulkOutgoingMessageService>();
     services.AddScoped<IUserMessageService, UserMessageService>();

@@ -1,4 +1,5 @@
-﻿using EmailServiceIntermediate.Models;
+﻿using EmailProvider.Models.DBModels;
+using EmailServiceIntermediate.Models;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,7 @@ public partial class User : IEntity
         Country = null;
         UserRoleId = 0;
         UserRole = new UserRole();
+        PrefferedLanguageId = (int)Languages.LanguagesEnglish;
     }
 
     /// <summary>
@@ -62,6 +64,8 @@ public partial class User : IEntity
 
     public int UserRoleId { get; set; }
 
+    public int PrefferedLanguageId { get; set; }
+
     public virtual Country Country { get; set; } = null!;
 
     public virtual UserRole UserRole { get; set; } = null!;
@@ -69,4 +73,6 @@ public partial class User : IEntity
     public virtual ICollection<Folder> Folders { get; set; }
 
     public virtual ICollection<UserMessage> UserMessages { get; set; }
+
+    public virtual Language PrefferedLanguage { get; set; } = null!;
 }

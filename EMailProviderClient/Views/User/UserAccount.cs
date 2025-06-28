@@ -2,8 +2,10 @@
 using EMailProviderClient.Controllers.UserControl;
 using EMailProviderClient.Dispatches.Countries;
 using EMailProviderClient.Dispatches.Users;
+using EMailProviderClient.LangSupport;
 using EMailProviderClient.Validation;
 using EmailServiceIntermediate.Enums;
+using EmailServiceIntermediate.Logging;
 using EmailServiceIntermediate.Models.Serializables;
 using System;
 using System.Collections.Generic;
@@ -64,7 +66,7 @@ namespace EMailProviderClient.Views.User
             UPLOAD_BTN.Enabled = enabled;
             CHANGE_PASSWORD_BTN.Enabled = enabled;
 
-            SAVE_EDIT_BTN.Text = enabled ? "Save" : "Edit";
+            SAVE_EDIT_BTN.Text = enabled ? DlgLangSupport.Save : DlgLangSupport.Edit;
         }
 
         private async void SAVE_EDIT_BTN_Click(object sender, EventArgs e)
@@ -83,11 +85,13 @@ namespace EMailProviderClient.Views.User
             if (!UserValidatorC.Validate(true))
                 return;
 
-            currentUser.Name = NAME_EDIT.Text;
-            currentUser.PhoneNumber = PHONE_NUMBER_EDIT.Text;
-            currentUser.CountryId = COUNTRY_CMB.SelectedIndex >= 0
-                ? ((CountryViewModel)COUNTRY_CMB.SelectedItem).Id
-                : currentUser.CountryId;
+            UserViewModel newUserData = currentUser;
+            newUserData.Name = NAME_EDIT.Text;
+            newUserData.PhoneNumber = PHONE_NUMBER_EDIT.Text;
+
+            var selectedCountry = (CountryViewModel)COUNTRY_CMB.SelectedItem;
+            if(selectedCountry != null)
+                newUserData.CountryId = COUNTRY_CMB.SelectedIndex >= 0 ? selectedCountry.Id: newUserData.CountryId;
 
             if (pictureBox1.Image != null)
             {
@@ -96,23 +100,41 @@ namespace EMailProviderClient.Views.User
                 currentUser.Photo = ms.ToArray();
             }
 
-            var success = await UserDispatchesC.EditProfile(
-                currentUser,
-                passwordModel != null &&
+            if (newUserData.CountryId > 0 && currentUser.PrefferedLanguageId != selectedCountry.LanguageId)
+            {
+                var confirmResult = MessageBox.Show(
+                    DlgLangSupport.ChangeLanguageQuestion,
+                    DlgLangSupport.ChangeLanguage,
+                      MessageBoxButtons.YesNo,
+                      MessageBoxIcon.Question);
+
+                if (confirmResult == DialogResult.Yes)
+                {
+                    newUserData.PrefferedLanguageId = selectedCountry.LanguageId;
+                }
+
+                Logger.LogInfo(DlgLangSupport.RestartNeeded);
+            }
+
+            var passwordModelToSend = passwordModel != null &&
                 string.IsNullOrWhiteSpace(passwordModel?.OldPassword) &&
                 string.IsNullOrWhiteSpace(passwordModel?.NewPassword) &&
                 string.IsNullOrWhiteSpace(passwordModel?.ConfirmPassword)
                     ? null
-                    : passwordModel
+                    : passwordModel;
+
+            var success = await UserDispatchesC.EditProfile(
+                newUserData,
+                passwordModelToSend
             );
 
             if (!success)
             {
-                MessageBox.Show("Failed to save changes.", "Error");
+                MessageBox.Show(DlgLangSupport.FailedToSaveChanges, DlgLangSupport.Error);
                 return;
             }
 
-            MessageBox.Show("Profile updated successfully.", "Saved");
+            MessageBox.Show(DlgLangSupport.ProfileUpdatedSuccessfully, DlgLangSupport.Saved);
             SetEditMode(false);
             passwordModel = null;
         }

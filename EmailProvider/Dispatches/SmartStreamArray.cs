@@ -1,4 +1,5 @@
 ﻿//Includes
+using EmailServiceIntermediate.Logging;
 using System.Text.Json;
 
 namespace EmailServiceIntermediate.Dispatches
@@ -112,7 +113,7 @@ namespace EmailServiceIntermediate.Dispatches
             {
                 int bytesRead = networkStream.Read(lengthPrefix, totalBytesRead, 4 - totalBytesRead);
                 if (bytesRead == 0) 
-                    throw new IOException("Disconnected before reading the length prefix.");
+                    throw new IOException(LogMessages.DisconnectedBeforeReadingLenght);
 
                 totalBytesRead += bytesRead;
             }
@@ -120,7 +121,7 @@ namespace EmailServiceIntermediate.Dispatches
             int messageLength = BitConverter.ToInt32(lengthPrefix, 0);
 
             if (messageLength <= 0)
-                throw new IOException($"Invalid message length");
+                throw new IOException(LogMessages.InvalidMessageLenght);
 
             // чедтем същинските данни
             byte[] payload = new byte[messageLength];
@@ -129,7 +130,7 @@ namespace EmailServiceIntermediate.Dispatches
             {
                 int bytesRead = networkStream.Read(payload, totalBytesRead, messageLength - totalBytesRead);
                 if (bytesRead == 0) 
-                    throw new IOException("Disconnected before reading the full payload.");
+                    throw new IOException(LogMessages.DisconnectedBeforeReadingFullPayload);
 
                 totalBytesRead += bytesRead;
             }

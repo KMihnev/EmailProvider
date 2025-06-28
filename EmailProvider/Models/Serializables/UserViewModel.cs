@@ -29,6 +29,6 @@ namespace EmailServiceIntermediate.Models.Serializables
 
         public string? PhotoBase64 => Photo != null ? Convert.ToBase64String(Photo) : null;
 
-
+        public int PrefferedLanguageId {  get; set; }
     }
 }
